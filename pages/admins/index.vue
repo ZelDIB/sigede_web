@@ -1,13 +1,19 @@
 <template>
-    <div>
-      <!--Aqui se coloca el html-->
-    </div>
-  </template>
-  
-  <script lang="ts" setup>
-  
-  </script>
-  
-  <style>
-  
-  </style>
+  <div>
+    <CapturistList/>
+  </div>
+</template>
+
+<script>
+import CapturistList from './screens/CapturistList.vue';
+
+
+
+export default {
+  components: {
+    CapturistList
+  }
+}
+</script>
+
+<style></style>
