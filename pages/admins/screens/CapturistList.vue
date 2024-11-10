@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="full-screen">
         <Navbar />
 
-        <div class="full-screen">
+        <div >
             <div class="content">
                 <p class="title">CAPTURISTAS</p>
                 <div class="content-table">
@@ -104,11 +104,10 @@ body {
 }
 
 .full-screen {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: #E4E4E4;
-    overflow: hidden;
 }
 
 .content {
@@ -240,7 +239,7 @@ body {
 .status-active,
 .status-inactive {
     display: inline-block;
-    border-radius: 25%;
+    border-radius: 5px;
     text-align: center;
     width: 160px;
     color: white;
