@@ -1,0 +1,327 @@
+<template>
+    <div class="full-screen">
+        <Navbar />
+        <div>
+            <div class="content">
+                <p class="title">GESTIÓN DE CAPTURISTA</p>
+                <div class="container-form">
+                    <form @submit.prevent="handleSubmit">
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                                    <input type="text" id="name" v-model="form.name"
+                                        :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
+                                    <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                                    <input id="email" v-model="form.email"
+                                        :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
+                                    <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Estado*</label>
+                                    <div class="radio-group">
+                                        <label class="radio-container">
+                                            <div class="rb-text" style="background-color: #93D7B0;">
+                                                Activo
+                                            </div>
+
+                                            <input type="radio" value="true" v-model="form.status" />
+
+                                        </label>
+                                        <label class="radio-container">
+                                            <div class="rb-text" style="background-color: #D79393;">
+                                                Suspendido
+                                            </div>
+
+                                            <input type="radio" value="false" v-model="form.status" />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="image-column">
+                                <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="submit-btn">Registrar capturista</button>
+                            <button type="button" class="cancel-btn">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal personalizado
+        para el modal personalizado se require:
+        isVisible: el cuan indica si el modal esta visible
+        title: el cual coloca como titulo del modal
+        message: el texto que se mostrara en la parte gris/cuerpo
+        close: el cual cierra el modal
+        confirm: el cual ejecuta la funcion que se conecta con el back 
+        icon: el icono que se muestra en la pantalla, SOLO SE MANDA EL NOMBRE DEL ICONO ejemplo "triangle-exclamation"
+         -->
+        <CustomConfirmationModal :isVisible="showModal" title="Advertencia"
+            message="¿Estas seguro de actualizar la informacion de este capturista?" @close="closeModal"
+            @confirm="submitForm"  icon="triangle-exclamation"/>
+    </div>
+</template>
+
+
+<script>
+import CustomConfirmationModal from '~/pages/utils/CustomConfirmationModal.vue';
+import Navbar from '../components/Navbar.vue';
+
+export default {
+    components: {
+        Navbar,
+        CustomConfirmationModal
+    },
+    name: 'ManagerCapturist',
+    data() {
+        return {
+            form: {
+                name: 'Omar',
+                email: '20213tn042@utez.edu.mx',
+                status: true,
+            },
+            errors: {
+                name: '',
+                email: '',
+            },
+            showModal: false,
+        };
+    },
+    methods: {
+        closeModal() {//metodo para cerrar el modal
+            this.showModal = false;
+        },
+        submitForm() {//metodo para enviar el formulario
+            console.log('Formulario enviado:', this.form);
+            console.log("EN LUHAR DE EJECUTAR ESTE METODO, SE EJECUTA EL METODO QUE HACER LA PETICION");
+        },
+        handleSubmit() {
+            this.errors = {
+                name: '',
+                email: '',
+            };
+
+            let valid = true;
+
+            if (!this.form.name) {
+                this.errors.name = 'El nombre es obligatorio';
+                valid = false;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!this.form.email) {
+                this.errors.email = 'El correo es obligatorio';
+                valid = false;
+            } else if (!emailRegex.test(this.form.email)) {
+                this.errors.email = 'El correo electrónico no es válido';
+                valid = false;
+            }
+
+
+            console.log(this.errors);
+
+            if (!valid) {
+                return;
+            }
+
+            // Muestra el modal de confirmación
+            this.showModal = true;
+        },
+    },
+};
+</script>
+
+<style scoped>
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.full-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #e4e4e4;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+}
+
+.title {
+    margin: 10px 0;
+    text-align: center;
+    color: black;
+    text-decoration: underline;
+    font-size: 35px;
+    letter-spacing: 0.15em;
+    font-weight: 300;
+}
+
+.container-form {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 3%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.form-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.form-column {
+    width: 60%;
+    padding: 20px;
+}
+
+.image-column {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.register-image {
+    max-width: 75%;
+    max-height: 300px;
+    height: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #e0e0e0;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-control.error {
+    border-color: red;
+    background-color: #ffdddd;
+    box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.1);
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    display: block;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    gap: 60px;
+}
+
+.submit-btn,
+.cancel-btn {
+    padding: 8px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px;
+}
+
+.submit-btn {
+    background-color: black;
+}
+
+.cancel-btn {
+    background-color: #87342c;
+}
+
+label {
+    font-weight: bold;
+    color: black;
+}
+
+label.error-label {
+    color: red;
+}
+
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.radio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+    width: 180px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.radio-container input {
+    margin-bottom: 5px;
+}
+
+.rb-text {
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+    width: 100%;
+    text-align: center;
+    height: 35px;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .radio-group {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .radio-container {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+</style>
