@@ -119,7 +119,7 @@ export default {
         invertListOrder() {
             this.lista.reverse();
         },
-        
+ 
     }
 }
 </script>

@@ -11,29 +11,44 @@
               <i class="fas fa-user-plus icon"></i>
             </div>
             <div class="search-container">
-              <input type="text" class="search-input" placeholder="Buscar..." />
+              <input 
+                type="text" 
+                v-model="searchTerm" 
+                class="search-input" 
+                placeholder="Buscar..." 
+
+              />
               <i class="fas fa-magnifying-glass icon"></i>
             </div>
             <div class="search-icon" style="border-radius: 0 10px 0 0">
-              <div style="width: 50%">
+              <div style="width: 50%" @click="sortByName">
                 <i class="fas fa-arrow-down-a-z icon"></i>
               </div>
-              <div style="width: 50%">
+              <div style="width: 50%" @click="invertListOrder">
                 <i class="fas fa-up-down icon"></i>
               </div>
             </div>
           </div>
-          <div class="grid-container">
-            <div
-              v-for="(empresa, index) in listaEmpresas"
-              :key="index"
-              class="card"
-            >
-              <img
-                :src="empresa.imagen"
-                alt="Logo de la empresa"
-                class="card-image"
-              />
+          <div v-if="isLoading" class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i> Cargando...
+          </div>
+          <div v-else>
+            <div v-if="filteredInstitutions.length === 0" class="no-results">
+              <i class="fas fa-times-circle"></i> Sin resultados
+            </div>
+            <div class="grid-container">
+              <div
+                v-for="(institution, index) in filteredInstitutions"
+                :key="index"
+                class="card"
+              >
+                <p>{{ institution.name }}</p>
+                <img
+                  :src="institution.logo"
+                  alt="Logo de la institución"
+                  class="card-image"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -44,6 +59,7 @@
 
 <script>
 import Navbar from "~/pages/admins/components/Navbar.vue";
+import { getAllInstitutions } from "~/services/ServicesSuperAdmin";
 
 export default {
   components: {
@@ -52,64 +68,65 @@ export default {
   name: "OrganizationsList",
   data() {
     return {
-      listaEmpresas: [
-        {
-          imagen:
-            "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png",
-          id: 1,
-        },
-        {
-          imagen:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREOhlSVeNbq54sz0U50sp6UcIxezr7luj8pw&s",
-          id: 2,
-        },
-        {
-          imagen:
-            "https://download.logo.wine/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.png",
-          id: 3,
-        },
-        {
-          imagen:
-            "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png",
-          id: 4,
-        },
-        {
-          imagen:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREOhlSVeNbq54sz0U50sp6UcIxezr7luj8pw&s",
-          id: 5,
-        },
-        {
-          imagen:
-            "https://download.logo.wine/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.png",
-          id: 6,
-        },
-        {
-          imagen:
-            "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png",
-          id: 7,
-        },
-        {
-          imagen:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREOhlSVeNbq54sz0U50sp6UcIxezr7luj8pw&s",
-          id: 8,
-        },
-        {
-          imagen:
-            "https://download.logo.wine/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.png",
-          id: 9,
-        },
-      ],
+      institutions: [],
+      searchTerm: "",
+      isAscending: true,
+      isLoading: true,  
+      errorMessage: "", 
     };
+  },
+  computed: {
+    filteredInstitutions() {//filtra por nombre
+      const filtered = this.institutions.filter((institution) =>
+        institution.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+      return filtered;
+    },
+  },
+  methods: {
+    sortByName() {//ordena alfabeticamente
+      this.isAscending = !this.isAscending;
+      this.institutions.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+
+        if (this.isAscending) {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+    },
+    invertListOrder() {//invierte el orden de la lista
+      this.institutions.reverse();
+    },
+  },
+  async mounted() {
+    try {
+      const data = await getAllInstitutions();
+      if (typeof data === "string") {
+        this.errorMessage = "Error al cargar las instituciones.";
+      } else {
+        this.institutions = data;
+      }
+    } catch (error) {
+      this.errorMessage = "Error al cargar las instituciones.";
+    } finally {
+      this.isLoading = false; 
+    }
   },
 };
 </script>
+
+
+
 
 <style>
 html,
 body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Oculta el scroll por defecto */
+  overflow: hidden;
 }
 
 .full-screen {
@@ -117,15 +134,15 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #e4e4e4;
-  overflow-y: auto; /* Habilitar scroll vertical */
+  overflow-y: auto;
 }
 
 .content {
   text-align: center;
   justify-content: center;
   padding: 15px;
-  overflow-y: auto; /* Habilitar scroll interno si es necesario */
-  max-height: calc(100vh - 60px); /* Ajustar según la altura del Navbar */
+  overflow-y: auto; 
+  max-height: calc(100vh - 60px); 
 }
 
 .title {
@@ -206,20 +223,51 @@ body {
 }
 
 .card {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
   background: white;
   max-width: 390px;
   border-radius: 8px;
   padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 250px;
+  height: 290px;
+  text-align: center;
 }
 
 .card-image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+}
+
+.card p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-top: 15px;
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-top: 15px;
+}
+
+.no-results i {
+  margin-right: 10px;
 }
 </style>
