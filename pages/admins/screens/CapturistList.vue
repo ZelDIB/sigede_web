@@ -2,51 +2,61 @@
     <div class="full-screen">
         <Navbar />
 
-        <div >
+        <div>
             <div class="content">
                 <p class="title">CAPTURISTAS</p>
                 <div class="content-table">
                     <div class="search-section">
-                        <div class="search-icon" style="border-radius:  10px 0 0 0;">
+                        <div class="search-icon" style="border-radius: 10px 0 0 0">
                             <i class="fas fa-user-plus icon"></i>
                         </div>
                         <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Buscar..." />
+                            <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
                             <i class="fas fa-magnifying-glass icon"></i>
                         </div>
-                        <div class="search-icon" style="border-radius: 0 10px 0 0;">
-                            <div style="width: 50px;">
+                        <div class="search-icon" style="border-radius: 0 10px 0 0">
+                            <div style="width: 50%" @click="sortByName">
                                 <i class="fas fa-arrow-down-a-z icon"></i>
                             </div>
-                            <div style="width: 50px;">
+                            <div style="width: 50%" @click="invertListOrder">
                                 <i class="fas fa-up-down icon"></i>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="name-column">Nombre</th>
-                                    <th class="status-column">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, index) in lista" :key="index">
-                                    <td>{{ item.name }}</td>
-                                    <td>
-                                        <div class="status-container">
-                                            <div class="edit-icon">
-                                                <i class="fas fa-edit icon"></i>
+                    <div v-if="isLoading" class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando...
+                    </div>
+                    <div v-else>
+
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="name-column">Nombre</th>
+                                        <th class="status-column">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr v-for="(item, index) in filteredCapturist" :key="index">
+                                        <td>{{ item.name }}</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <div class="edit-icon">
+                                                    <i class="fas fa-edit icon"></i>
+                                                </div>
+                                                <span :class="`status-${item.status.toLowerCase()}`">
+                                                    {{ item.status }}
+                                                </span>
                                             </div>
-                                            <span :class="item.status ? 'status-active' : 'status-inactive'">
-                                                {{ item.status ? 'Activo' : 'Suspendido' }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div v-if="filteredCapturist.length === 0" class="no-results">
+                                <i class="fas fa-times-circle"></i> Sin resultados
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,44 +65,68 @@
 </template>
 
 <script>
-import Navbar from '../components/Navbar';
+import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
+import Navbar from "../components/Navbar.vue";
 
 export default {
     components: {
-        Navbar
+        Navbar,
     },
-    name: 'CapturistList',
+    name: "OrganizationsList",
     data() {
         return {
-            lista: [
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: false },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: true },
-                { name: 'Ameno Juan de Dios', status: false },
-            ]
+            capturist: [],
+            searchTerm: "",
+            isAscending: true,
+            isLoading: true,
+            errorMessage: "",
         };
-    }
-}
+    },
+    computed: {
+        filteredCapturist() {
+            //filtra por nombre
+            const filtered = this.capturist.filter((capturist) =>
+                capturist.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+            );
+            return filtered;
+        },
+    },
+    methods: {
+        sortByName() {
+            //ordena alfabeticamente
+            this.isAscending = !this.isAscending;
+            this.capturist.sort((a, b) => {
+                const nameA = a.name.toLowerCase();
+                const nameB = b.name.toLowerCase();
+
+                if (this.isAscending) {
+                    return nameA.localeCompare(nameB);
+                } else {
+                    return nameB.localeCompare(nameA);
+                }
+            });
+        },
+        invertListOrder() {
+            //invierte el orden de la lista
+            this.capturist.reverse();
+        },
+    },
+    async mounted() {
+        try {
+            var institutionId = 1;//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
+            const data = await getAllCapturitsByInstitutionId(institutionId);
+            if (typeof data === "string") {
+                this.errorMessage = "Error al cargar los capturistas.";
+            } else {
+                this.capturist = data;
+            }
+        } catch (error) {
+            this.errorMessage = "Error al cargar los capturistas.";
+        } finally {
+            this.isLoading = false;
+        }
+    },
+};
 </script>
 
 <style scoped>
@@ -107,7 +141,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #E4E4E4;
+    background-color: #e4e4e4;
 }
 
 .content {
@@ -145,7 +179,7 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    background-color: #917D62;
+    background-color: #917d62;
     cursor: pointer;
 }
 
@@ -186,7 +220,7 @@ body {
 }
 
 .table th {
-    background-color: #917D62;
+    background-color: #917d62;
 }
 
 .table tr {
@@ -205,25 +239,25 @@ body {
 }
 
 .name-column {
-    width: 66.66%; 
-    text-align: left; 
+    width: 66.66%;
+    text-align: left;
 }
 
 .status-column {
     width: 33.33%;
-    text-align: center; 
+    text-align: center;
 }
 
 .status-container {
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
 }
 
 .edit-icon {
     width: 30px;
     height: 30px;
-    background-color: #917D62;
+    background-color: #917d62;
     border-radius: 20%;
     display: flex;
     justify-content: center;
@@ -236,21 +270,54 @@ body {
     font-size: 16px;
 }
 
-.status-active,
-.status-inactive {
-    display: inline-block;
+.status-activo {
+    background-color: green;
+    color: white;
     border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
     text-align: center;
     width: 160px;
-    color: white;
-    opacity: 0.65;
 }
 
-.status-active {
-    background-color: green;
-}
-
-.status-inactive {
+.status-inactivo {
     background-color: red;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    text-align: center;
+    width: 160px;
+}
+
+.status-suspendido {
+    background-color: rgb(255, 187, 0);
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    text-align: center;
+    width: 160px;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: 15px;
+}
+
+.no-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: 15px;
+
+}
+
+.no-results i {
+    margin-right: 10px;
 }
 </style>

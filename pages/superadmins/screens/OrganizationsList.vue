@@ -11,13 +11,7 @@
               <i class="fas fa-user-plus icon"></i>
             </div>
             <div class="search-container">
-              <input 
-                type="text" 
-                v-model="searchTerm" 
-                class="search-input" 
-                placeholder="Buscar..." 
-
-              />
+              <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
               <i class="fas fa-magnifying-glass icon"></i>
             </div>
             <div class="search-icon" style="border-radius: 0 10px 0 0">
@@ -37,17 +31,9 @@
               <i class="fas fa-times-circle"></i> Sin resultados
             </div>
             <div class="grid-container">
-              <div
-                v-for="(institution, index) in filteredInstitutions"
-                :key="index"
-                class="card"
-              >
+              <div v-for="(institution, index) in filteredInstitutions" :key="index" class="card">
                 <p>{{ institution.name }}</p>
-                <img
-                  :src="institution.logo"
-                  alt="Logo de la institución"
-                  class="card-image"
-                />
+                <img :src="institution.logo" alt="Logo de la institución" class="card-image" />
               </div>
             </div>
           </div>
@@ -71,8 +57,8 @@ export default {
       institutions: [],
       searchTerm: "",
       isAscending: true,
-      isLoading: true,  
-      errorMessage: "", 
+      isLoading: true,
+      errorMessage: "",
     };
   },
   computed: {
@@ -112,7 +98,7 @@ export default {
     } catch (error) {
       this.errorMessage = "Error al cargar las instituciones.";
     } finally {
-      this.isLoading = false; 
+      this.isLoading = false;
     }
   },
 };
@@ -141,8 +127,8 @@ body {
   text-align: center;
   justify-content: center;
   padding: 15px;
-  overflow-y: auto; 
-  max-height: calc(100vh - 60px); 
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
 }
 
 .title {
@@ -224,9 +210,9 @@ body {
 
 .card {
   display: flex;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: white;
   max-width: 390px;
   border-radius: 8px;
@@ -245,7 +231,7 @@ body {
 .card p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; 
+  -webkit-line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
