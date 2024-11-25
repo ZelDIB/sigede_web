@@ -4,7 +4,7 @@
 
         <div>
             <div class="content">
-                <p class="title">CAPTURISTAS</p>
+                <p class="title">ADMINISTRADORES</p>
                 <div class="content-table">
                     <div class="search-section">
                         <div class="search-icon" style="border-radius: 10px 0 0 0">
@@ -38,7 +38,7 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr v-for="(item, index) in filteredCapturist" :key="index">
+                                    <tr v-for="(item, index) in filteredAdminis" :key="index">
                                         <td>{{ item.name }}</td>
                                         <td>
                                             <div class="status-container">
@@ -53,7 +53,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div v-if="filteredCapturist.length === 0" class="no-results">
+                            <div v-if="filteredAdminis.length === 0" class="no-results">
                                 <i class="fas fa-times-circle"></i> Sin resultados
                             </div>
                         </div>
@@ -65,17 +65,17 @@
 </template>
 
 <script>
-import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
+import { getAllAdmins } from "~/services/ServicesSuperAdmin";
 import Navbar from "../components/Navbar.vue";
 
 export default {
     components: {
         Navbar,
     },
-    name: "OrganizationsList",
+    name: "AdminsList",
     data() {
         return {
-            capturist: [],
+            admins: [],
             searchTerm: "",
             isAscending: true,
             isLoading: true,
@@ -83,10 +83,10 @@ export default {
         };
     },
     computed: {
-        filteredCapturist() {
+        filteredAdminis() {
             //filtra por nombre
-            const filtered = this.capturist.filter((capturist) =>
-                capturist.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+            const filtered = this.admins.filter((admins) =>
+                admins.name.toLowerCase().includes(this.searchTerm.toLowerCase())
             );
             return filtered;
         },
@@ -95,7 +95,7 @@ export default {
         sortByName() {
             //ordena alfabeticamente
             this.isAscending = !this.isAscending;
-            this.capturist.sort((a, b) => {
+            this.admins.sort((a, b) => {
                 const nameA = a.name.toLowerCase();
                 const nameB = b.name.toLowerCase();
 
@@ -108,20 +108,19 @@ export default {
         },
         invertListOrder() {
             //invierte el orden de la lista
-            this.capturist.reverse();
+            this.admins.reverse();
         },
     },
     async mounted() {
         try {
-            var institutionId = 1;//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
-            const data = await getAllCapturitsByInstitutionId(institutionId);
+            const data = await getAllAdmins();
             if (typeof data === "string") {
-                this.errorMessage = "Error al cargar los capturistas.";
+                this.errorMessage = "Error al cargar los administradores.";
             } else {
-                this.capturist = data;
+                this.admins = data;
             }
         } catch (error) {
-            this.errorMessage = "Error al cargar los capturistas.";
+            this.errorMessage = "Error al cargar los administradores.";
         } finally {
             this.isLoading = false;
         }
