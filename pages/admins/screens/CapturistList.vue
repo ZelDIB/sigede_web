@@ -7,7 +7,7 @@
                 <p class="title">CAPTURISTAS</p>
                 <div class="content-table">
                     <div class="search-section">
-                        <div class="search-icon" style="border-radius: 10px 0 0 0">
+                        <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterCapturist">
                             <i class="fas fa-user-plus icon"></i>
                         </div>
                         <div class="search-container">
@@ -42,7 +42,7 @@
                                         <td>{{ item.name }}</td>
                                         <td>
                                             <div class="status-container">
-                                                <div class="edit-icon">
+                                                <div class="edit-icon" @click="editCapturist(item.userAccountId)">
                                                     <i class="fas fa-edit icon"></i>
                                                 </div>
                                                 <span :class="`status-${item.status.toLowerCase()}`">
@@ -72,7 +72,7 @@ export default {
     components: {
         Navbar,
     },
-    name: "OrganizationsList",
+    name: "CapturistList",
     data() {
         return {
             capturist: [],
@@ -110,11 +110,18 @@ export default {
             //invierte el orden de la lista
             this.capturist.reverse();
         },
+        goToRegisterCapturist() {
+            this.$router.push("./RegisterCapturist");
+        },
+        editCapturist(userAccountId){
+            this.$router.push({ path: "./ManagerCapturist", query: { userAccountId } });
+        }
     },
     async mounted() {
         try {
             var institutionId = 1;//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
             const data = await getAllCapturitsByInstitutionId(institutionId);
+            console.log(data);
             if (typeof data === "string") {
                 this.errorMessage = "Error al cargar los capturistas.";
             } else {
@@ -263,6 +270,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 .edit-icon .icon {

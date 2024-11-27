@@ -53,7 +53,7 @@ export default {
             form: {
                 name: '',
                 email: '',
-                fkInstitution: 4//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
             },
             errors: {
                 name: '',
@@ -98,9 +98,11 @@ export default {
                     this.form = {
                         name: '',
                         email: '',
-                        fkInstitution: 4//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                        fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
                     }  
-                    alert("Registro exitosooooooo =D")              
+                    alert("Registro exitosooooooo =D")
+                    this.$router.push("./CapturistList");
+              
                 }
             } catch (error) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
