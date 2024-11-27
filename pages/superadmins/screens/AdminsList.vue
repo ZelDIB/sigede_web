@@ -1,7 +1,6 @@
 <template>
     <div class="full-screen">
         <Navbar />
-
         <div>
             <div class="content">
                 <p class="title">ADMINISTRADORES</p>

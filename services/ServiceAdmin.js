@@ -22,3 +22,9 @@ export const registerCapturist=async(data)=>{
         return ("Ocurrio un error en la peticion");
     }
 }
+
+
+
+/*
+
+*/
