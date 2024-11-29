@@ -133,7 +133,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
 }
 
 .title {
@@ -160,21 +160,43 @@ body {
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     justify-content: space-between;
 }
 
-.form-column {
-    width: 60%;
+.form-column,
+.image-column {
+    flex: 1 1 100%; 
     padding: 20px;
 }
 
 .image-column {
-    width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    .form-column {
+        flex: 1 1 60%; 
+        order: 1; 
+    }
+
+    .image-column {
+        flex: 1 1 40%; 
+        order: 2; 
+    }
+}
+
+@media (max-width: 767px) {
+    .form-column {
+        order: 2; 
+    }
+
+    .image-column {
+        order: 1; 
+    }
 }
 
 .register-image {
