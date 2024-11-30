@@ -1,11 +1,13 @@
 <template>
-    <NuxtImg 
-    provider="cloudinary" 
-    src="https://res.cloudinary.com/dpkl7ms3o/image/upload/v1732779300/docs/models.gif"
-    width="200" 
-    height="200"
-    :modifiers="{roundCorner:'max'}" 
-    />
+    <div>
+        <NuxtImg provider="cloudinary"
+            src="https://res.cloudinary.com/dpkl7ms3o/image/upload/v1732779300/docs/models.gif" width="200" height="200"
+            :modifiers="{ roundCorner: 'max' }" />
+        <NuxtImg provider="cloudinary"
+            src="https://res.cloudinary.com/dpkl7ms3o/image/upload/v1732779300/docs/models.gif" width="200" height="200"
+            :modifiers="{ roundCorner: 'max' }" />
+    </div>
+
 </template>
 
 <script>
