@@ -31,40 +31,33 @@
 </template>
 
 <script>
-import ServiceAuth from "../../services/ServicesAuth.js";
+import { sendVerificationCode } from "../services/ServicesAuth.js";
 
 export default {
+  data() {
+    return {
+      email: "",
+      errorMessage: "",
+    };
+  },
   methods: {
-    focusNext(event, index) {
-      const inputs = document.querySelectorAll(".code-input");
-      if (event.target.value && index < inputs.length - 1) {
-        inputs[index + 1].focus();
+    async handleRecoverPassword() {
+      try {
+        if (!this.email) {
+          this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
+          return;
+        }
+        const response = await sendVerificationCode({ userEmail: this.email });
+
+        console.log("Código de verificación enviado:", response);
+        this.errorMessage = ""; 
+        this.$router.push("/auth/VerificationCode"); 
+      } catch (error) {
+        console.error("Error al enviar el código de verificación:", error);
+        this.errorMessage = "Hubo un error al enviar el código. Intenta nuevamente.";
       }
     },
-    async validateCode() {
-      const inputs = Array.from(document.querySelectorAll(".code-input"));
-      const code = inputs.map(input => input.value).join("");
-
-      const userEmail = JSON.parse(localStorage.getItem("authUser"))?.email;
-
-      if (!code || !userEmail) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      try {
-        const response = await ServiceAuth.validateVerificationCode(code, userEmail);
-
-        if (response.code === 200) {
-          alert("Código validado correctamente.");
-        } else {
-          alert("Error: " + response.message);
-        }
-      } catch (error) {
-        alert("Hubo un problema al validar el código: " + error.message);
-      }
-    }
-  }
+  },
 };
 </script>
 

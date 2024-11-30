@@ -1,36 +1,88 @@
 <template>
-    <div class="screen-split">
-      <div class="left-half">
-        <div class="container">
-          <img src="../../public/logoweb.png" alt="" width="220px">
-          <p class="title">SIGEDE</p>
-          <p class="sig">Sistema de gestión de credenciales</p>
-        </div>
+  <div class="screen-split">
+    <div class="left-half">
+      <div class="container">
+        <img src="../../public/logoweb.png" alt="" width="220px" />
+        <p class="title">SIGEDE</p>
+        <p class="sig">Sistema de gestión de credenciales</p>
       </div>
-      <div class="right-half">
-        <div class="container2">
-          <p class="title2">Código de Verificación</p>
-          <label for="code">Código *</label>
-          <div class="code-inputs">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 0)">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 1)">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 2)">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 3)">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 4)">
-            <input type="text" maxlength="1" class="code-input" @input="focusNext($event, 5)">
-          </div>
-          <button class="login-button" @click="validateCode">Validar código</button>
-          <p class="resend-text">¿Aún no has recibido el código?</p>
-          <a href="/" class="forgot-password">Reenviar código</a>
+    </div>
+    <div class="right-half">
+      <div class="container2">
+        <p class="title2">Validar Código</p>
+
+        <label for="code">Código de verificación *</label>
+        <div class="code-inputs">
+          <input
+            v-model="code[0]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 0)"
+            ref="input0"
+          />
+          <input
+            v-model="code[1]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 1)"
+            ref="input1"
+          />
+          <input
+            v-model="code[2]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 2)"
+            ref="input2"
+          />
+          <input
+            v-model="code[3]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 3)"
+            ref="input3"
+          />
+          <input
+            v-model="code[4]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 4)"
+            ref="input4"
+          />
+          <input
+            v-model="code[5]"
+            type="text"
+            class="code-input"
+            maxlength="1"
+            @input="focusNext($event, 5)"
+            ref="input5"
+          />
         </div>
+
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <button class="login-button" @click="validateCode">
+          Validar
+        </button>
       </div>
-    </div> 
-  </template>
+    </div>
+  </div>
+</template>
+
   
-  <script>
- import ServiceAuth from "../../services/ServicesAuth.js";
+<script>
+import ServiceAuth from "../../services/ServicesAuth.js";
 
 export default {
+  data() {
+    return {
+      code: ["", "", "", "", "", ""],
+      errorMessage: "", 
+    };
+  },
   methods: {
     focusNext(event, index) {
       const inputs = document.querySelectorAll(".code-input");
@@ -39,32 +91,37 @@ export default {
       }
     },
     async validateCode() {
-      const inputs = Array.from(document.querySelectorAll(".code-input"));
-      const code = inputs.map(input => input.value).join("");
+      const userEmail = localStorage.getItem("email");
 
-      const userEmail = JSON.parse(localStorage.getItem("authUser"))?.email;
-
-      if (!code || !userEmail) {
-        alert("Por favor, completa todos los campos.");
+      if (!userEmail) {
+        this.errorMessage = "No se pudo obtener el correo. Por favor, inicie sesión nuevamente.";
         return;
       }
+
+      const code = this.code.join("");
+      if (code.length < 6) {
+        this.errorMessage = "Por favor, ingrese el código de verificación completo.";
+        return;
+      }
+
       try {
         const response = await ServiceAuth.validateVerificationCode(code, userEmail);
 
         if (response.code === 200) {
+          this.$router.push("/auth/ResetPassword"); 
           alert("Código validado correctamente.");
+          this.errorMessage = ""; 
         } else {
-          alert("Error: " + response.message);
+          this.errorMessage = response.message || "El código es incorrecto.";
         }
       } catch (error) {
-        alert("Hubo un problema al validar el código: " + error.message);
+        this.errorMessage = "Hubo un problema al validar el código: " + error.message;
       }
-    }
-  }
+    },
+  },
 };
+</script>
 
-  </script>
-  
   <style scoped>
   .screen-split {
     display: flex;
