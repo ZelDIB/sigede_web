@@ -10,3 +10,14 @@ export const  getAllInstitutions=async()=>{
         return ("Ocurrio un error en la peticion");
     }
 }
+
+
+export const getAllAdmins=async()=>{
+    try {
+        const response = await axios.get(`${BASEURL}api/users/admins`);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }
+}

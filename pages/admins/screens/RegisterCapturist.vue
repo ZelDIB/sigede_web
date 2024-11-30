@@ -9,32 +9,17 @@
                         <div class="form-row">
                             <div class="form-column">
                                 <div class="form-group">
-                                    <label for="name" :class="{'error-label': errors.name}">Nombre*</label>
+                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
                                     <input type="text" id="name" v-model="form.name"
                                         :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
                                     <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email" :class="{'error-label': errors.email}">Correo*</label>
+                                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
                                     <input id="email" v-model="form.email"
                                         :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
                                     <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="password" :class="{'error-label': errors.password}">Contraseña*</label>
-                                    <input type="password" id="password" v-model="form.password"
-                                        :class="['form-control', { 'error': errors.password }]" placeholder="Contraseña" />
-                                    <small v-if="errors.password" class="error-message">{{ errors.password }}</small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="confirmPassword" :class="{'error-label': errors.confirmPassword}">Confirmar Contraseña*</label>
-                                    <input type="password" id="confirmPassword" v-model="form.confirmPassword"
-                                        :class="['form-control', { 'error': errors.confirmPassword }]"
-                                        placeholder="Confirmar Contraseña" />
-                                    <small v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</small>
                                 </div>
                             </div>
 
@@ -55,6 +40,7 @@
 </template>
 
 <script>
+import { registerCapturist } from '~/services/ServiceAdmin';
 import Navbar from '../components/Navbar.vue';
 
 export default {
@@ -67,24 +53,19 @@ export default {
             form: {
                 name: '',
                 email: '',
-                password: '',
-                confirmPassword: '',
+                fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
             },
             errors: {
                 name: '',
                 email: '',
-                password: '',
-                confirmPassword: '',
             },
         };
     },
     methods: {
-        handleSubmit() {
+        async handleSubmit() {
             this.errors = {
                 name: '',
                 email: '',
-                password: '',
-                confirmPassword: '',
             };
 
             let valid = true;
@@ -102,29 +83,31 @@ export default {
                 this.errors.email = 'El correo electrónico no es válido';
                 valid = false;
             }
-
-            if (!this.form.password) {
-                this.errors.password = 'La contraseña es obligatoria';
-                valid = false;
-            }
-
-            if (!this.form.confirmPassword) {
-                this.errors.confirmPassword = 'Confirma la contraseña';
-                valid = false;
-            }
-            if (this.form.password !== this.form.confirmPassword) {
-                this.errors.confirmPassword = 'Las contraseñas no coinciden';
-                valid = false;
-            }
-
-            console.log(this.errors);  
-
+            console.log(this.errors);
             if (!valid) {
                 return;
             }
 
-            console.log('Formulario enviado:', this.form);
-            alert('Formulario enviado correctamente');
+            try {
+                const data = await registerCapturist(this.form);
+                console.log(data);
+                if (data === "Ocurrio un error en la peticion") {
+                    this.errorMessage = "Ocurrio un error en la peticion.";
+                    alert("fallo en el registro :(")
+                } else {
+                    this.form = {
+                        name: '',
+                        email: '',
+                        fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                    }  
+                    alert("Registro exitosooooooo =D")
+                    this.$router.push("./CapturistList");
+              
+                }
+            } catch (error) {
+                this.errorMessage = "Ocurrio un error en la peticion.";
+                alert("fallo en el registro :(")
+            }
         },
     },
 };
@@ -150,7 +133,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
 }
 
 .title {
@@ -177,26 +160,48 @@ body {
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     justify-content: space-between;
 }
 
-.form-column {
-    width: 60%;
+.form-column,
+.image-column {
+    flex: 1 1 100%; 
     padding: 20px;
 }
 
 .image-column {
-    width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    .form-column {
+        flex: 1 1 60%; 
+        order: 1; 
+    }
+
+    .image-column {
+        flex: 1 1 40%; 
+        order: 2; 
+    }
+}
+
+@media (max-width: 767px) {
+    .form-column {
+        order: 2; 
+    }
+
+    .image-column {
+        order: 1; 
+    }
 }
 
 .register-image {
     max-width: 75%;
-    max-height: 300px;
+    max-height: 150px;
     height: auto;
 }
 

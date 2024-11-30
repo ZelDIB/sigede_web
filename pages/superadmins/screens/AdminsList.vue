@@ -1,13 +1,12 @@
 <template>
     <div class="full-screen">
         <Navbar />
-
         <div>
             <div class="content">
-                <p class="title">CAPTURISTAS</p>
+                <p class="title">ADMINISTRADORES</p>
                 <div class="content-table">
                     <div class="search-section">
-                        <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterCapturist">
+                        <div class="search-icon" style="border-radius: 10px 0 0 0">
                             <i class="fas fa-user-plus icon"></i>
                         </div>
                         <div class="search-container">
@@ -38,11 +37,11 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr v-for="(item, index) in filteredCapturist" :key="index">
+                                    <tr v-for="(item, index) in filteredAdminis" :key="index">
                                         <td>{{ item.name }}</td>
                                         <td>
                                             <div class="status-container">
-                                                <div class="edit-icon" @click="editCapturist(item.userAccountId)">
+                                                <div class="edit-icon">
                                                     <i class="fas fa-edit icon"></i>
                                                 </div>
                                                 <span :class="`status-${item.status.toLowerCase()}`">
@@ -53,7 +52,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div v-if="filteredCapturist.length === 0" class="no-results">
+                            <div v-if="filteredAdminis.length === 0" class="no-results">
                                 <i class="fas fa-times-circle"></i> Sin resultados
                             </div>
                         </div>
@@ -65,17 +64,17 @@
 </template>
 
 <script>
-import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
+import { getAllAdmins } from "~/services/ServicesSuperAdmin";
 import Navbar from "../components/Navbar.vue";
 
 export default {
     components: {
         Navbar,
     },
-    name: "CapturistList",
+    name: "AdminsList",
     data() {
         return {
-            capturist: [],
+            admins: [],
             searchTerm: "",
             isAscending: true,
             isLoading: true,
@@ -83,10 +82,10 @@ export default {
         };
     },
     computed: {
-        filteredCapturist() {
+        filteredAdminis() {
             //filtra por nombre
-            const filtered = this.capturist.filter((capturist) =>
-                capturist.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+            const filtered = this.admins.filter((admins) =>
+                admins.name.toLowerCase().includes(this.searchTerm.toLowerCase())
             );
             return filtered;
         },
@@ -95,7 +94,7 @@ export default {
         sortByName() {
             //ordena alfabeticamente
             this.isAscending = !this.isAscending;
-            this.capturist.sort((a, b) => {
+            this.admins.sort((a, b) => {
                 const nameA = a.name.toLowerCase();
                 const nameB = b.name.toLowerCase();
 
@@ -108,27 +107,19 @@ export default {
         },
         invertListOrder() {
             //invierte el orden de la lista
-            this.capturist.reverse();
+            this.admins.reverse();
         },
-        goToRegisterCapturist() {
-            this.$router.push("./RegisterCapturist");
-        },
-        editCapturist(userAccountId){
-            this.$router.push({ path: "./ManagerCapturist", query: { userAccountId } });
-        }
     },
     async mounted() {
         try {
-            var institutionId = 1;//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
-            const data = await getAllCapturitsByInstitutionId(institutionId);
-            console.log(data);
+            const data = await getAllAdmins();
             if (typeof data === "string") {
-                this.errorMessage = "Error al cargar los capturistas.";
+                this.errorMessage = "Error al cargar los administradores.";
             } else {
-                this.capturist = data;
+                this.admins = data;
             }
         } catch (error) {
-            this.errorMessage = "Error al cargar los capturistas.";
+            this.errorMessage = "Error al cargar los administradores.";
         } finally {
             this.isLoading = false;
         }
@@ -270,7 +261,6 @@ body {
     justify-content: center;
     align-items: center;
     margin-right: 10px;
-    cursor: pointer;
 }
 
 .edit-icon .icon {
