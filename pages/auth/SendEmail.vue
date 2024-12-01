@@ -2,14 +2,14 @@
   <div class="screen-split">
     <div class="left-half">
       <div class="container">
-        <img src="/logoweb.png" alt="Logo" width="220px" />
+        <img src="../../public/logoweb.png" alt="" width="220px" />
         <p class="title">SIGEDE</p>
         <p class="sig">Sistema de gestión de credenciales</p>
       </div>
     </div>
     <div class="right-half">
       <div class="container2">
-        <p class="title2">Iniciar sesión</p>
+        <p class="title2">Recuperar Contraseña</p>
         <label for="email">Correo electrónico *</label>
         <input
           v-model="email"
@@ -19,70 +19,48 @@
           placeholder="Correo electrónico"
         />
 
-        <label for="password">Contraseña *</label>
-        <div class="password-container">
-          <input
-            v-model="password"
-            :type="showPassword ? 'text' : 'password'"
-            id="password"
-            class="input-field"
-            placeholder="Contraseña"
-          />
-          <span class="eye-icon" @click="togglePasswordVisibility">
-            <i
-              :class="showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'"
-              style="color: #030303"
-            ></i>
-          </span>
-        </div>
-
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-        <button class="login-button" @click="handleLogin">Iniciar sesión</button>
-        <a href="/auth/SendEmail" class="forgot-password">Olvidé la contraseña</a>
+        <button class="login-button" @click="handleRecoverPassword">
+          Enviar
+        </button>
+        <a href="/" class="forgot-password">Iniciar sesión</a>
       </div>
     </div>
   </div>
-</template> 
+</template>
+
 <script>
-import "@fortawesome/fontawesome-free/css/all.css";
-import { loginMethod } from "../services/ServicesAuth.js";
+import { sendVerificationCode } from "../services/ServicesAuth.js";
 
 export default {
-  
   data() {
     return {
-      showPassword: false,
       email: "",
-      password: "",
-      errorMessage: "", 
+      errorMessage: "",
     };
   },
   methods: {
-    togglePasswordVisibility() {
-      this.showPassword = !this.showPassword;
-    },
-    async handleLogin() {
+    async handleRecoverPassword() {
       try {
-        if (!this.email || !this.password) {
-          this.errorMessage = "Por favor, completa todos los campos.";
+        if (!this.email) {
+          this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
           return;
         }
+        const response = await sendVerificationCode({ userEmail: this.email });
 
-        const data = { email: this.email, password: this.password };
-        const response = await loginMethod(data);
-
-        console.log("Inicio de sesión exitoso:", response);
+        console.log("Código de verificación enviado:", response);
         this.errorMessage = ""; 
-        this.$router.push("/admins/screens/CapturistList");
+        this.$router.push("/auth/VerificationCode"); 
       } catch (error) {
-        this.errorMessage = "Correo o contraseña incorrectos.";
-        console.error("Error al iniciar sesión:", error);
+        console.error("Error al enviar el código de verificación:", error);
+        this.errorMessage = "Hubo un error al enviar el código. Intenta nuevamente.";
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .screen-split {
@@ -103,7 +81,7 @@ export default {
 .title {
   margin: 10px 0;
   text-align: center;
-  color: white;
+  color: rgb(255, 254, 254);
   font-size: 45px;
   letter-spacing: 0.8em;
   font-weight: 300;
@@ -118,7 +96,7 @@ export default {
 
 .sig {
   margin: 10px 0;
-  color: white;
+  color: rgb(255, 254, 254);
   font-size: 18px;
   font-weight: 300;
 }
@@ -159,48 +137,36 @@ label {
   box-sizing: border-box;
 }
 
-.password-container {
-  position: relative;
-  width: 100%;
-}
-
-.eye-icon {
-  position: absolute;
-  right: 15px;
-  top: 40%;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
 .login-button {
   width: 100%;
   padding: 12px;
   font-size: 16px;
-  font-weight: bold;
   color: #fff;
   background-color: #000;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
+  font-weight: 300;
+  margin-bottom: 10px;
 }
 
 .forgot-password {
   margin-top: 15px;
   font-size: 14px;
-  color: #000;
+  color: #999898;
   text-decoration: none;
   font-weight: bold;
 }
 
 .forgot-password:hover {
-  text-decoration: underline;
   color: #dbdada;
 }
 
-.error-message {
-  color: red;
+.status-message {
+  margin-top: 15px;
   font-size: 14px;
-  margin-top: 10px;
+  color: #c1270c; 
+  font-weight: bold;
 }
 </style>
