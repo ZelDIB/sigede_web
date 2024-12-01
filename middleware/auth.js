@@ -1,12 +1,13 @@
-export default function ({ store, redirect, route }) {
-  if (!store.state.authenticated) {
-    return redirect("login");
-  }
+export default function ({ route, redirect }) {
+  if (process.client) {
+    const token = localStorage.getItem("token");
 
-  const userRole = store.state.user.role
-  const adminRoutes = ['/admin']
+    if (!token && route.path !== "/") {
+      return redirect("/");
+    }
 
-  if (adminRoutes.includes(route.path) && userRole !== 'admin') {
-    return redirect('/unauthorized')
+    if (token && route.path === "/") {
+      return redirect("/admins/screens/CapturistList");
+    }
   }
 }
