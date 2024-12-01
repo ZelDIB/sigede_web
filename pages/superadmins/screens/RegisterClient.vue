@@ -76,7 +76,7 @@
                             <button type="submit" class="submit-btn">
                                 Registrar institución
                             </button>
-                            <button type="button" class="cancel-btn">Cancelar</button>
+                            <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -87,7 +87,7 @@
 
 <script>
 import Navbar from "../components/Navbar.vue";
-
+import { registerOrgatization } from "~/services/ServicesSuperAdmin";
 export default {
     components: {
         Navbar,
@@ -113,6 +113,9 @@ export default {
         };
     },
     methods: {
+        goBack (){
+            this.$router.push("./OrganizationsList");
+        },
         handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -134,7 +137,7 @@ export default {
                 }
             }
         },
-        handleSubmit() {
+        async handleSubmit() {
             this.errors = {
                 name: "",
                 email: "",
@@ -175,6 +178,37 @@ export default {
 
             if (!valid) {
                 return;
+            }
+            
+              try {
+                const sendData = {
+                    "institutionName": this.form.name,
+                    "institutionAddress": this.form.address,
+                    "institutionEmail": this.form.email,
+                    "institutionPhone": this.form.phone,
+                    "logo": "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png"//Aqui se debe de sustituir la URL que de devielve cloudinary
+                };
+                const response = await registerOrgatization(sendData);
+
+                if (response === "Ocurrio un error en la peticion") {
+                    this.errorMessage = "Ocurrio un error en la peticion.";
+                    alert("fallo en el registro :(")
+                } else {
+                    this.form = {
+                        name: "",
+                        email: "",
+                        phone: "",
+                        address: "",
+                        image: null,
+                    }  
+                    alert("Registro exitosooooooo =D")
+                    this.goBack();
+
+                }
+
+            } catch (e) {
+                this.errorMessage = "Ocurrio un error en la peticion.";
+                alert("fallo en el registro :(")
             }
 
             console.log("Formulario enviado:", this.form);

@@ -2,11 +2,51 @@
     <div class="full-screen">
         <Navbar />
         <div>
+
             <div class="content">
+                <div class="content-table info-container">
+                    <div v-if="isLoading" class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando...
+                    </div>
+                    <div v-else class="row-direction">
+                        <div>
+                            <img :src="institutionData.logo" alt="Logo de la institución" class="logo-image" />
+                        </div>
+                        <div class="row-direction p-info">
+                            <div>
+                                <p>
+                                    <strong>Nombre:</strong>
+                                    {{ institutionData.name }}
+                                </p>
+                                <p>
+                                    <strong>Direccion:</strong>
+                                    {{ institutionData.address }}
+
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    <strong>Email:</strong>
+                                    {{ institutionData.email_contact }}
+                                </p>
+                                <p>
+                                    <strong>Telefono:</strong>
+                                    {{ institutionData.phoneContact }}
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn-actualizar">
+                                <i class="fas fa-edit icon"></i>
+                                Actualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <p class="title">ADMINISTRADORES</p>
                 <div class="content-table">
                     <div class="search-section">
-                        <div class="search-icon" style="border-radius: 10px 0 0 0">
+                        <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterAdmin()">
                             <i class="fas fa-user-plus icon"></i>
                         </div>
                         <div class="search-container">
@@ -22,6 +62,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div v-if="isLoading" class="loading-spinner">
                         <i class="fas fa-spinner fa-spin"></i> Cargando...
                     </div>
@@ -64,7 +105,7 @@
 </template>
 
 <script>
-import { getAllAdmins } from "~/services/ServicesSuperAdmin";
+import { getAdminsByInstitutionId, getInstitutionInfoByinstitutionId } from "~/services/ServicesSuperAdmin";
 import Navbar from "../components/Navbar.vue";
 
 export default {
@@ -79,11 +120,12 @@ export default {
             isAscending: true,
             isLoading: true,
             errorMessage: "",
+            institutionData: {},
+            institutionId: null,
         };
     },
     computed: {
         filteredAdminis() {
-            //filtra por nombre
             const filtered = this.admins.filter((admins) =>
                 admins.name.toLowerCase().includes(this.searchTerm.toLowerCase())
             );
@@ -91,6 +133,10 @@ export default {
         },
     },
     methods: {
+        goToRegisterAdmin(){
+            var institutionId=this.institutionId;
+            this.$router.push({ path: "./RegisterAdmin", query: { institutionId} });
+        },
         sortByName() {
             //ordena alfabeticamente
             this.isAscending = !this.isAscending;
@@ -109,20 +155,36 @@ export default {
             //invierte el orden de la lista
             this.admins.reverse();
         },
+        goBack() {
+            this.$router.push({ name: "OrganizationsList" });
+        }
     },
     async mounted() {
-        try {
-            const data = await getAllAdmins();
-            if (typeof data === "string") {
+        const instId = this.$route.query.institutionId;
+        this.institutionId=instId;
+        if (instId) {
+            try {
+                const data = await getAdminsByInstitutionId(instId);
+                if (typeof data === "string") {
+                    this.errorMessage = "Error al cargar los administradores.";
+                } else {
+                    this.admins = data;
+                }
+                const response = await getInstitutionInfoByinstitutionId(instId);
+                if (typeof response === "string") {
+                    this.errorMessage = "Error al cargar la info de la institucion.";
+                } else {
+                    this.institutionData = response.data;
+                }
+            } catch (error) {
                 this.errorMessage = "Error al cargar los administradores.";
-            } else {
-                this.admins = data;
+            } finally {
+                this.isLoading = false;
             }
-        } catch (error) {
-            this.errorMessage = "Error al cargar los administradores.";
-        } finally {
-            this.isLoading = false;
+        } else {
+            this.goBack();
         }
+
     },
 };
 </script>
@@ -317,5 +379,115 @@ body {
 
 .no-results i {
     margin-right: 10px;
+}
+
+.info-container {
+    background-color: white;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.2rem;
+}
+
+.logo-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto;
+    min-width: 200px;
+}
+
+.row-direction {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+}
+
+.column-direction {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.p-info {
+    gap: 20px;
+}
+
+.p-info p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    color: rgba(0, 0, 0, 0.685);
+}
+
+.p-info strong {
+    color: black;
+}
+
+.btn-actualizar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    width: 150px;
+    padding: 5px;
+    text-align: center;
+    height: 35px;
+    margin-bottom: 5px;
+    background-color: #917d62;
+}
+
+.icon {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+
+    .row-direction {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .p-info p {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+    }
+
+    .btn-actualizar {
+        width: 160px;
+    }
+
+    .info-container {
+        padding: 10px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 1050px) and (min-width: 769px) {
+    .info-container {
+        font-size: 1rem;
+    }
+
+    .btn-actualizar {
+        width: 120px;
+    }
+
 }
 </style>

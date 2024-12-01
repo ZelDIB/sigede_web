@@ -3,20 +3,20 @@
         <Navbar />
         <div>
             <div class="content">
-                <p class="title">REGISTRO DE CAPTURISTA</p>
+                <p class="title">REGISTRO DE ADMINISTRADOR</p>
                 <div class="container-form">
                     <form @submit.prevent="handleSubmit">
                         <div class="form-row">
                             <div class="form-column">
                                 <div class="form-group">
-                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre del administrador*</label>
                                     <input type="text" id="name" v-model="form.name"
                                         :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
                                     <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                                    <label for="email" :class="{ 'error-label': errors.email }">Correo de contacto*</label>
                                     <input id="email" v-model="form.email"
                                         :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
                                     <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
@@ -29,7 +29,7 @@
                         </div>
 
                         <div class="button-group">
-                            <button type="submit" class="submit-btn">Registrar capturista</button>
+                            <button type="submit" class="submit-btn">Registrar administrador</button>
                             <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
                         </div>
                     </form>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { registerCapturist } from '~/services/ServiceAdmin';
+import { registerAdminInOrganization } from '~/services/ServicesSuperAdmin'; 
 import Navbar from '../components/Navbar.vue';
 
 export default {
@@ -52,17 +52,19 @@ export default {
             form: {
                 name: '',
                 email: '',
-                fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                fkInstitution: null
             },
             errors: {
                 name: '',
                 email: '',
             },
+            institutionId: null,
         };
     },
     methods: {
         goBack (){
-            this.$router.push("./CapturistList");
+            const institutionId=this.institutionId;
+            this.$router.push({ path: "./OrganizationDetails", query: {institutionId} });
         },
         async handleSubmit() {
             this.errors = {
@@ -89,10 +91,8 @@ export default {
             if (!valid) {
                 return;
             }
-
             try {
-                const data = await registerCapturist(this.form);
-                console.log(data);
+                const data = await registerAdminInOrganization(this.form);
                 if (data === "Ocurrio un error en la peticion") {
                     this.errorMessage = "Ocurrio un error en la peticion.";
                     alert("fallo en el registro :(")
@@ -100,17 +100,34 @@ export default {
                     this.form = {
                         name: '',
                         email: '',
-                        fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                        fkInstitution: this.institutionId
                     }  
                     alert("Registro exitosooooooo =D")
-                    this.$router.push("./CapturistList");
+                    this.goBack(this.institutionId);
                 }
             } catch (error) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
                 alert("fallo en el registro :(")
             }
         },
+        
     },
+    mounted() {
+        const instId = this.$route.query.institutionId;
+        this.institutionId=instId;
+        this.form.fkInstitution=instId;
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        //AQUI SE DEBE DE COMPARAR EL INSTITUTION ID DEL LOCAL STORAGE CON EL QUE SE MANDA POR URL
+        if(this.institutionId!==instId){
+            this.goBack();
+        }
+    }
 };
 </script>
 
@@ -237,7 +254,6 @@ body {
     justify-content: center;
     gap: 20px;
     margin-top: 20px;
-    gap: 60px;
 }
 
 .submit-btn,
@@ -248,7 +264,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 200px;
+    width: 220px;
 }
 
 .submit-btn {
