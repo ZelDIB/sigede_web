@@ -65,7 +65,7 @@
 
 <script>
 import { getAllAdmins } from "~/services/ServicesSuperAdmin";
-import Navbar from "../components/Navbar.vue";
+import Navbar from "../../../components/superadmins/Navbar.vue";
 
 export default {
     components: {
