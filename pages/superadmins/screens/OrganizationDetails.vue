@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn-actualizar">
+                            <button class="btn-actualizar" @click="goToUpdateInstitution()">
                                 <i class="fas fa-edit icon"></i>
                                 Actualizar
                             </button>
@@ -82,7 +82,7 @@
                                         <td>{{ item.name }}</td>
                                         <td>
                                             <div class="status-container">
-                                                <div class="edit-icon">
+                                                <div class="edit-icon" @click="gotoUpdateAdmin(item.userAccountId)">
                                                     <i class="fas fa-edit icon"></i>
                                                 </div>
                                                 <span :class="`status-${item.status.toLowerCase()}`">
@@ -133,9 +133,13 @@ export default {
         },
     },
     methods: {
-        goToRegisterAdmin(){
-            var institutionId=this.institutionId;
-            this.$router.push({ path: "./RegisterAdmin", query: { institutionId} });
+        goToRegisterAdmin() {
+            var institutionId = this.institutionId;
+            this.$router.push({ path: "./RegisterAdmin", query: { institutionId } });
+        },
+        gotoUpdateAdmin(userAccountId) {
+            var institutionId = this.institutionId;
+            this.$router.push({ path: "./UpdateAdmin", query: { userAccountId, institutionId } });
         },
         sortByName() {
             //ordena alfabeticamente
@@ -157,11 +161,16 @@ export default {
         },
         goBack() {
             this.$router.push({ name: "OrganizationsList" });
-        }
+        },
+        goToUpdateInstitution() {
+            var institutionId = this.institutionId;
+            this.$router.push({ path: "./UpdateInstitution", query: { institutionId } });
+        },
     },
+    
     async mounted() {
         const instId = this.$route.query.institutionId;
-        this.institutionId=instId;
+        this.institutionId = instId;
         if (instId) {
             try {
                 const data = await getAdminsByInstitutionId(instId);
@@ -323,6 +332,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 .edit-icon .icon {
@@ -426,6 +436,7 @@ body {
     text-overflow: ellipsis;
     white-space: normal;
     color: rgba(0, 0, 0, 0.685);
+    text-align: justify;
 }
 
 .p-info strong {

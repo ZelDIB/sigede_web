@@ -54,3 +54,14 @@ export const  registerAdminInOrganization= async (data)=>{
         return ("Ocurrio un error en la peticion");
     }   
 }
+
+export const  updateInstitution= async (data)=>{
+    try {
+        const response = await axios.put(`${BASEURL}api/institutions/update`,data);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }   
+}
+
