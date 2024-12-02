@@ -3,21 +3,63 @@ import { useAuthStore } from "~/store/authStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const axiosInstance = axios.create({
-    baseURL: process.env.API_BASE_URL || "http://localhost:8080",
+    baseURL: process.env.API_BASE_URL || "http://localhost:8080/",
   });
 
-  axiosInstance.interceptors.request.use((config) => {
-    const autStore = useAuthStore();
-    const token = autStore.token;
+  const { $toast } = useNuxtApp();
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      const autStore = useAuthStore();
+      const token = autStore.token;
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
     }
-    
-    return config;
-  }, (error) => {
-    return Promise.reject(error);
-  });
+  );
+
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      const status = error.response?.status;
+
+      switch (status) {
+        case 400:
+          $toast.error(
+            "Solicitud inválida. Por favor, revisa los datos enviados."
+          );
+          break;
+        case 401:
+          $toast.warning("No autorizado. Redirigiendo al inicio de sesión...");
+          nuxtApp.$router.push("/");
+          break;
+        case 403:
+          $toast.error("No tienes permiso para realizar esta acción.");
+          break;
+        case 404:
+          $toast.info("El recurso solicitado no fue encontrado.");
+          break;
+        case 500:
+          $toast.error(
+            "Error interno del servidor. Intenta de nuevo más tarde."
+          );
+          break;
+        default:
+          $toast.error("Ocurrió un error inesperado.");
+          break;
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
   return {
     provide: {

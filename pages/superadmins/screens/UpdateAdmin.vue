@@ -123,7 +123,7 @@
   
   <script>
   import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
-  import Navbar from "../components/Navbar.vue";
+  import Navbar from "~/components/superadmins/Navbar.vue";
   import { getOneAdmin,updateAdmin } from "~/services/ServicesCapturist";
   export default {
     components: {

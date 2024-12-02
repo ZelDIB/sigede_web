@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue";
+import Navbar from "~/components/superadmins/Navbar.vue";
 import { registerOrgatization } from "~/services/ServicesSuperAdmin";
 export default {
     components: {
