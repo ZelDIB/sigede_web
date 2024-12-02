@@ -43,7 +43,13 @@ export const updateCapturist=async(data)=>{
 }
 
 
-
-
-
-
+export const registerClientForm=async(data,institutionId)=>{
+    try {
+        console.log(data);
+        const response = await axios.post(`${BASEURL}api/user-info/create-forms?institutionId=${institutionId}`,data);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }
+}
