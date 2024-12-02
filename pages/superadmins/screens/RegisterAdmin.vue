@@ -73,7 +73,7 @@ import CustomAlert from "~/components/CustomAlert.vue";
 import { registerAdmin } from "~/services/ServicesSuperAdmin";
 import { reactive, ref } from "vue";
 
-const { $axios } = useNuxtApp();
+const { $toast, $router } = useNuxtApp();
 
 const form = reactive({
   name: "",
@@ -128,6 +128,11 @@ const handleRegisterAdmin = () => {
   };
   const response = registerAdmin(data);
   console.log(response);
+
+  if (response.status == 200) {
+    $toast.success("Administrador registrado correctamente");
+    $router.push("/OrganizationDetail.vue");
+  }
 };
 
 const handleConfirm = () => {
