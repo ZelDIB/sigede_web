@@ -3,7 +3,7 @@
         <Navbar />
         <div>
             <div class="content">
-                <p class="title">DATOS DE LA EMPRESA</p>
+                <p class="title">ACTUALIZAR EMPRESA</p>
                 <div class="container-form">
                     <form @submit.prevent="handleSubmit">
                         <div class="form-row">
@@ -47,6 +47,33 @@
                                         errors.address
                                     }}</small>
                                 </div>
+
+                                
+                                <div class="form-group">
+                                    <div class="radio-group">
+                                    <label class="radio-container">
+                                        <div class="rb-text" style="background-color: #93d7b0">
+                                        Habilitado
+                                        </div>
+                                        <input
+                                        type="radio"
+                                        value="HABILITADO"
+                                        v-model="form.status"
+                                        />
+                                    </label>
+                                    <label class="radio-container">
+                                        <div class="rb-text" style="background-color: #d79393">
+                                        Inhabilitado
+                                        </div>
+                                        <input
+                                        type="radio"
+                                        value="INHABILITADO"
+                                        v-model="form.status"
+                                        />
+                                    </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="image-column">
@@ -66,7 +93,12 @@
                                     <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
 
                                     <div v-if="imagePreview" class="image-preview">
+                                        Nueva imagen
                                         <img :src="imagePreview" alt="Preview" class="register-image" />
+                                    </div>
+                                    <div v-if="!imagePreview" class="image-preview">
+                                        Imagen actual
+                                        <img :src="oldImage" alt="Preview" class="register-image" />
                                     </div>
                                 </div>
                             </div>
@@ -87,20 +119,15 @@
 
 <script>
 import Navbar from "../components/Navbar.vue";
-import { registerOrgatization } from "~/services/ServicesSuperAdmin";
+import { getInstitutionInfoByinstitutionId,updateInstitution } from "~/services/ServicesSuperAdmin";
 export default {
     components: {
         Navbar,
     },
     data() {
         return {
-            form: {
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
-                image: null,
-            },
+            form: {},
+            oldImage:null,
             imagePreview: null,
             errors: {
                 name: "",
@@ -113,7 +140,7 @@ export default {
     },
     methods: {
         goBack (){
-            this.$router.push("./OrganizationsList");
+            this.$router.back();
         },
         handleImageUpload(event) {
             const file = event.target.files[0];
@@ -170,9 +197,8 @@ export default {
                 valid = false;
             }
 
-            if (!this.form.image) {
-                this.errors.image = "Es obligatorio subir una imagen";
-                valid = false;
+            if (this.form.image) {
+               console.log("Aqui es donde se debe de subir la imagen si se selecciono alguna")
             }
 
             if (!valid) {
@@ -180,14 +206,19 @@ export default {
             }
             
               try {
-                const sendData = {
+                var sendData = {
+                    "institutionId":this.form.institutionId,
                     "institutionName": this.form.name,
                     "institutionAddress": this.form.address,
                     "institutionEmail": this.form.email,
                     "institutionPhone": this.form.phone,
-                    "logo": "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png"//Aqui se debe de sustituir la URL que de devielve cloudinary
+                    "institutionStatus":this.form.status,
                 };
-                const response = await registerOrgatization(sendData);
+                sendData.logo = this.form.image 
+                ? "https://i.blogs.es/4dca3c/amd-fsr/450_1000.jpeg" // Esto se sustituye por la imagen que se sube en cloudinary
+                : this.oldImage; 
+
+                const response = await updateInstitution(sendData);
 
                 if (response === "Ocurrio un error en la peticion") {
                     this.errorMessage = "Ocurrio un error en la peticion.";
@@ -213,7 +244,43 @@ export default {
             console.log("Formulario enviado:", this.form);
             alert("Formulario enviado correctamente");
         },
+
     },
+    async mounted(){
+            const instId = this.$route.query.institutionId;
+            console.log(instId)
+
+            if (instId) {
+            try {
+                const response = await getInstitutionInfoByinstitutionId(instId);
+                console.log(response)
+
+                if (typeof response === "string") {
+                    this.errorMessage = "Error al cargar la info de la institucion.";
+                } else if(response.data){
+                    this.institutionData = response.data;
+                        this.form= {
+                        institutionId: response.data.institutionId,
+                        name: response.data.name,
+                        email: response.data.email_contact,
+                        phone: response.data.phoneContact,
+                        address: response.data.address,
+                        image: null,
+                        status:response.data.institutionStatus
+                    };
+                    this.oldImage=response.data.logo;
+                }else{
+                    this.goBack();
+                }
+            } catch (error) {
+                this.errorMessage = "Error al cargar los administradores.";
+            } finally {
+                this.isLoading = false;
+            }
+        } else {
+            this.goBack();
+        }
+        }
 };
 </script>
 
@@ -402,6 +469,56 @@ body {
     cursor: pointer;
     width: 200px;
 }
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 768px) {
+  .radio-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .radio-container {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: black;
+  width: 150px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.radio-container input {
+  margin-bottom: 5px;
+}
+.rb-text {
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: black;
+  width: 100%;
+  text-align: center;
+  height: 35px;
+  margin-bottom: 5px;
+}
+
 
 .submit-btn {
     background-color: black;
