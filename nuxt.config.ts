@@ -2,7 +2,11 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   css: ["bulma/css/bulma.css"],
-  plugins: ["~/plugins/axios.js"],
+  plugins: [
+    "~/plugins/toastification.js",
+    "~/plugins/pinia.js",
+    "~/plugins/axios.js",
+  ],
   modules: ["@nuxtjs/cloudinary", "@nuxt/image"],
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
@@ -20,7 +24,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@unpic/vue", "@cludinary-util/url-loader"],
+      include: ["@unpic/vue", "@cloudinary-util/url-loader"],
     },
   },
 });
