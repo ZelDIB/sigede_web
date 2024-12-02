@@ -30,7 +30,7 @@
 
                         <div class="button-group">
                             <button type="submit" class="submit-btn">Registrar capturista</button>
-                            <button type="button" class="cancel-btn">Cancelar</button>
+                            <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -47,7 +47,6 @@ export default {
     components: {
         Navbar,
     },
-    name: 'RegisterCapturist',
     data() {
         return {
             form: {
@@ -62,6 +61,9 @@ export default {
         };
     },
     methods: {
+        goBack (){
+            this.$router.push("./CapturistList");
+        },
         async handleSubmit() {
             this.errors = {
                 name: '',
@@ -102,7 +104,6 @@ export default {
                     }  
                     alert("Registro exitosooooooo =D")
                     this.$router.push("./CapturistList");
-              
                 }
             } catch (error) {
                 this.errorMessage = "Ocurrio un error en la peticion.";

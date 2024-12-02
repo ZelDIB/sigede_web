@@ -119,7 +119,7 @@ export default {
     },
     async mounted() {
         try {
-            var institutionId = 1;//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
+            var institutionId =parseInt(localStorage.getItem("institutionId"));//aqui se debe de extrael el ide de la institucion que se devuelve cuando el usuario se loguea
             const data = await getAllCapturitsByInstitutionId(institutionId);
             console.log(data);
             if (typeof data === "string") {

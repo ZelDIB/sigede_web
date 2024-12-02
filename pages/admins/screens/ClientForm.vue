@@ -162,7 +162,6 @@ body {
     padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
-    max-height: 90vh;
     overflow-x: hidden;
 }
 

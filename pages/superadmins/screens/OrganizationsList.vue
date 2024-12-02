@@ -7,7 +7,7 @@
         <p class="title">ORGANIZACIONES</p>
         <div class="content-table">
           <div class="search-section">
-            <div class="search-icon" style="border-radius: 10px 0 0 0">
+            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterOrganization()">
               <i class="fas fa-user-plus icon"></i>
             </div>
             <div class="search-container">
@@ -31,8 +31,10 @@
               <i class="fas fa-times-circle"></i> Sin resultados
             </div>
             <div class="grid-container">
-              <div v-for="(institution, index) in filteredInstitutions" :key="index" class="card">
-                <p>{{ institution.name }}</p>
+              <div v-for="(institution, index) in filteredInstitutions" :key="index" class="card"
+                @click="goInstitution(institution.institutionId)">
+                <p>
+                  {{ institution.name }}</p>
                 <img :src="institution.logo" alt="Logo de la institución" class="card-image" />
               </div>
             </div>
@@ -70,6 +72,9 @@ export default {
     },
   },
   methods: {
+    goToRegisterOrganization() {
+      this.$router.push("./RegisterClient");
+    },
     sortByName() {//ordena alfabeticamente
       this.isAscending = !this.isAscending;
       this.institutions.sort((a, b) => {
@@ -86,14 +91,18 @@ export default {
     invertListOrder() {//invierte el orden de la lista
       this.institutions.reverse();
     },
+    goInstitution(institutionId) {
+      this.$router.push({ path: "./OrganizationDetails", query: { institutionId} });
+    },
   },
+
   async mounted() {
     try {
-      const data = await getAllInstitutions();
-      if (typeof data === "string") {
+      const response = await getAllInstitutions();
+      if (typeof response === "string") {
         this.errorMessage = "Error al cargar las instituciones.";
       } else {
-        this.institutions = data;
+        this.institutions = response.data;
       }
     } catch (error) {
       this.errorMessage = "Error al cargar las instituciones.";
@@ -220,12 +229,14 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 290px;
   text-align: center;
+  cursor: pointer;
 }
 
 .card-image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  max-height: 75%;
 }
 
 .card p {
