@@ -208,7 +208,8 @@ const validateForm = () => {
   }
 
   if (
-    !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+    form.password &&
+    !/^(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?&])[A-Za-z\d.@$!%*?&]{8,}$/.test(
       form.password
     )
   ) {
@@ -260,6 +261,8 @@ const handleUpdateProfile = async () => {
 const handleConfirm = () => {
   handleUpdateProfile();
   states.isEditing = false;
+  states.isEdited = true;
+  states.showInput = false
   showCustomAlert.value = false;
 };
 
@@ -270,6 +273,8 @@ const handleCancelAlert = () => {
 const handleCancel = () => {
   Object.assign(form, { ...originalForm });
   states.isEditing = false;
+  states.isEdited = true;
+  states.showInput = false;
 };
 
 const handleGetProfileInformation = async () => {

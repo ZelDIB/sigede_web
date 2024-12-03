@@ -130,7 +130,7 @@ const handleRegisterAdmin = async () => {
 
   if (response.status == 200) {
     $toast.success("Administrador registrado correctamente");
-    $router.push("/OrganizationDetail.vue");
+    $router.push("/superadmins/OrganizationDetails.vue");
   }
 };
 

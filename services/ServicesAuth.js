@@ -64,7 +64,7 @@ export const getProfileInformation = async () => {
   const userId = authStore.userId;
   try {
     const response = await $axios.post("api/users/get-account", {
-      userId: 8,
+      userId: userId,
     });
     return response;
   } catch (error) {
@@ -80,13 +80,13 @@ export const updateProfileInformation = async (data) => {
   try {
     if (data.password) {
       payload = {
-        userId: 8,
+        userId: userId,
         name: data.name,
         password: data.password,
       };
     } else {
       payload = {
-        userId: 8,
+        userId: userId,
         name: data.name,
       };
     }
