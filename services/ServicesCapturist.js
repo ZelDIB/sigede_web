@@ -34,4 +34,14 @@ export const getFormByInstitutionId=async (institutionId)=>{
     }
 }
 
+export const registerCredential=async(data)=>{
+    try {
+        const response = await axios.put(`${BASEURL}api/credentials/new-credential`,data);
+        console.log(response)
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }
+}
 

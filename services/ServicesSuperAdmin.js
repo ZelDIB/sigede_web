@@ -83,3 +83,5 @@ export const updateAdmin=async(data)=>{
         return ("Ocurrio un error en la peticion");
     }
 }
+
+

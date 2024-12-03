@@ -48,7 +48,7 @@
                                             class="custom-file-input"
                                         />
                                     </div>
-                                    <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
+                                    <small v-if="errors.image" class="error-message" style="text-align: center;">{{ errors.image }}</small>
 
                                     <div v-if="imagePreview" class="image-preview">
                                         <img :src="imagePreview" alt="Preview" class="register-image" />
@@ -74,7 +74,7 @@
 
 <script>
 import Navbar from "~/pages/admins/components/Navbar.vue";
-import { getFormByInstitutionId } from "~/services/ServicesCapturist";
+import { getFormByInstitutionId,registerCredential } from "~/services/ServicesCapturist";
 export default {
     components: {
         Navbar,
@@ -139,52 +139,53 @@ export default {
             }
 
             this.form.fields.forEach((field) => {
+                field.error = null; 
+
                 if (field.required && !field.value) {
                     field.error = `El campo ${field.tag} es obligatorio`;
                     valid = false;
                     return;
                 }
 
-                field.error = null; 
 
-                switch (field.type.toLowerCase()) {
-                    case "texto":
+                switch (field.type) {
+                    case "text":
                         if (!/^[A-Za-záéíóúñÁÉÍÓÚÑ\s.,]+$/.test(field.value)) {
                             field.error = `El campo ${field.tag} debe contener solo letras y espacios`;
                             valid = false;
                         }
                         break;
-                    case "alfanumérico":
+                    case "alfanumerico":
                         if (!/^[A-Za-z0-9áéíóúñÁÉÍÓÚÑ\s.,]+$/.test(field.value)) {
                             field.error = `El campo ${field.tag} debe ser alfanumérico`;
                             valid = false;
                         }
                         break;
-                    case "url/enlace":
+                    case "url":
                         if (!/^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(field.value)) {
                             field.error = `El campo ${field.tag} debe ser una URL válida`;
                             valid = false;
                         }
                         break;
-                    case "teléfono":
+                    case "tel":
                         if (!/^\d{10}$/.test(field.value)) {
                             field.error = `El campo ${field.tag} debe contener un número de teléfono válido de 10 dígitos`;
                             valid = false;
                         }
                         break;
-                    case "número":
+                    case "number":
                         if (isNaN(field.value)) {
                             field.error = `El campo ${field.tag} debe ser un número válido`;
                             valid = false;
                         }
                         break;
-                    case "fecha":
+                    case "date":
                         if (!/^\d{4}-\d{2}-\d{2}$/.test(field.value) || isNaN(Date.parse(field.value))) {
                             field.error = `El campo ${field.tag} debe ser una fecha válida en formato AAAA-MM-DD`;
                             valid = false;
                         }
                         break;
-                    case "correo":
+                    case "email":
                         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
                             field.error = `El campo ${field.tag} debe ser un correo electrónico válido`;
                             valid = false;
@@ -196,10 +197,13 @@ export default {
                 }
             });
 
+
             if (!valid) {
                 return;
             }
             try {
+                //const respose=await registerCredential(this.form);
+                //console.log(data);
 
             } catch (e) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
@@ -213,17 +217,21 @@ export default {
     async mounted() {
         try {
             var instId = parseInt(localStorage.getItem("institutionId"));
+            console.log(instId)
             this.form.institutionId = instId;
             const data = await getFormByInstitutionId(instId);
-            console.log(data.institution);
+            console.log(data);
             if (typeof data === "string") {
                 this.errorMessage = "Error al cargar los capturistas.";
 
             } else {
                 this.capturist = data;
             }
+
             var fieldsData = data.fields;
             var userInfo = data.userInfo;
+
+
             var inputs = [];
             for (let i = 0; i < fieldsData.length; i++) {
                 var objeto = {
@@ -235,7 +243,9 @@ export default {
                 }
                 inputs.push(objeto)
             }
-            this.form.fields = instId;
+            console.log(this.form.fields);
+            this.form.fields = inputs;
+            console.log(this.form.fields);
 
         } catch (error) {
             this.errorMessage = "Error al cargar los capturistas.";
@@ -414,6 +424,7 @@ body {
     color: red;
     font-size: 12px;
     display: block;
+    text-align: left;
 }
 
 .button-group {
