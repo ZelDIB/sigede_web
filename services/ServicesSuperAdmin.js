@@ -79,7 +79,7 @@ export const registerAdmin = async (data) => {
       email: data.email,
       fkInstitution: fkInstitution,
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error);
   }

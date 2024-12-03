@@ -26,7 +26,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   axiosInstance.interceptors.response.use(
     (response) => {
-      return response;
+      return response.data;
     },
     (error) => {
       const status = error.response?.status;

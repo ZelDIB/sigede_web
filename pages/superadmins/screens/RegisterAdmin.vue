@@ -121,17 +121,16 @@ const showAlert = () => {
   }
 };
 
-const handleRegisterAdmin = () => {
+const handleRegisterAdmin = async () => {
   const data = {
     name: form.name,
     email: form.email,
   };
-  const response = registerAdmin(data);
-  console.log(response);
+  const response = await registerAdmin(data);
 
   if (response.status == 200) {
     $toast.success("Administrador registrado correctamente");
-    $router.push("/OrganizationDetail.vue");
+    $router.push("/superadmins/OrganizationDetails.vue");
   }
 };
 
