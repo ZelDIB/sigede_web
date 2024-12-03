@@ -24,20 +24,11 @@ export const getAllCredentialByInstitutionIdAndName = async (data, page) => {
 }
 
 
-export const getOneAdmin=async(userAccountId,institutionId)=>{
+export const getFormByInstitutionId=async (institutionId)=>{
     try {
-        const response = await axios.get(`${BASEURL}api/admin/get-admin/${userAccountId}/${institutionId}`);
+        const response = await axios.get(`${BASEURL}api/user-info/get-institution-form/${institutionId}`);
         return response.data;
-    }catch(e){
-        console.error(e);
-        return ("Ocurrio un error en la peticion");
-    }
-}
-export const updateAdmin=async(data)=>{
-    try {
-        const response = await axios.put(`${BASEURL}api/admin/update-basic-data`,data);
-        return response.data;
-    }catch(e){
+    } catch (e) {
         console.error(e);
         return ("Ocurrio un error en la peticion");
     }

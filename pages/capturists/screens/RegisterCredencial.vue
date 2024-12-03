@@ -3,54 +3,39 @@
         <Navbar />
         <div>
             <div class="content">
-                <p class="title">DATOS DE LA EMPRESA</p>
+                <p class="title">REGISTRAR IDENTIFICIÓN</p>
                 <div class="container-form">
                     <form @submit.prevent="handleSubmit">
                         <div class="form-row">
                             <!-- Columna del formulario -->
                             <div class="form-column">
-                                <div class="form-group">
-                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre de la
-                                        institución*</label>
-                                    <input type="text" id="name" v-model="form.name"
-                                        :class="['form-control', { error: errors.name }]" />
-                                    <small v-if="errors.name" class="error-message">{{
-                                        errors.name
-                                    }}</small>
-                                </div>
 
                                 <div class="form-group">
-                                    <label for="phone" :class="{ 'error-label': errors.phone }">Teléfono de
-                                        contacto*</label>
-                                    <input type="text" id="phone" v-model="form.phone"
-                                        :class="['form-control', { error: errors.phone }]" />
-                                    <small v-if="errors.phone" class="error-message">{{
-                                        errors.phone
-                                    }}</small>
+                                    <label for="fullname" :class="{ 'error-label': errors.fullname }">Nombre
+                                        completo*</label>
+                                    <input type="text" id="fullname" v-model="form.fullname"
+                                        :class="['form-control', { error: errors.fullname }]" />
+                                    <small v-if="errors.fullname" class="error-message">{{
+                                        errors.fullname
+                                        }}</small>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="email" :class="{ 'error-label': errors.email }">Correo de
-                                        contacto*</label>
-                                    <input id="email" v-model="form.email"
-                                        :class="['form-control', { error: errors.email }]" />
-                                    <small v-if="errors.email" class="error-message">{{
-                                        errors.email
-                                    }}</small>
+                                <!-- Aqui van los campos dela array de fields-->
+                                <div v-for="(field, index) in form.fields" :key="index" class="form-group">
+                                    <label :for="'field-' + index"  :class="{ 'error-label': field.error }">
+                                        {{ field.tag }}<span v-if="field.required">*</span>
+                                    </label>
+                                    <input :type="field.type.toLowerCase()" :id="'field-' + index" v-model="field.value"
+                                        :required="field.required" :class="['form-control', { error: field.error }]" />
+                                    <small v-if="field.error" class="error-message">{{ field.error }}</small>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
-                                    <input type="address" id="address" v-model="form.address"
-                                        :class="['form-control', { error: errors.address }]" />
-                                    <small v-if="errors.address" class="error-message">{{
-                                        errors.address
-                                    }}</small>
-                                </div>
                             </div>
+                            <!-- Columna de la imagen -->
 
                             <div class="image-column">
-                                <div class="form-group dotted-border">
+                                <div class="dotted-border">
+                                    <div class="form-group">
                                     <label for="imageUpload">Subir imagen*</label>
                                     <div class="custom-file-input-container ">
                                         <button type="button" class="custom-file-button">Seleccionar archivo</button>
@@ -68,7 +53,9 @@
                                     <div v-if="imagePreview" class="image-preview">
                                         <img :src="imagePreview" alt="Preview" class="register-image" />
                                     </div>
+                                </div> 
                                 </div>
+                               
                             </div>
                         </div>
 
@@ -76,7 +63,7 @@
                             <button type="submit" class="submit-btn">
                                 Registrar institución
                             </button>
-                            <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
+                            <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -86,8 +73,8 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue";
-import { registerOrgatization } from "~/services/ServicesSuperAdmin";
+import Navbar from "~/pages/admins/components/Navbar.vue";
+import { getFormByInstitutionId } from "~/services/ServicesCapturist";
 export default {
     components: {
         Navbar,
@@ -95,25 +82,22 @@ export default {
     data() {
         return {
             form: {
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
+                userAccountId: null,
+                institutionId: null,
+                fullname: null,
                 image: null,
+                fields: [],
             },
+
             imagePreview: null,
             errors: {
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
-                image: "",
+                fullname: "",
             },
         };
     },
     methods: {
-        goBack (){
-            this.$router.push("./OrganizationsList");
+        goBack() {
+            this.$router.push("./CredencialsList");
         },
         handleImageUpload(event) {
             const file = event.target.files[0];
@@ -137,73 +121,85 @@ export default {
             }
         },
         async handleSubmit() {
-            this.errors = {
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
-                image: "",
-            };
 
             let valid = true;
 
-            if (!this.form.name) {
-                this.errors.name = "El nombre es obligatorio";
+            if (!this.form.fullname) {
+                this.errors.fullname = "El nombre es obligatorio";
                 valid = false;
-            }
-            if (!this.form.phone) {
-                this.errors.phone = "El teléfono es obligatorio";
-                valid = false;
-            }
-
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            if (!this.form.email) {
-                this.errors.email = "El correo es obligatorio";
-                valid = false;
-            } else if (!emailRegex.test(this.form.email)) {
-                this.errors.email = "El correo electrónico no es válido";
-                valid = false;
-            }
-
-            if (!this.form.address) {
-                this.errors.address = "La dirección es obligatoria";
-                valid = false;
+            } else {
+                this.errors.fullname = "";
             }
 
             if (!this.form.image) {
                 this.errors.image = "Es obligatorio subir una imagen";
                 valid = false;
+            } else {
+                this.errors.image = "";
             }
+
+            this.form.fields.forEach((field) => {
+                if (field.required && !field.value) {
+                    field.error = `El campo ${field.tag} es obligatorio`;
+                    valid = false;
+                    return;
+                }
+
+                field.error = null; 
+
+                switch (field.type.toLowerCase()) {
+                    case "texto":
+                        if (!/^[A-Za-záéíóúñÁÉÍÓÚÑ\s.,]+$/.test(field.value)) {
+                            field.error = `El campo ${field.tag} debe contener solo letras y espacios`;
+                            valid = false;
+                        }
+                        break;
+                    case "alfanumérico":
+                        if (!/^[A-Za-z0-9áéíóúñÁÉÍÓÚÑ\s.,]+$/.test(field.value)) {
+                            field.error = `El campo ${field.tag} debe ser alfanumérico`;
+                            valid = false;
+                        }
+                        break;
+                    case "url/enlace":
+                        if (!/^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(field.value)) {
+                            field.error = `El campo ${field.tag} debe ser una URL válida`;
+                            valid = false;
+                        }
+                        break;
+                    case "teléfono":
+                        if (!/^\d{10}$/.test(field.value)) {
+                            field.error = `El campo ${field.tag} debe contener un número de teléfono válido de 10 dígitos`;
+                            valid = false;
+                        }
+                        break;
+                    case "número":
+                        if (isNaN(field.value)) {
+                            field.error = `El campo ${field.tag} debe ser un número válido`;
+                            valid = false;
+                        }
+                        break;
+                    case "fecha":
+                        if (!/^\d{4}-\d{2}-\d{2}$/.test(field.value) || isNaN(Date.parse(field.value))) {
+                            field.error = `El campo ${field.tag} debe ser una fecha válida en formato AAAA-MM-DD`;
+                            valid = false;
+                        }
+                        break;
+                    case "correo":
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+                            field.error = `El campo ${field.tag} debe ser un correo electrónico válido`;
+                            valid = false;
+                        }
+                        break;
+                    default:
+                        field.error = `El tipo ${field.type} no es soportado`;
+                        valid = false;
+                }
+            });
 
             if (!valid) {
                 return;
             }
-            
-              try {
-                const sendData = {
-                    "institutionName": this.form.name,
-                    "institutionAddress": this.form.address,
-                    "institutionEmail": this.form.email,
-                    "institutionPhone": this.form.phone,
-                    "logo": "https://www.marketingdirecto.com/wp-content/uploads/2019/08/logos.jpg"//Aqui se debe de sustituir la URL que de devielve cloudinary
-                };
-                const response = await registerOrgatization(sendData);
-
-                if (response === "Ocurrio un error en la peticion") {
-                    this.errorMessage = "Ocurrio un error en la peticion.";
-                    alert("fallo en el registro :(")
-                } else {
-                    this.form = {
-                        name: "",
-                        email: "",
-                        phone: "",
-                        address: "",
-                        image: null,
-                    }  
-                    alert("Registro exitosooooooo =D")
-                    this.goBack();
-
-                }
+            try {
 
             } catch (e) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
@@ -214,31 +210,64 @@ export default {
             alert("Formulario enviado correctamente");
         },
     },
+    async mounted() {
+        try {
+            var instId = parseInt(localStorage.getItem("institutionId"));
+            this.form.institutionId = instId;
+            const data = await getFormByInstitutionId(instId);
+            console.log(data.institution);
+            if (typeof data === "string") {
+                this.errorMessage = "Error al cargar los capturistas.";
+
+            } else {
+                this.capturist = data;
+            }
+            var fieldsData = data.fields;
+            var userInfo = data.userInfo;
+            var inputs = [];
+            for (let i = 0; i < fieldsData.length; i++) {
+                var objeto = {
+                    tag: userInfo[i].tag,
+                    value: null,
+                    required: fieldsData[i].required,
+                    type: userInfo[i].type,
+                    error: null
+                }
+                inputs.push(objeto)
+            }
+            this.form.fields = instId;
+
+        } catch (error) {
+            this.errorMessage = "Error al cargar los capturistas.";
+        } finally {
+            this.isLoading = false;
+        }
+    },
 };
 </script>
 
 <style scoped>
 html,
 body {
-  height: 100%;
-  margin: 0;
-  overflow-y: auto;
+    height: 100%;
+    margin: 0;
+    overflow-y: auto;
 }
 
 .full-screen {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #e4e4e4;
-  overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #e4e4e4;
+    overflow: hidden;
 }
 
 .content {
-  text-align: center;
-  justify-content: center;
-  padding: 10px;
-  overflow-y: auto;
-  max-height: calc(100vh - 60px);
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
 }
 
 .title {
@@ -259,7 +288,6 @@ body {
     background-color: white;
     padding: 3%;
     box-sizing: border-box;
-    overflow-y: hidden;
 }
 
 .form-row {
@@ -278,8 +306,19 @@ body {
 .image-column {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
+    margin-top: 30px;
+}
+
+
+
+.custom-file-input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .dotted-border {
@@ -288,14 +327,6 @@ body {
     width: 100%;
     text-align: center;
     border-radius: 8px;
-}
-
-.custom-file-input-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
 }
 
 .custom-file-input {
@@ -323,8 +354,6 @@ body {
     width: 90%;
 }
 
-
-
 .file-name {
     margin-top: 10px;
     font-size: 14px;
@@ -350,7 +379,8 @@ body {
     .image-column {
         flex: 1 1 40%;
         padding: 20px;
-
+        margin-top: 10px;
+        max-width: 80%;
     }
 }
 

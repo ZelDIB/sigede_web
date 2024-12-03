@@ -90,7 +90,8 @@
 <script>
 import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
 import Navbar from "../components/Navbar.vue";
-import { getOneAdmin, updateAdmin } from "~/services/ServicesCapturist";
+import { getOneAdmin, updateAdmin } from "~/services/ServicesSuperAdmin";
+
 export default {
   components: {
     Navbar,
@@ -234,12 +235,13 @@ body {
 
 .container-form {
   border-radius: 8px;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  background-color: white;
-  padding: 3%;
-  box-sizing: border-box;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 3%;
+    box-sizing: border-box;
+    overflow-y: hidden;
 }
 
 
@@ -258,8 +260,9 @@ body {
 
 .image-column {
   display: flex;
-  justify-content: center;
-  align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (min-width: 768px) {

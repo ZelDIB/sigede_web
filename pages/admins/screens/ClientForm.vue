@@ -21,10 +21,12 @@
                                     <label :for="'type' + index" class="label">Tipo de campo*</label>
                                     <select :id="'type' + index" class="select-input" v-model="field.type">
                                         <option value="text">Texto</option>
+                                        <option value="alfanumerico">Alfanumerico</option>
                                         <option value="url">URL/Enlace</option>
                                         <option value="tel">Teléfono</option>
                                         <option value="number">Número</option>
                                         <option value="date">Fecha</option>
+                                        <option value="email">Correo</option>
                                     </select>
                                 </div>
                                 <div class="form-column check check-required">

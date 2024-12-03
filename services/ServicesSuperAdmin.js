@@ -65,3 +65,21 @@ export const  updateInstitution= async (data)=>{
     }   
 }
 
+export const getOneAdmin=async(userAccountId,institutionId)=>{
+    try {
+        const response = await axios.get(`${BASEURL}api/admin/get-admin/${userAccountId}/${institutionId}`);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }
+}
+export const updateAdmin=async(data)=>{
+    try {
+        const response = await axios.put(`${BASEURL}api/admin/update-basic-data`,data);
+        return response.data;
+    }catch(e){
+        console.error(e);
+        return ("Ocurrio un error en la peticion");
+    }
+}
