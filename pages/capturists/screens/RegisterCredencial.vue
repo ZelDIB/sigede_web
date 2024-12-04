@@ -74,7 +74,7 @@
 
 <script>
 import Navbar from "~/pages/admins/components/Navbar.vue";
-import { getFormByInstitutionId,registerCredential } from "~/services/ServicesCapturist";
+import { getFormByInstitutionId,registerCredential,getCapturistIdByEmail } from "~/services/ServicesCapturist";
 export default {
     components: {
         Navbar,
@@ -202,25 +202,45 @@ export default {
                 return;
             }
             try {
-                //const respose=await registerCredential(this.form);
-                //console.log(data);
+                const newFields = this.form.fields.map(item => ({
+                    tag: item.tag,
+                    value: item.value
+                }));
 
+                var sendData={
+                    userAccountId: this.form.userAccountId,
+                    institutionId: this.form.institutionId,
+                    fullname: this.form.fullname,
+                    userPhoto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0VC3wERIDLNnNgZaygSoX5qglVwzL5NkWA&s",
+                    fields:newFields
+                }
+                /*
+                userAccountId: null,
+                institutionId: null,
+                fullname: null,
+                */
+                // this.form.image=null;
+                // this.form.userPhoto ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0VC3wERIDLNnNgZaygSoX5qglVwzL5NkWA&s" ;//Aqui va la foto del usuario
+                const respose=await registerCredential(sendData);
+                console.log("-----------------------------------",sendData);
+                alert("Formulario enviado correctamente");
             } catch (e) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
                 alert("fallo en el registro :(")
             }
 
-            console.log("Formulario enviado:", this.form);
-            alert("Formulario enviado correctamente");
+            
         },
     },
     async mounted() {
         try {
             var instId = parseInt(localStorage.getItem("institutionId"));
-            console.log(instId)
+            var userEmail=localStorage.getItem("email");
+            const userEmailData = await getCapturistIdByEmail(userEmail);
+            this.form.userAccountId=userEmailData.data;
+
             this.form.institutionId = instId;
             const data = await getFormByInstitutionId(instId);
-            console.log(data);
             if (typeof data === "string") {
                 this.errorMessage = "Error al cargar los capturistas.";
 
@@ -243,10 +263,7 @@ export default {
                 }
                 inputs.push(objeto)
             }
-            console.log(this.form.fields);
             this.form.fields = inputs;
-            console.log(this.form.fields);
-
         } catch (error) {
             this.errorMessage = "Error al cargar los capturistas.";
         } finally {
