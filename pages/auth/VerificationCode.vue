@@ -63,7 +63,6 @@
           />
         </div>
 
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <button class="login-button" @click="validateCode">
           Validar
         </button>
@@ -72,15 +71,14 @@
   </div>
 </template>
 
-  
 <script>
+import Swal from "sweetalert2";
 import ServiceAuth from "../../services/ServicesAuth.js";
 
 export default {
   data() {
     return {
       code: ["", "", "", "", "", ""],
-      errorMessage: "", 
     };
   },
   methods: {
@@ -92,30 +90,43 @@ export default {
     },
     async validateCode() {
       const userEmail = localStorage.getItem("email");
-
-      if (!userEmail) {
-        this.errorMessage = "No se pudo obtener el correo. Por favor, inicie sesión nuevamente.";
-        return;
-      }
-
-      const code = this.code.join("");
-      if (code.length < 6) {
-        this.errorMessage = "Por favor, ingrese el código de verificación completo.";
-        return;
-      }
-
       try {
+        if (!userEmail) {
+          Swal.fire({
+            icon: "warning",
+            title: "Correo no encontrado",
+            text: "No se pudo obtener el correo. Por favor, inicie sesión nuevamente.",
+          });
+          return;
+        }
+
+        const code = this.code.join("");
+        if (code.length < 6) {
+          Swal.fire({
+            icon: "warning",
+            title: "Código incompleto",
+            text: "Por favor, ingrese el código de verificación completo.",
+          });
+          return;
+        }
+
         const response = await ServiceAuth.validateVerificationCode(code, userEmail);
 
-        if (response.code === 200) {
-          this.$router.push("/auth/ResetPassword"); 
-          alert("Código validado correctamente.");
-          this.errorMessage = ""; 
-        } else {
-          this.errorMessage = response.message || "El código es incorrecto.";
-        }
+        console.log("Código verificado", response);
+        
+        Swal.fire({
+          icon: "success",
+          title: "Código verificado",
+          text: "El código de verificación ha sido validado exitosamente.",
+        });
+
+        this.$router.push("/auth/ResetPassword");
       } catch (error) {
-        this.errorMessage = "Hubo un problema al validar el código: " + error.message;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al validar el código: " + (error.response?.data?.message || error.message),
+        });
       }
     },
   },

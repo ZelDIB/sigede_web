@@ -19,10 +19,9 @@
           placeholder="Correo electrónico"
         />
 
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-
-        <button class="login-button" @click="handleRecoverPassword">
-          Enviar
+        <button class="login-button" @click="handleRecoverPassword" :disabled="isLoading">
+          <span v-if="isLoading">Enviando...</span>
+          <span v-else>Enviar</span>
         </button>
         <a href="/" class="forgot-password">Iniciar sesión</a>
       </div>
@@ -31,37 +30,57 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import { sendVerificationCode } from "../services/ServicesAuth.js";
 
 export default {
   data() {
     return {
       email: "",
-      errorMessage: "",
+      isLoading: false,
     };
   },
   methods: {
     async handleRecoverPassword() {
+      if (!this.email) {
+        Swal.fire({
+          icon: "warning",
+          title: "Campo vacío",
+          text: "Por favor, ingresa un correo electrónico válido.",
+        });
+        return;
+      }
+
+      this.isLoading = true;
+
       try {
-        if (!this.email) {
-          this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
-          return;
-        }
         const response = await sendVerificationCode({ userEmail: this.email });
 
         console.log("Código de verificación enviado:", response);
-        this.errorMessage = ""; 
-        this.$router.push("/auth/VerificationCode"); 
+
+        Swal.fire({
+          icon: "success",
+          title: "Correo enviado",
+          text: "Se ha enviado un código de verificación a tu correo electrónico.",
+        });
+
+        localStorage.setItem("email", this.email);
+
+        this.$router.push("/auth/VerificationCode");
       } catch (error) {
         console.error("Error al enviar el código de verificación:", error);
-        this.errorMessage = "Hubo un error al enviar el código. Intenta nuevamente.";
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al enviar el código. Intenta nuevamente.",
+        });
+      } finally {
+        this.isLoading = false;
       }
     },
   },
 };
 </script>
-
-
 <style scoped>
 .screen-split {
   display: flex;
