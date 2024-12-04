@@ -105,6 +105,7 @@ export default {
         name: null,
         email: null,
         status: "activo",
+
       },
       errors: {
         name: "",

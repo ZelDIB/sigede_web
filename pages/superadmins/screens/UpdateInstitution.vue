@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue";
+import Navbar from "~/components/superadmins/Navbar.vue";
 import { getInstitutionInfoByinstitutionId,updateInstitution } from "~/services/ServicesSuperAdmin";
 export default {
     components: {

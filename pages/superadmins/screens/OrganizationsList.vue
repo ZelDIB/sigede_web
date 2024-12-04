@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Navbar from "~/pages/admins/components/Navbar.vue";
+import Navbar from "~/components/superadmins/Navbar.vue";
 import { getAllInstitutions } from "~/services/ServicesSuperAdmin";
 
 export default {
