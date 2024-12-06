@@ -13,31 +13,18 @@
               <div class="form-row">
                 <div class="form-column">
                   <div class="form-group">
-                    <label for="name" :class="{ 'error-label': errors.name }"
-                      >Nombre*</label
-                    >
-                    <input
-                      type="text"
-                      id="name"
-                      v-model="form.name"
-                      :class="['form-control', { error: errors.name }]"
-                      placeholder="Nombre"
-                    />
+                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                    <input type="text" id="name" v-model="form.name" :class="['form-control', { error: errors.name }]"
+                      placeholder="Nombre" />
                     <small v-if="errors.name" class="error-message">{{
                       errors.name
                     }}</small>
                   </div>
 
                   <div class="form-group">
-                    <label for="email" :class="{ 'error-label': errors.email }"
-                      >Correo*</label
-                    >
-                    <input
-                      id="email"
-                      v-model="form.email"
-                      :class="['form-control', { error: errors.email }]"
-                      placeholder="Correo"
-                    />
+                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                    <input id="email" v-model="form.email" :class="['form-control', { error: errors.email }]"
+                      placeholder="Correo" />
                     <small v-if="errors.email" class="error-message">{{
                       errors.email
                     }}</small>
@@ -49,42 +36,26 @@
                         <div class="rb-text" style="background-color: #93d7b0">
                           Activo
                         </div>
-                        <input
-                          type="radio"
-                          value="activo"
-                          v-model="form.status"
-                        />
+                        <input type="radio" value="activo" v-model="form.status" />
                       </label>
                       <label class="radio-container">
                         <div class="rb-text" style="background-color: #ff8000">
                           Suspendido
                         </div>
-                        <input
-                          type="radio"
-                          value="suspendido"
-                          v-model="form.status"
-                        />
+                        <input type="radio" value="suspendido" v-model="form.status" />
                       </label>
                       <label class="radio-container">
                         <div class="rb-text" style="background-color: #d79393">
                           Inactivo
                         </div>
-                        <input
-                          type="radio"
-                          value="inactivo"
-                          v-model="form.status"
-                        />
+                        <input type="radio" value="inactivo" v-model="form.status" />
                       </label>
                     </div>
                   </div>
                 </div>
 
                 <div class="image-column">
-                  <img
-                    src="/customer_service.png"
-                    alt="Imagen de registro"
-                    class="register-image"
-                  />
+                  <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
                 </div>
               </div>
 
@@ -109,14 +80,9 @@
         confirm: el cual ejecuta la funcion que se conecta con el back 
         icon: el icono que se muestra en la pantalla, SOLO SE MANDA EL NOMBRE DEL ICONO ejemplo "triangle-exclamation"
          -->
-    <CustomConfirmationModal
-      :isVisible="showModal"
-      title="Advertencia"
-      message="¿Estas seguro de actualizar la informacion de este capturista?"
-      @close="closeModal"
-      @confirm="submitForm"
-      icon="triangle-exclamation"
-    />
+    <CustomConfirmationModal :isVisible="showModal" title="Advertencia"
+      message="¿Estas seguro de actualizar la informacion de este capturista?" @close="closeModal" @confirm="submitForm"
+      icon="triangle-exclamation" />
   </div>
 </template>
 
@@ -124,7 +90,7 @@
 <script>
 import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
 import Navbar from "../components/Navbar.vue";
-import { getOneCapturist,updateCapturist } from "~/services/ServiceAdmin";
+import { getOneCapturist, updateCapturist } from "~/services/ServiceAdmin";
 
 export default {
   components: {
@@ -135,7 +101,7 @@ export default {
   data() {
     return {
       form: {
-        userAccountId:null,
+        userAccountId: null,
         name: null,
         email: null,
         status: "activo",
@@ -154,13 +120,13 @@ export default {
       this.showModal = false;
     },
     async submitForm() {
-        try {
+      try {
         const response = await updateCapturist(this.form);
-    
+
         if (response.message !== "Ocurrio un error inesperado.") {
-            this.backToCapturistList();
-        } 
-        this.showModal= false;
+          this.backToCapturistList();
+        }
+        this.showModal = false;
       } catch (e) {
         this.backToCapturistList()
         console.log(e);
@@ -196,17 +162,17 @@ export default {
       this.showModal = true;
     },
     backToCapturistList() {
-        this.$router.push("./CapturistList");
+      this.$router.push("./CapturistList");
     },
   },
   async mounted() {
     const userAccountId = this.$route.query.userAccountId;
     if (userAccountId) {
       try {
-        var institutionId =parseInt(localStorage.getItem("institutionId"));
+        var institutionId = parseInt(localStorage.getItem("institutionId"));
         const response = await getOneCapturist(userAccountId, institutionId);
         if (response === "Ocurrio un error en la peticion") {
-            this.backToCapturistList();
+          this.backToCapturistList();
         } else {
           this.isLoading = false;
           this.form = response.data;
@@ -216,7 +182,7 @@ export default {
         console.log(e);
       }
     } else {
-        this.backToCapturistList()
+      this.backToCapturistList()
     }
   },
 };
@@ -235,15 +201,17 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #e4e4e4;
+  overflow: hidden;
 }
 
 .content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  justify-content: center;
   padding: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
 }
+
 
 .title {
   margin: 10px 0;
@@ -263,50 +231,48 @@ body {
   background-color: white;
   padding: 3%;
   box-sizing: border-box;
-  overflow-y: auto;
-  overflow-y: hidden;
 }
 
 
 .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .form-column,
 .image-column {
-    flex: 1 1 100%; 
-    padding: 20px;
+  flex: 1 1 100%;
+  padding: 20px;
 }
 
 .image-column {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
-    .form-column {
-        flex: 1 1 60%; 
-        order: 1; 
-    }
+  .form-column {
+    flex: 1 1 60%;
+    order: 1;
+  }
 
-    .image-column {
-        flex: 1 1 40%; 
-        order: 2; 
-    }
+  .image-column {
+    flex: 1 1 40%;
+    order: 2;
+  }
 }
 
 @media (max-width: 767px) {
-    .form-column {
-        order: 2; 
-    }
+  .form-column {
+    order: 2;
+  }
 
-    .image-column {
-        order: 1; 
-    }
+  .image-column {
+    order: 1;
+  }
 }
 
 .register-image {
@@ -427,6 +393,13 @@ label.error-label {
     max-width: 300px;
   }
 }
+
+@media(max-width: 424px) {
+  .title {
+    font-size: 30px;
+  }
+}
+
 .loading-spinner {
   display: flex;
   justify-content: center;

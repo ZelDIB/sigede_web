@@ -181,7 +181,7 @@ export default {
                     "institutionAddress": this.form.address,
                     "institutionEmail": this.form.email,
                     "institutionPhone": this.form.phone,
-                    "logo": "https://www.utez.edu.mx/wp-content/uploads/2024/08/LOGO_UTEZ-2016.png"//Aqui se debe de sustituir la URL que de devielve cloudinary
+                    "logo": "https://www.marketingdirecto.com/wp-content/uploads/2019/08/logos.jpg"//Aqui se debe de sustituir la URL que de devielve cloudinary
                 };
                 const response = await registerOrgatization(sendData);
 
@@ -267,24 +267,25 @@ export default {
 <style scoped>
 html,
 body {
-    height: 100%;
-    margin: 0;
-    overflow-y: auto;
+  height: 100%;
+  margin: 0;
+  overflow-y: auto;
 }
 
 .full-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #e4e4e4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #e4e4e4;
+  overflow: hidden;
 }
 
 .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
+  text-align: center;
+  justify-content: center;
+  padding: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
 }
 
 .title {
@@ -390,6 +391,7 @@ body {
     .form-column {
         flex: 1 1 60%;
         padding: 20px;
+        max-width: 80%;
     }
 
     .image-column {
@@ -461,6 +463,8 @@ body {
 label {
     font-weight: bold;
     color: black;
+    text-align: left;
+    display: block;
 }
 
 label.error-label {

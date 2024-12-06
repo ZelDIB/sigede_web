@@ -1,69 +1,73 @@
 <template>
-    <div class="full-screen">
+    <div>
         <Navbar />
-        <div class="content">
-            <p class="title">DISEÑO DE FORMULARIO</p>
-            <div class="container-form">
-                <form @submit.prevent="handleSubmit">
-                    <div class="add-container">
-                        <button type="button" class="is-add" @click="addField">Agregar Fila</button>
-                    </div>
-
-                    <div v-for="(field, index) in formFields" :key="index" class="columns is-multiline">
-                        <div class="column is-half">
-                            <label :for="'name' + index" class="label">Nombre*</label>
-                            <input type="text" :id="'name' + index" class="input" placeholder="Nombre"
-                                v-model="field.name" />
-                        </div>
-                        <div class="column is-one-quarter">
-                            <label :for="'field-type' + index" class="label">Tipo de campo*</label>
-                            <div class="select">
-                                <select :id="'field-type' + index" class="select-input" v-model="field.type">
-                                    <option value="text">Texto</option>
-                                    <option value="url">URL/Enlace</option>
-                                    <option value="tel">Teléfono</option>
-                                    <option value="number">Número</option>
-                                    <option value="date">Fecha</option>
-                                </select>
+        <div>
+            <div class="full-screen">
+                <div class="content">
+                    <p class="title">DISEÑO DE FORMULARIO</p>
+                    <div class="container-form">
+                        <form @submit.prevent="handleSubmit">
+                            <div class="add-container">
+                                <button type="button" class="is-add" @click="addField">Agregar Fila</button>
                             </div>
-                        </div>
-                        <div class="column is-one-quarter checkbox-container">
-                            <label class="checkbox">
-                                <input type="checkbox" :id="'is-required' + index" v-model="field.required" />
-                                Obligatorio
-                            </label>
-                        </div>
-                        <div class="column is-one-quarter checkbox-container">
-                            <label class="checkbox">
-                                <input type="checkbox" :id="'show-qr' + index" v-model="field.showQr" />
-                                Ver en QR
-                            </label>
-                        </div>
 
-                        <!-- Botón de Papelera en la misma fila -->
-                        <div class="column five">
-                            <button type="button" class="delete-btn" @click="removeField(index)">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </div>
+                            <div v-for="(field, index) in formFields" :key="index" class="form-row dotted-border">
+                                <div class="form-column">
+                                    <label :for="'tag' + index" class="label">Etiqueta*</label>
+                                    <input type="text" :id="'tag' + index" class="input" placeholder="Etiqueta"
+                                        v-model="field.tag" />
+                                </div>
+                                <div class="form-column">
+                                    <label :for="'type' + index" class="label">Tipo de campo*</label>
+                                    <select :id="'type' + index" class="select-input" v-model="field.type">
+                                        <option value="text">Texto</option>
+                                        <option value="alfanumerico">Alfanumerico</option>
+                                        <option value="url">URL/Enlace</option>
+                                        <option value="tel">Teléfono</option>
+                                        <option value="number">Número</option>
+                                        <option value="date">Fecha</option>
+                                        <option value="email">Correo</option>
+                                    </select>
+                                </div>
+                                <div class="form-column check check-required">
+                                    <label class="checkbox">
+                                        <input type="checkbox" :id="'isInQr' + index" v-model="field.isInQr" />
+                                        Ver en QR
+                                    </label>
+                                </div>
+                                <div class="form-column check">
+                                    <label class="checkbox">
+                                        <input type="checkbox" :id="'isInCard' + index" v-model="field.isInCard" />
+                                        En Credencial
+                                    </label>
+                                </div>
+                                <div class="form-column check">
+                                    <label class="checkbox">
+                                        <input type="checkbox" :id="'isRequired' + index" v-model="field.isRequired" />
+                                        Obligatorio
+                                    </label>
+                                </div>
+                                <div class="form-column delete-column check">
+                                    <button type="button" class="delete-btn" @click="removeField(index)">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="btns-container">
+                                <button type="submit" class="button is-save">Guardar</button>
+                                <button type="button" class="button is-cancel">Cancelar</button>
+                            </div>
+                        </form>
                     </div>
-
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <button type="submit" class="button is-save">Guardar</button>
-                            <button type="button" class="button is-cancel">Cancelar</button>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
-
 <script>
 import Navbar from '../components/Navbar.vue';
+import { registerClientForm } from '~/services/ServiceAdmin';
 
 export default {
     components: {
@@ -74,43 +78,72 @@ export default {
         return {
             formFields: [
                 {
-                    name: '',
+                    tag: '',
                     type: 'text',
-                    required: false,
-                    showQr: false,
+                    isRequired: false,
+                    isInQr: false,
+                    isInCard: false,
                 },
             ],
         };
     },
     methods: {
-        handleSubmit() {
+        goToCapturistList() {
+            this.$router.push({ name: './CapturistList' });
+        },
+        async handleSubmit() {
+            if (this.formFields.length < 1) {
+                alert("Debe de registrar al menos un dato.");
+                return;
+            }
+
+            // Validar que todos los campos tengan tag y tipo seleccionado
+            for (let field of this.formFields) {
+                if (!field.tag || !field.type) {
+                    alert("Por favor, complete todos los campos con una etiqueta y tipo.");
+                    return;
+                }
+            }
+
+            try {
+                var institutionId = parseInt(localStorage.getItem("institutionId"));
+                const response = await registerClientForm(this.formFields, institutionId);
+                console.log(response);
+                alert("Datos guardados");
+                this.goToCapturistList();
+
+            } catch (e) {
+                alert("Error al registrar.");
+                this.goToCapturistList();
+                console.error(e);
+            }
+            this.goToCapturistList();
             console.log("Campos guardados:", this.formFields);
             this.resetForm();
         },
 
         addField() {
-            console.log('Antes de agregar campo:', this.formFields);
             this.formFields.push({
-                name: '',
+                tag: '',
                 type: 'text',
-                required: false,
-                showQr: false,
+                isRequired: false,
+                isInQr: false,
+                isInCard: false,
             });
-            console.log('Después de agregar campo:', this.formFields);
         },
 
         removeField(index) {
             this.formFields.splice(index, 1);
-            console.log('Después de eliminar campo:', this.formFields);
         },
 
         resetForm() {
             this.formFields = [
                 {
-                    name: '',
+                    tag: '',
                     type: 'text',
-                    required: false,
-                    showQr: false,
+                    isRequired: false,
+                    isInQr: false,
+                    isInCard: false,
                 },
             ];
         },
@@ -124,23 +157,28 @@ export default {
 html,
 body {
     height: 100%;
-    margin: 0;
-    overflow-y: auto;
+    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .full-screen {
-    min-height: 100vh;
+    min-height: calc(100vh - 75px);
     display: flex;
     flex-direction: column;
     background-color: #e4e4e4;
+    overflow: hidden;
 }
 
 .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: calc(100vh - 75px);
+}
+
+.check {
+    margin-top: 40px;
 }
 
 .title {
@@ -161,8 +199,6 @@ body {
     background-color: white;
     padding: 10px;
     box-sizing: border-box;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 label {
@@ -183,7 +219,8 @@ label {
 
 .select-input {
     width: 100%;
-    padding: 10px;
+    height: 40px;
+    padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 16px;
@@ -234,7 +271,7 @@ input::placeholder {
     text-align: center;
     background-color: black;
     margin-top: 7px;
-    margin-bottom:10px ;
+    margin-bottom: 10px;
 }
 
 .is-save {
@@ -246,9 +283,18 @@ input::placeholder {
 }
 
 .form-row {
+    margin: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: space-between;
+}
+
+.btns-container {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    gap: 5%;
     flex-wrap: wrap;
 }
 
@@ -273,6 +319,13 @@ input::placeholder {
     background-color: #007bff;
 }
 
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+}
+
 .checkbox {
     font-size: 18px;
     display: flex;
@@ -281,14 +334,6 @@ input::placeholder {
     font-weight: bold;
     cursor: pointer;
     color: black;
-}
-
-.checkbox-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: auto;
-    padding-bottom: 20px;
 }
 
 .delete-btn {
@@ -313,34 +358,61 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    height: auto;
     padding-bottom: 20px;
 }
 
-/* is-flex is-align-items-center */
-@media (min-width: 1024px) {
-    .column.is-half {
-        flex: 1 1 48%;
+
+form-column {
+    flex: 1 1 calc(16.66% - 10px);
+    min-width: 150px;
+}
+
+.delete-column {
+    flex: 0 0 40px;
+    text-align: center;
+}
+
+
+.dotted-border {
+    border: 2px dashed #ccc;
+    padding: 5px;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+    .form-column {
+        flex: 1 1 calc(33.33% - 10px);
     }
 
-    .column.is-one-quarter {
-        flex: 1 1 15%;
+    .check {
+        margin-top: 5px;
     }
 
-    .column.five {
-        flex: 1 1 5%;
+    .check-required {
+        margin-top: 40px;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .form-column {
+        flex: 1 1 calc(50% - 10px);
+    }
+
+    .check {
+        margin-top: 5px;
     }
 }
 
-@media (min-width: 472px) {
-    .button {
-        margin: 0 15px;
+@media (max-width: 480px) {
+    .form-column {
+        flex: 1 1 100%;
     }
-}
 
-@media (max-width: 471px) {
-    .button {
-        width: 100%;
+    .check {
+        margin-top: 5px;
     }
 }
 </style>

@@ -93,11 +93,11 @@
                                     <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
 
                                     <div v-if="imagePreview" class="image-preview">
-                                        Nueva imagen
+                                        <p>Nueva imagen</p>
                                         <img :src="imagePreview" alt="Preview" class="register-image" />
                                     </div>
                                     <div v-if="!imagePreview" class="image-preview">
-                                        Imagen actual
+                                        <p>Imagen actual</p>
                                         <img :src="oldImage" alt="Preview" class="register-image" />
                                     </div>
                                 </div>
@@ -297,14 +297,15 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #e4e4e4;
+    overflow: hidden;
 }
 
 .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
+    justify-content: center;
     padding: 10px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
 }
 
 .title {
