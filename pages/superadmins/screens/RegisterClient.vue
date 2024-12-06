@@ -14,9 +14,7 @@
                                         institución*</label>
                                     <input type="text" id="name" v-model="form.name"
                                         :class="['form-control', { error: errors.name }]" />
-                                    <small v-if="errors.name" class="error-message">{{
-                                        errors.name
-                                    }}</small>
+                                    <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
                                 </div>
 
                                 <div class="form-group">
@@ -24,9 +22,7 @@
                                         contacto*</label>
                                     <input type="text" id="phone" v-model="form.phone"
                                         :class="['form-control', { error: errors.phone }]" />
-                                    <small v-if="errors.phone" class="error-message">{{
-                                        errors.phone
-                                    }}</small>
+                                    <small v-if="errors.phone" class="error-message">{{ errors.phone }}</small>
                                 </div>
 
                                 <div class="form-group">
@@ -34,18 +30,14 @@
                                         contacto*</label>
                                     <input id="email" v-model="form.email"
                                         :class="['form-control', { error: errors.email }]" />
-                                    <small v-if="errors.email" class="error-message">{{
-                                        errors.email
-                                    }}</small>
+                                    <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
                                     <input type="address" id="address" v-model="form.address"
                                         :class="['form-control', { error: errors.address }]" />
-                                    <small v-if="errors.address" class="error-message">{{
-                                        errors.address
-                                    }}</small>
+                                    <small v-if="errors.address" class="error-message">{{ errors.address }}</small>
                                 </div>
                             </div>
 
@@ -84,8 +76,12 @@
         </div>
     </div>
 </template>
-
 <script>
+import Swal from "sweetalert2";
+import Navbar from "../components/Navbar.vue";
+import { ServiceInstitutions } from "../../../services/ServiceInstitutions.js";
+import { ServiceCloudinary } from "../../../services/ServiceCloudinary.js";
+
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { registerOrgatization } from "~/services/ServicesSuperAdmin";
 export default {
@@ -109,6 +105,7 @@ export default {
                 address: "",
                 image: "",
             },
+            isLoading: false,
         };
     },
     methods: {
@@ -122,7 +119,6 @@ export default {
                     "image/png",
                     "image/jpeg",
                     "image/jpg",
-                    "image/gif",
                 ];
                 if (!validImageTypes.includes(file.type)) {
                     this.errors.image =
@@ -210,8 +206,59 @@ export default {
                 alert("fallo en el registro :(")
             }
 
-            console.log("Formulario enviado:", this.form);
-            alert("Formulario enviado correctamente");
+            this.isLoading = true;
+
+            try {
+                const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
+
+                const institutionData = {
+                    institutionName: this.form.name,
+                    institutionEmail: this.form.email,
+                    institutionPhone: this.form.phone,
+                    institutionAddress: this.form.address,
+                    logo: imageUrl,
+                };
+
+                const response = await ServiceInstitutions.registerInstitution(institutionData);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Éxito",
+                    text: "Institución registrada exitosamente",
+                    confirmButtonText: "Aceptar",
+                });
+
+                this.resetForm();
+            } catch (error) {
+                console.error("Error al registrar la institución:", error);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al registrar la institución",
+                    confirmButtonText: "Aceptar",
+                });
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        resetForm() {
+            this.form = {
+                name: "",
+                email: "",
+                phone: "",
+                address: "",
+                image: null,
+            };
+            this.imagePreview = null;
+            this.errors = {
+                name: "",
+                email: "",
+                phone: "",
+                address: "",
+                image: "",
+            };
         },
     },
 };
