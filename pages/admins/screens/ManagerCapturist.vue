@@ -203,7 +203,7 @@ export default {
     const userAccountId = this.$route.query.userAccountId;
     if (userAccountId) {
       try {
-        var institutionId = 1; //aqui va el ide que se obtine del inicio de sesion
+        var institutionId =parseInt(localStorage.getItem("institutionId"));
         const response = await getOneCapturist(userAccountId, institutionId);
         if (response === "Ocurrio un error en la peticion") {
             this.backToCapturistList();

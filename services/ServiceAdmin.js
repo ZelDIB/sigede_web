@@ -44,3 +44,6 @@ export const updateCapturist=async(data)=>{
 
 
 
+
+
+

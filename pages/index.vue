@@ -1,56 +1,114 @@
 <template>
-  <div class="screen-split">
-    <div class="left-half">
-      <div class="container">
-        <img src="../public/logoweb.png" alt="" width="220px">
-        <p class="title">SIGEDE</p>
-        <p class="sig">Sistema de gestión de credenciales</p>
+  <div>
+    <CredentialLoader v-if="isLoading" />
+    <div v-if="!isLoading">
+      <div class="screen-split">
+      <div class="left-half">
+        <div class="container">
+          <img src="/logoweb.png" alt="Logo" width="220px" />
+          <p class="title">SIGEDE</p>
+          <p class="sig">Sistema de gestión de credenciales</p>
+        </div>
+      </div>
+      
+      <div class="right-half">
+        <div class="container2">
+          <p class="title2">Iniciar sesión</p>
+          <label for="email">Correo electrónico *</label>
+          <input
+            v-model="email"
+            type="email"
+            id="email"
+            class="input-field"
+            placeholder="Correo electrónico"
+          />
+
+          <label for="password">Contraseña *</label>
+          <div class="password-container">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              class="input-field"
+              placeholder="Contraseña"
+            />
+            <span class="eye-icon" @click="togglePasswordVisibility">
+              <i
+                :class="showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'"
+                style="color: #030303"
+              ></i>
+            </span>
+          </div>
+
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+          <button class="login-button" @click="handleLogin">Iniciar sesión</button>
+          <a href="/auth/SendEmail" class="forgot-password">Olvidé la contraseña</a>
+        </div>
       </div>
     </div>
-    <div class="right-half">
-      <div class="container2">
-        <p class="title2">Iniciar sesión</p>
-        <label for="email">Correo electrónico *</label>
-        <input type="email" id="email" class="input-field" placeholder="Correo electrónico">
-        
-        <label for="password">Contraseña *</label>
-        <div class="password-container">
-          <input :type="showPassword ? 'text' : 'password'" id="password" class="input-field" placeholder="Contraseña">
-          <span class="eye-icon" @click="togglePasswordVisibility">
-            <i :class="showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'" style="color: #030303;"></i>
-          </span>
-        </div>
-
-        <button class="login-button">Iniciar sesión</button>
-        <a href="/auth/ResetPassword" class="forgot-password">Olvidé la contraseña</a>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import '@fortawesome/fontawesome-free/css/all.css';
+import "@fortawesome/fontawesome-free/css/all.css";
+import { loginMethod } from "../services/ServicesAuth.js";
+import CredentialLoader from "../pages/auth/loader.vue";
+import Swal from "sweetalert2";
 
 export default {
+  components: {
+    CredentialLoader,
+  },
   data() {
     return {
-      showPassword: false
+      showPassword: false,
+      email: "",
+      password: "",
+      errorMessage: "",
+      isLoading: false, 
     };
   },
   methods: {
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
-    }
-  }
+    },
+    async handleLogin() {
+      if (!this.email || !this.password) {
+        this.errorMessage = "Por favor, completa todos los campos.";
+        return;
+      }
+
+      this.isLoading = true; 
+      try {
+        const data = { email: this.email, password: this.password };
+        const response = await loginMethod(data);
+        this.errorMessage = "";
+
+        this.$router.push("/admins/screens/CapturistList");
+      } catch (error) {
+        this.errorMessage = "Correo o contraseña incorrectos.";
+        console.error("Error al iniciar sesión:", error);
+
+        Swal.fire({
+          title: 'Error',
+          text: 'Correo o contraseña incorrectos.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      } finally {
+        this.isLoading = false; 
+      }
+    },
+  },
 };
 </script>
-
 <style scoped>
 .screen-split {
   display: flex;
   height: 100vh;
 }
-
 .left-half {
   flex: 1;
   background-color: black;
@@ -64,7 +122,7 @@ export default {
 .title {
   margin: 10px 0;
   text-align: center;
-  color: rgb(255, 254, 254);
+  color: white;
   font-size: 45px;
   letter-spacing: 0.8em;
   font-weight: 300;
@@ -79,7 +137,7 @@ export default {
 
 .sig {
   margin: 10px 0;
-  color: rgb(255, 254, 254);
+  color: white;
   font-size: 18px;
   font-weight: 300;
 }
@@ -89,7 +147,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80%; 
+  height: 80%;
 }
 
 .container2 {
@@ -97,7 +155,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%; 
+  height: 100%;
   max-width: 400px;
   margin: auto;
   padding: 20px;
@@ -157,5 +215,11 @@ label {
 .forgot-password:hover {
   text-decoration: underline;
   color: #dbdada;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>
