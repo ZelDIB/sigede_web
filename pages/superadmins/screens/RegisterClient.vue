@@ -78,10 +78,8 @@
 </template>
 <script>
 import Swal from "sweetalert2";
-import Navbar from "../components/Navbar.vue";
-import { ServiceInstitutions } from "../../../services/ServiceInstitutions.js";
+//import Navbar from "../components/Navbar.vue";
 import { ServiceCloudinary } from "../../../services/ServiceCloudinary.js";
-
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { registerOrgatization } from "~/services/ServicesSuperAdmin";
 export default {
@@ -133,6 +131,7 @@ export default {
             }
         },
         async handleSubmit() {
+
             this.errors = {
                 name: "",
                 email: "",
@@ -174,38 +173,6 @@ export default {
             if (!valid) {
                 return;
             }
-            
-              try {
-                const sendData = {
-                    "institutionName": this.form.name,
-                    "institutionAddress": this.form.address,
-                    "institutionEmail": this.form.email,
-                    "institutionPhone": this.form.phone,
-                    "logo": "https://www.marketingdirecto.com/wp-content/uploads/2019/08/logos.jpg"//Aqui se debe de sustituir la URL que de devielve cloudinary
-                };
-                const response = await registerOrgatization(sendData);
-
-                if (response === "Ocurrio un error en la peticion") {
-                    this.errorMessage = "Ocurrio un error en la peticion.";
-                    alert("fallo en el registro :(")
-                } else {
-                    this.form = {
-                        name: "",
-                        email: "",
-                        phone: "",
-                        address: "",
-                        image: null,
-                    }  
-                    alert("Registro exitosooooooo =D")
-                    this.goBack();
-
-                }
-
-            } catch (e) {
-                this.errorMessage = "Ocurrio un error en la peticion.";
-                alert("fallo en el registro :(")
-            }
-
             this.isLoading = true;
 
             try {
@@ -219,7 +186,7 @@ export default {
                     logo: imageUrl,
                 };
 
-                const response = await ServiceInstitutions.registerInstitution(institutionData);
+                const response = await registerOrgatization(institutionData);
 
                 Swal.fire({
                     icon: "success",
@@ -230,7 +197,6 @@ export default {
 
                 this.resetForm();
             } catch (error) {
-                console.error("Error al registrar la institución:", error);
 
                 Swal.fire({
                     icon: "error",
@@ -238,7 +204,9 @@ export default {
                     text: "Ocurrió un error al registrar la institución",
                     confirmButtonText: "Aceptar",
                 });
+               
             } finally {
+                this.goBack()
                 this.isLoading = false;
             }
         },

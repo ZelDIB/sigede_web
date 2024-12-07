@@ -120,6 +120,10 @@
 <script>
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { getInstitutionInfoByinstitutionId,updateInstitution } from "~/services/ServicesSuperAdmin";
+import { ServiceCloudinary } from "~/services/ServiceCloudinary";
+import Swal from "sweetalert2";
+
+
 export default {
     components: {
         Navbar,
@@ -196,11 +200,6 @@ export default {
                 this.errors.address = "La dirección es obligatoria";
                 valid = false;
             }
-
-            if (this.form.image) {
-               console.log("Aqui es donde se debe de subir la imagen si se selecciono alguna")
-            }
-
             if (!valid) {
                 return;
             }
@@ -214,15 +213,19 @@ export default {
                     "institutionPhone": this.form.phone,
                     "institutionStatus":this.form.status,
                 };
-                sendData.logo = this.form.image 
-                ? "https://i.blogs.es/4dca3c/amd-fsr/450_1000.jpeg" // Esto se sustituye por la imagen que se sube en cloudinary
-                : this.oldImage; 
+
+              
+                if(this.form.image){
+                    const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
+                    sendData.logo=imageUrl
+                }else{
+                    sendData.logo=this.form.oldImage
+                }
 
                 const response = await updateInstitution(sendData);
 
                 if (response === "Ocurrio un error en la peticion") {
                     this.errorMessage = "Ocurrio un error en la peticion.";
-                    alert("fallo en el registro :(")
                 } else {
                     this.form = {
                         name: "",
@@ -231,44 +234,50 @@ export default {
                         address: "",
                         image: null,
                     }  
-                    alert("Registro exitosooooooo =D")
+                    Swal.fire({
+                    icon: "success",
+                    title: "Éxito",
+                    text: "Institución registrada exitosamente",
+                    confirmButtonText: "Aceptar",
+                });
                     this.goBack();
 
                 }
 
             } catch (e) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
-                alert("fallo en el registro :(")
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al registrar la institución",
+                    confirmButtonText: "Aceptar",
+                });
             }
-
-            console.log("Formulario enviado:", this.form);
-            alert("Formulario enviado correctamente");
         },
 
     },
     async mounted(){
             const instId = this.$route.query.institutionId;
-            console.log(instId)
 
             if (instId) {
             try {
                 const response = await getInstitutionInfoByinstitutionId(instId);
-                console.log(response)
-
+                
                 if (typeof response === "string") {
                     this.errorMessage = "Error al cargar la info de la institucion.";
-                } else if(response.data){
-                    this.institutionData = response.data;
+                } else if(response){
+                    this.institutionData = response;
+
                         this.form= {
-                        institutionId: response.data.institutionId,
-                        name: response.data.name,
-                        email: response.data.email_contact,
-                        phone: response.data.phoneContact,
-                        address: response.data.address,
+                        institutionId: response.institutionId,
+                        name: response.name,
+                        email: response.email_contact,
+                        phone: response.phoneContact,
+                        address: response.address,
                         image: null,
-                        status:response.data.institutionStatus
+                        status:response.institutionStatus
                     };
-                    this.oldImage=response.data.logo;
+                    this.oldImage=response.logo;
                 }else{
                     this.goBack();
                 }

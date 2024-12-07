@@ -42,6 +42,7 @@
 <script>
 import { registerCapturist } from '~/services/ServiceAdmin';
 import Navbar from '../components/Navbar.vue';
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -61,7 +62,7 @@ export default {
         };
     },
     methods: {
-        goBack (){
+        goBack() {
             this.$router.push("./CapturistList");
         },
         async handleSubmit() {
@@ -94,20 +95,35 @@ export default {
                 const data = await registerCapturist(this.form);
                 console.log(data);
                 if (data === "Ocurrio un error en la peticion") {
-                    this.errorMessage = "Ocurrio un error en la peticion.";
-                    alert("fallo en el registro :(")
+                    Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al registrar la institución",
+                    confirmButtonText: "Aceptar",
+                });
                 } else {
                     this.form = {
                         name: '',
                         email: '',
                         fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
-                    }  
-                    alert("Registro exitosooooooo =D")
+                    }
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Éxito",
+                        text: "Institución registrada exitosamente",
+                        confirmButtonText: "Aceptar",
+                    });
+
                     this.$router.push("./CapturistList");
                 }
             } catch (error) {
-                this.errorMessage = "Ocurrio un error en la peticion.";
-                alert("fallo en el registro :(")
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al registrar la institución",
+                    confirmButtonText: "Aceptar",
+                });
             }
         },
     },
@@ -168,7 +184,7 @@ body {
 
 .form-column,
 .image-column {
-    flex: 1 1 100%; 
+    flex: 1 1 100%;
     padding: 20px;
 }
 
@@ -180,23 +196,23 @@ body {
 
 @media (min-width: 768px) {
     .form-column {
-        flex: 1 1 60%; 
-        order: 1; 
+        flex: 1 1 60%;
+        order: 1;
     }
 
     .image-column {
-        flex: 1 1 40%; 
-        order: 2; 
+        flex: 1 1 40%;
+        order: 2;
     }
 }
 
 @media (max-width: 767px) {
     .form-column {
-        order: 2; 
+        order: 2;
     }
 
     .image-column {
-        order: 1; 
+        order: 1;
     }
 }
 
