@@ -1,74 +1,81 @@
 <template>
     <div class="full-screen">
-        <Navbar />
-        <div>
-            <div class="content">
-                <p class="title">REGISTRAR IDENTIFICIÓN</p>
-                <div class="container-form">
-                    <form @submit.prevent="handleSubmit">
-                        <div class="form-row">
-                            <!-- Columna del formulario -->
-                            <div class="form-column">
+        <CredentialLoader v-if="isLoading" />
 
-                                <div class="form-group">
-                                    <label for="fullname" :class="{ 'error-label': errors.fullname }">Nombre
-                                        completo*</label>
-                                    <input type="text" id="fullname" v-model="form.fullname"
-                                        :class="['form-control', { error: errors.fullname }]" />
-                                    <small v-if="errors.fullname" class="error-message">{{
-                                        errors.fullname
-                                        }}</small>
-                                </div>
+        <div v-else>
+            <Navbar />
+            <div>
+                <div class="content">
+                    <p class="title">REGISTRAR IDENTIFICIÓN</p>
+                    <div class="container-form">
+                        <form @submit.prevent="handleSubmit">
+                            <div class="form-row">
+                                <!-- Columna del formulario -->
+                                <div class="form-column">
 
-                                <!-- Aqui van los campos dela array de fields-->
-                                <div v-for="(field, index) in form.fields" :key="index" class="form-group">
-                                    <label :for="'field-' + index"  :class="{ 'error-label': field.error }">
-                                        {{ field.tag }}<span v-if="field.required">*</span>
-                                    </label>
-                                    <input :type="field.type.toLowerCase()" :id="'field-' + index" v-model="field.value"
-                                        :required="field.required" :class="['form-control', { error: field.error }]" />
-                                    <small v-if="field.error" class="error-message">{{ field.error }}</small>
-                                </div>
-
-                            </div>
-                            <!-- Columna de la imagen -->
-
-                            <div class="image-column">
-                                <div class="dotted-border">
                                     <div class="form-group">
-                                    <label for="imageUpload">Subir imagen*</label>
-                                    <div class="custom-file-input-container ">
-                                        <button type="button" class="custom-file-button">Seleccionar archivo</button>
-                                        <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
-                                        <input
-                                            type="file"
-                                            id="imageUpload"
-                                            @change="handleImageUpload"
-                                            accept="image/png, image/jpeg, image/jpg, image/gif"
-                                            class="custom-file-input"
-                                        />
+                                        <label for="fullname" :class="{ 'error-label': errors.fullname }">Nombre
+                                            completo*</label>
+                                        <input type="text" id="fullname" v-model="form.fullname"
+                                            :class="['form-control', { error: errors.fullname }]" />
+                                        <small v-if="errors.fullname" class="error-message">{{
+                                            errors.fullname
+                                            }}</small>
                                     </div>
-                                    <small v-if="errors.image" class="error-message" style="text-align: center;">{{ errors.image }}</small>
 
-                                    <div v-if="imagePreview" class="image-preview">
-                                        <img :src="imagePreview" alt="Preview" class="register-image" />
+                                    <!-- Aqui van los campos del array de fields-->
+                                    <div v-for="(field, index) in form.fields" :key="index" class="form-group">
+                                        <label :for="'field-' + index"  :class="{ 'error-label': field.error }">
+                                            {{ field.tag }}<span v-if="field.required">*</span>
+                                        </label>
+                                        <input :type="field.type.toLowerCase()" :id="'field-' + index" v-model="field.value"
+                                            :required="field.required" :class="['form-control', { error: field.error }]" />
+                                        <small v-if="field.error" class="error-message">{{ field.error }}</small>
                                     </div>
-                                </div> 
+
                                 </div>
-                               
-                            </div>
-                        </div>
+                                <!-- Columna de la imagen -->
 
-                        <div class="button-group">
-                            <button type="submit" class="submit-btn">
-                                Registrar institución
-                            </button>
-                            <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
-                        </div>
-                    </form>
+                                <div class="image-column">
+                                    <div class="dotted-border">
+                                        <div class="form-group">
+                                        <label for="imageUpload">Subir imagen*</label>
+                                        <div class="custom-file-input-container ">
+                                            <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                                            <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
+                                            <input
+                                                type="file"
+                                                id="imageUpload"
+                                                @change="handleImageUpload"
+                                                accept="image/png, image/jpeg, image/jpg, image/gif"
+                                                class="custom-file-input"
+                                            />
+                                        </div>
+                                        <small v-if="errors.image" class="error-message" style="text-align: center;">{{ errors.image }}</small>
+
+                                        <div v-if="imagePreview" class="image-preview">
+                                            <img :src="imagePreview" alt="Preview" class="register-image" />
+                                        </div>
+                                    </div> 
+                                    </div>
+                                
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button type="submit" class="submit-btn">
+                                    Registrar institución
+                                </button>
+                                <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
+
+
     </div>
 </template>
 
@@ -77,10 +84,12 @@ import Navbar from "~/pages/admins/components/Navbar.vue";
 import { getFormByInstitutionId,registerCredential,getCapturistIdByEmail } from "~/services/ServicesCapturist";
 import Swal from "sweetalert2";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
     components: {
         Navbar,
+        CredentialLoader
     },
     data() {
         return {
@@ -96,6 +105,7 @@ export default {
             errors: {
                 fullname: "",
             },
+            isLoading:false
         };
     },
     methods: {
@@ -205,6 +215,8 @@ export default {
                 return;
             }
             try {
+                this.isLoading=true;
+
                 const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
 
                 const newFields = this.form.fields.map(item => ({
@@ -219,23 +231,38 @@ export default {
                     fields:newFields
                 }
                 const respose=await registerCredential(sendData);
-                console.log("-----------------------------------",sendData);
-                alert("Formulario enviado correctamente");
+                this.isLoading=false;
+                Swal.fire({
+                        icon: "success",
+                        title: "Éxito",
+                        text: "Institución registrada exitosamente",
+                        confirmButtonText: "Aceptar",
+                    });
             } catch (e) {
-                this.errorMessage = "Ocurrio un error en la peticion.";
-                alert("fallo en el registro :(")
+                this.isLoading=false;
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Correo o contraseña incorrectos.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
             }
+            
 
             
         },
     },
     async mounted() {
         try {
+            this.isLoading=true;
+
             var instId = parseInt(localStorage.getItem("institutionId"));
             var userEmail=localStorage.getItem("email");
+
             const userEmailData = await getCapturistIdByEmail(userEmail);
             this.form.userAccountId=userEmailData.data;
             this.form.institutionId = instId;
+
             const data = await getFormByInstitutionId(instId);
             if (typeof data === "string") {
                 this.errorMessage = "Error al cargar los capturistas.";

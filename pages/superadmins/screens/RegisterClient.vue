@@ -1,79 +1,85 @@
 <template>
     <div class="full-screen">
-        <Navbar />
-        <div>
-            <div class="content">
-                <p class="title">DATOS DE LA EMPRESA</p>
-                <div class="container-form">
-                    <form @submit.prevent="handleSubmit">
-                        <div class="form-row">
-                            <!-- Columna del formulario -->
-                            <div class="form-column">
-                                <div class="form-group">
-                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre de la
-                                        institución*</label>
-                                    <input type="text" id="name" v-model="form.name"
-                                        :class="['form-control', { error: errors.name }]" />
-                                    <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
+
+        <CredentialLoader v-if="isLoading" />
+
+        <div v-else> 
+            <Navbar />
+            <div>
+                <div class="content">
+                    <p class="title">DATOS DE LA EMPRESA</p>
+                    <div class="container-form">
+                        <form @submit.prevent="handleSubmit">
+                            <div class="form-row">
+                                <!-- Columna del formulario -->
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="name" :class="{ 'error-label': errors.name }">Nombre de la
+                                            institución*</label>
+                                        <input type="text" id="name" v-model="form.name"
+                                            :class="['form-control', { error: errors.name }]" />
+                                        <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phone" :class="{ 'error-label': errors.phone }">Teléfono de
+                                            contacto*</label>
+                                        <input type="text" id="phone" v-model="form.phone"
+                                            :class="['form-control', { error: errors.phone }]" />
+                                        <small v-if="errors.phone" class="error-message">{{ errors.phone }}</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" :class="{ 'error-label': errors.email }">Correo de
+                                            contacto*</label>
+                                        <input id="email" v-model="form.email"
+                                            :class="['form-control', { error: errors.email }]" />
+                                        <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
+                                        <input type="address" id="address" v-model="form.address"
+                                            :class="['form-control', { error: errors.address }]" />
+                                        <small v-if="errors.address" class="error-message">{{ errors.address }}</small>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="phone" :class="{ 'error-label': errors.phone }">Teléfono de
-                                        contacto*</label>
-                                    <input type="text" id="phone" v-model="form.phone"
-                                        :class="['form-control', { error: errors.phone }]" />
-                                    <small v-if="errors.phone" class="error-message">{{ errors.phone }}</small>
-                                </div>
+                                <div class="image-column">
+                                    <div class="form-group dotted-border">
+                                        <label for="imageUpload">Subir imagen*</label>
+                                        <div class="custom-file-input-container ">
+                                            <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                                            <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
+                                            <input
+                                                type="file"
+                                                id="imageUpload"
+                                                @change="handleImageUpload"
+                                                accept="image/png, image/jpeg, image/jpg, image/gif"
+                                                class="custom-file-input"
+                                            />
+                                        </div>
+                                        <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
 
-                                <div class="form-group">
-                                    <label for="email" :class="{ 'error-label': errors.email }">Correo de
-                                        contacto*</label>
-                                    <input id="email" v-model="form.email"
-                                        :class="['form-control', { error: errors.email }]" />
-                                    <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
-                                    <input type="address" id="address" v-model="form.address"
-                                        :class="['form-control', { error: errors.address }]" />
-                                    <small v-if="errors.address" class="error-message">{{ errors.address }}</small>
+                                        <div v-if="imagePreview" class="image-preview">
+                                            <img :src="imagePreview" alt="Preview" class="register-image" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="image-column">
-                                <div class="form-group dotted-border">
-                                    <label for="imageUpload">Subir imagen*</label>
-                                    <div class="custom-file-input-container ">
-                                        <button type="button" class="custom-file-button">Seleccionar archivo</button>
-                                        <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
-                                        <input
-                                            type="file"
-                                            id="imageUpload"
-                                            @change="handleImageUpload"
-                                            accept="image/png, image/jpeg, image/jpg, image/gif"
-                                            class="custom-file-input"
-                                        />
-                                    </div>
-                                    <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
-
-                                    <div v-if="imagePreview" class="image-preview">
-                                        <img :src="imagePreview" alt="Preview" class="register-image" />
-                                    </div>
-                                </div>
+                            <div class="button-group">
+                                <button type="submit" class="submit-btn">
+                                    Registrar institución
+                                </button>
+                                <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
                             </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="submit-btn">
-                                Registrar institución
-                            </button>
-                            <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 <script>
@@ -82,9 +88,12 @@ import Swal from "sweetalert2";
 import { ServiceCloudinary } from "../../../services/ServiceCloudinary.js";
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { registerOrgatization } from "~/services/ServicesSuperAdmin";
+import CredentialLoader from "../pages/auth/loader.vue";
+
 export default {
     components: {
         Navbar,
+        CredentialLoader,
     },
     data() {
         return {
@@ -187,6 +196,7 @@ export default {
                 };
 
                 const response = await registerOrgatization(institutionData);
+                this.isLoading = false;
 
                 Swal.fire({
                     icon: "success",
@@ -194,9 +204,11 @@ export default {
                     text: "Institución registrada exitosamente",
                     confirmButtonText: "Aceptar",
                 });
+                this.goBack()
 
                 this.resetForm();
             } catch (error) {
+                this.isLoading = false;
 
                 Swal.fire({
                     icon: "error",
@@ -206,8 +218,6 @@ export default {
                 });
                
             } finally {
-                this.goBack()
-                this.isLoading = false;
             }
         },
 

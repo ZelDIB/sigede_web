@@ -1,67 +1,71 @@
 <template>
-    <div>
-        <Navbar />
-        <div>
-            <div class="full-screen">
-                <div class="content">
-                    <p class="title">DISEÑO DE FORMULARIO</p>
-                    <div class="container-form">
-                        <form @submit.prevent="handleSubmit">
-                            <div class="add-container">
-                                <button type="button" class="is-add" @click="addField">Agregar Fila</button>
-                            </div>
+    <div> 
+        <CredentialLoader v-if="isLoading" />
+        <div v-else>
+            <Navbar />
+            <div>
+                <div class="full-screen">
+                    <div class="content">
+                        <p class="title">DISEÑO DE FORMULARIO</p>
+                        <div class="container-form">
+                            <form @submit.prevent="handleSubmit">
+                                <div class="add-container">
+                                    <button type="button" class="is-add" @click="addField">Agregar Fila</button>
+                                </div>
 
-                            <div v-for="(field, index) in formFields" :key="index" class="form-row dotted-border">
-                                <div class="form-column">
-                                    <label :for="'tag' + index" class="label">Etiqueta*</label>
-                                    <input type="text" :id="'tag' + index" class="input" placeholder="Etiqueta"
-                                        v-model="field.tag" />
+                                <div v-for="(field, index) in formFields" :key="index" class="form-row dotted-border">
+                                    <div class="form-column">
+                                        <label :for="'tag' + index" class="label">Etiqueta*</label>
+                                        <input type="text" :id="'tag' + index" class="input" placeholder="Etiqueta"
+                                            v-model="field.tag" />
+                                    </div>
+                                    <div class="form-column">
+                                        <label :for="'type' + index" class="label">Tipo de campo*</label>
+                                        <select :id="'type' + index" class="select-input" v-model="field.type">
+                                            <option value="text">Texto</option>
+                                            <option value="alfanumerico">Alfanumerico</option>
+                                            <option value="url">URL/Enlace</option>
+                                            <option value="tel">Teléfono</option>
+                                            <option value="number">Número</option>
+                                            <option value="date">Fecha</option>
+                                            <option value="email">Correo</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-column check check-required">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :id="'isInQr' + index" v-model="field.isInQr" />
+                                            Ver en QR
+                                        </label>
+                                    </div>
+                                    <div class="form-column check">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :id="'isInCard' + index" v-model="field.isInCard" />
+                                            En Credencial
+                                        </label>
+                                    </div>
+                                    <div class="form-column check">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :id="'isRequired' + index" v-model="field.isRequired" />
+                                            Obligatorio
+                                        </label>
+                                    </div>
+                                    <div class="form-column delete-column check">
+                                        <button type="button" class="delete-btn" @click="removeField(index)">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="form-column">
-                                    <label :for="'type' + index" class="label">Tipo de campo*</label>
-                                    <select :id="'type' + index" class="select-input" v-model="field.type">
-                                        <option value="text">Texto</option>
-                                        <option value="alfanumerico">Alfanumerico</option>
-                                        <option value="url">URL/Enlace</option>
-                                        <option value="tel">Teléfono</option>
-                                        <option value="number">Número</option>
-                                        <option value="date">Fecha</option>
-                                        <option value="email">Correo</option>
-                                    </select>
+                                <div class="btns-container">
+                                    <button type="submit" class="button is-save">Guardar</button>
+                                    <button type="button" class="button is-cancel">Cancelar</button>
                                 </div>
-                                <div class="form-column check check-required">
-                                    <label class="checkbox">
-                                        <input type="checkbox" :id="'isInQr' + index" v-model="field.isInQr" />
-                                        Ver en QR
-                                    </label>
-                                </div>
-                                <div class="form-column check">
-                                    <label class="checkbox">
-                                        <input type="checkbox" :id="'isInCard' + index" v-model="field.isInCard" />
-                                        En Credencial
-                                    </label>
-                                </div>
-                                <div class="form-column check">
-                                    <label class="checkbox">
-                                        <input type="checkbox" :id="'isRequired' + index" v-model="field.isRequired" />
-                                        Obligatorio
-                                    </label>
-                                </div>
-                                <div class="form-column delete-column check">
-                                    <button type="button" class="delete-btn" @click="removeField(index)">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="btns-container">
-                                <button type="submit" class="button is-save">Guardar</button>
-                                <button type="button" class="button is-cancel">Cancelar</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
+
     </div>
 </template>
 
@@ -69,10 +73,12 @@
 import Navbar from '../components/Navbar.vue';
 import { registerClientForm } from '~/services/ServiceAdmin';
 import Swal from "sweetalert2";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
     components: {
         Navbar,
+        CredentialLoader,
     },
     name: "ClientForm",
     data() {
@@ -86,6 +92,7 @@ export default {
                     isInCard: false,
                 },
             ],
+            isLoading: false, 
         };
     },
     methods: {
@@ -97,7 +104,6 @@ export default {
                 alert("Debe de registrar al menos un dato.");
                 return;
             }
-
             // Validar que todos los campos tengan tag y tipo seleccionado
             for (let field of this.formFields) {
                 if (!field.tag || !field.type) {
@@ -105,10 +111,11 @@ export default {
                     return;
                 }
             }
-
             try {
+                this.isLoading = true;
                 var institutionId = parseInt(localStorage.getItem("institutionId"));
                 const response = await registerClientForm(this.formFields, institutionId);
+                this.isLoading = false;
                 Swal.fire({
                     icon: "success",
                     title: "Éxito",
@@ -117,15 +124,14 @@ export default {
                 });
                 this.goToCapturistList();
             } catch (e) {
+                this.isLoading = false;
                 Swal.fire({
                     icon: "error",
                     title: "Error",
                     text: "Ocurrió un error al registrar la institución",
                     confirmButtonText: "Aceptar",
                 });
-                //this.goToCapturistList();
             }
-            //this.goToCapturistList();
             this.resetForm();
         },
 

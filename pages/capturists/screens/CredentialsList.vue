@@ -1,86 +1,89 @@
 <template>
   <div class="full-screen">
-    <Navbar />
-    <div>
-      <div class="content">
-        <p class="title">USUARIOS</p>
-        <div class="content-table">
-          <div class="search-section">
-            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goRegister">
-              <i class="fas fa-user-plus icon"></i>
-            </div>
-            <div class="search-container">
-              <input
-                type="text"
-                v-model="searchTerm"
-                class="search-input"
-                placeholder="Buscar..."
-                @keyup="filterList"
-              />
-              <i class="fas fa-magnifying-glass icon" @click="filterList"></i>
-            </div>
-            <div class="search-icon" style="border-radius: 0 10px 0 0">
-              <div style="width: 50%" @click="sortByName">
-                <i class="fas fa-arrow-down-a-z icon"></i>
+    <CredentialLoader v-if="isLoadingGeneral" />
+    <div v-else>
+      <Navbar />
+      <div>
+        <div class="content">
+          <p class="title">USUARIOS</p>
+          <div class="content-table">
+            <div class="search-section">
+              <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goRegister">
+                <i class="fas fa-user-plus icon"></i>
               </div>
-              <div style="width: 50%" @click="invertListOrder">
-                <i class="fas fa-up-down icon"></i>
+              <div class="search-container">
+                <input
+                  type="text"
+                  v-model="searchTerm"
+                  class="search-input"
+                  placeholder="Buscar..."
+                  @keyup="filterList"
+                />
+                <i class="fas fa-magnifying-glass icon" @click="filterList"></i>
+              </div>
+              <div class="search-icon" style="border-radius: 0 10px 0 0">
+                <div style="width: 50%" @click="sortByName">
+                  <i class="fas fa-arrow-down-a-z icon"></i>
+                </div>
+                <div style="width: 50%" @click="invertListOrder">
+                  <i class="fas fa-up-down icon"></i>
+                </div>
               </div>
             </div>
-          </div>
-          <div v-if="isLoading" class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i> Cargando...
-          </div>
-          <div v-else>
-            <div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Foto</th>
-                    <th class="name-column">Nombre del usuario</th>
-                    <th class="status-column">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in lista" :key="index">
-                    <td>
-                      <img
-                        :src="item.userPhoto"
-                        alt="userPhoto"
-                        class="imagen"
-                      />
-                    </td>
-                    <td>{{ item.fullname }}</td>
-                    <td>
-                      <div class="status-container">
-                        <div class="edit-icon">
-                          <i class="fas fa-edit icon"></i>
+            <div v-if="isLoading" class="loading-spinner">
+              <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </div>
+            <div v-else>
+              <div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Foto</th>
+                      <th class="name-column">Nombre del usuario</th>
+                      <th class="status-column">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in lista" :key="index">
+                      <td>
+                        <img
+                          :src="item.userPhoto"
+                          alt="userPhoto"
+                          class="imagen"
+                        />
+                      </td>
+                      <td>{{ item.fullname }}</td>
+                      <td>
+                        <div class="status-container">
+                          <div class="edit-icon">
+                            <i class="fas fa-edit icon"></i>
+                          </div>
+                          <span :class="getStatusClass(item.expirationDate)">
+                            {{ getStatusText(item.expirationDate) }}
+                          </span>
                         </div>
-                        <span :class="getStatusClass(item.expirationDate)">
-                          {{ getStatusText(item.expirationDate) }}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div v-if="lista.length === 0" class="no-results">
-                <i class="fas fa-times-circle"></i> Sin resultados
-              </div>
-              <div class="pagination">
-                <button
-                  :disabled="currentPage === 0"
-                  @click="changePage(currentPage - 1)"
-                >
-                  Anterior
-                </button>
-                <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-                <button
-                  :disabled="currentPage === totalPages - 1 || totalPages === 0"
-                  @click="changePage(currentPage + 1)"
-                >
-                  Siguiente
-                </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div v-if="lista.length === 0" class="no-results">
+                  <i class="fas fa-times-circle"></i> Sin resultados
+                </div>
+                <div class="pagination">
+                  <button
+                    :disabled="currentPage === 0"
+                    @click="changePage(currentPage - 1)"
+                  >
+                    Anterior
+                  </button>
+                  <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+                  <button
+                    :disabled="currentPage === totalPages - 1 || totalPages === 0"
+                    @click="changePage(currentPage + 1)"
+                  >
+                    Siguiente
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -93,10 +96,13 @@
   <script>
 import Navbar from "~/pages/admins/components/Navbar.vue";
 import { getAllCredentialByInstitutionIdAndName } from "~/services/ServicesCapturist";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
   components: {
     Navbar,
+    CredentialLoader,
+
   },
   name: "CredentialsList",
   data() {
@@ -107,6 +113,7 @@ export default {
       totalPages: 0,
       isAscending: true,
       isLoading: true,
+      isLoadingGeneral:false
     };
   },
   watch: {
@@ -151,8 +158,10 @@ export default {
     async fetchUsers() {
       this.isLoading=true;
       try {
+        var instId=parseInt(localStorage.getItem("institutionId"))
+        
         const sendData = {
-          institutionId: 1,
+          institutionId: instId,
           fullname: this.searchTerm,
         };
         const data = await getAllCredentialByInstitutionIdAndName(
@@ -169,7 +178,9 @@ export default {
     },
   },
   async mounted() {
+    this.isLoadingGeneral=true;
     this.fetchUsers();
+    this.isLoadingGeneral=false;
   },
 };
 </script>

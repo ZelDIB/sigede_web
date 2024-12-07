@@ -1,76 +1,87 @@
 <template>
+    
+    
     <div class="full-screen">
-        <Navbar />
+        <CredentialLoader v-if="isLoading" />
 
-        <div>
-            <div class="content">
-                <p class="title">CAPTURISTAS</p>
-                <div class="content-table">
-                    <div class="search-section">
-                        <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterCapturist">
-                            <i class="fas fa-user-plus icon"></i>
-                        </div>
-                        <div class="search-container">
-                            <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
-                            <i class="fas fa-magnifying-glass icon"></i>
-                        </div>
-                        <div class="search-icon" style="border-radius: 0 10px 0 0">
-                            <div style="width: 50%" @click="sortByName">
-                                <i class="fas fa-arrow-down-a-z icon"></i>
-                            </div>
-                            <div style="width: 50%" @click="invertListOrder">
-                                <i class="fas fa-up-down icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="isLoading" class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando...
-                    </div>
-                    <div v-else>
+        <div v-else>
+            <Navbar />
 
+            <div>
+                <div class="content">
+                    <p class="title">CAPTURISTAS</p>
+                    <div class="content-table">
+                        <div class="search-section">
+                            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterCapturist">
+                                <i class="fas fa-user-plus icon"></i>
+                            </div>
+                            <div class="search-container">
+                                <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
+                                <i class="fas fa-magnifying-glass icon"></i>
+                            </div>
+                            <div class="search-icon" style="border-radius: 0 10px 0 0">
+                                <div style="width: 50%" @click="sortByName">
+                                    <i class="fas fa-arrow-down-a-z icon"></i>
+                                </div>
+                                <div style="width: 50%" @click="invertListOrder">
+                                    <i class="fas fa-up-down icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="name-column">Nombre</th>
-                                        <th class="status-column">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
 
-                                    <tr v-for="(item, index) in filteredCapturist" :key="index">
-                                        <td>{{ item.name }}</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="edit-icon" @click="editCapturist(item.userAccountId)">
-                                                    <i class="fas fa-edit icon"></i>
+                            <div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="name-column">Nombre</th>
+                                            <th class="status-column">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr v-for="(item, index) in filteredCapturist" :key="index">
+                                            <td>{{ item.name }}</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="edit-icon" @click="editCapturist(item.userAccountId)">
+                                                        <i class="fas fa-edit icon"></i>
+                                                    </div>
+                                                    <span :class="`status-${item.status.toLowerCase()}`">
+                                                        {{ item.status }}
+                                                    </span>
                                                 </div>
-                                                <span :class="`status-${item.status.toLowerCase()}`">
-                                                    {{ item.status }}
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div v-if="filteredCapturist.length === 0" class="no-results">
-                                <i class="fas fa-times-circle"></i> Sin resultados
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div v-if="filteredCapturist.length === 0" class="no-results">
+                                    <i class="fas fa-times-circle"></i> Sin resultados
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
     </div>
+
+    
 </template>
 
 <script>
 import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
 import Navbar from "../components/Navbar.vue";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
     components: {
         Navbar,
+        CredentialLoader,
     },
     name: "CapturistList",
     data() {

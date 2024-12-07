@@ -1,75 +1,76 @@
 <template>
   <div class="full-screen">
-    <Navbar />
-    <div>
-      <div class="content">
-        <p class="title">GESTIÓN DE CAPTURISTA</p>
-        <div class="container-form">
-          <div v-if="isLoading" class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i> Cargando...
-          </div>
-          <div v-else>
-            <form @submit.prevent="handleSubmit">
-              <div class="form-row">
-                <div class="form-column">
-                  <div class="form-group">
-                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
-                    <input type="text" id="name" v-model="form.name" :class="['form-control', { error: errors.name }]"
-                      placeholder="Nombre" />
-                    <small v-if="errors.name" class="error-message">{{
-                      errors.name
-                    }}</small>
-                  </div>
+    <CredentialLoader v-if="isLoading" />
+    <div v-else>
+      <Navbar />
+      <div>
+        <div class="content">
+          <p class="title">GESTIÓN DE CAPTURISTA</p>
+          <div class="container-form">
+            <div>
+              <form @submit.prevent="handleSubmit">
+                <div class="form-row">
+                  <div class="form-column">
+                    <div class="form-group">
+                      <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                      <input type="text" id="name" v-model="form.name" :class="['form-control', { error: errors.name }]"
+                        placeholder="Nombre" />
+                      <small v-if="errors.name" class="error-message">{{
+                        errors.name
+                      }}</small>
+                    </div>
 
-                  <div class="form-group">
-                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
-                    <input id="email" v-model="form.email" :class="['form-control', { error: errors.email }]"
-                      placeholder="Correo" />
-                    <small v-if="errors.email" class="error-message">{{
-                      errors.email
-                    }}</small>
-                  </div>
+                    <div class="form-group">
+                      <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                      <input id="email" v-model="form.email" :class="['form-control', { error: errors.email }]"
+                        placeholder="Correo" />
+                      <small v-if="errors.email" class="error-message">{{
+                        errors.email
+                      }}</small>
+                    </div>
 
-                  <div class="form-group">
-                    <div class="radio-group">
-                      <label class="radio-container">
-                        <div class="rb-text" style="background-color: #93d7b0">
-                          Activo
-                        </div>
-                        <input type="radio" value="activo" v-model="form.status" />
-                      </label>
-                      <label class="radio-container">
-                        <div class="rb-text" style="background-color: #ff8000">
-                          Suspendido
-                        </div>
-                        <input type="radio" value="suspendido" v-model="form.status" />
-                      </label>
-                      <label class="radio-container">
-                        <div class="rb-text" style="background-color: #d79393">
-                          Inactivo
-                        </div>
-                        <input type="radio" value="inactivo" v-model="form.status" />
-                      </label>
+                    <div class="form-group">
+                      <div class="radio-group">
+                        <label class="radio-container">
+                          <div class="rb-text" style="background-color: #93d7b0">
+                            Activo
+                          </div>
+                          <input type="radio" value="activo" v-model="form.status" />
+                        </label>
+                        <label class="radio-container">
+                          <div class="rb-text" style="background-color: #ff8000">
+                            Suspendido
+                          </div>
+                          <input type="radio" value="suspendido" v-model="form.status" />
+                        </label>
+                        <label class="radio-container">
+                          <div class="rb-text" style="background-color: #d79393">
+                            Inactivo
+                          </div>
+                          <input type="radio" value="inactivo" v-model="form.status" />
+                        </label>
+                      </div>
                     </div>
                   </div>
+
+                  <div class="image-column">
+                    <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
+                  </div>
                 </div>
 
-                <div class="image-column">
-                  <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
+                <div class="button-group">
+                  <button type="submit" class="submit-btn">
+                    Actualizar capturista
+                  </button>
+                  <button type="button" class="cancel-btn" @click="backToCapturistList">Cancelar</button>
                 </div>
-              </div>
-
-              <div class="button-group">
-                <button type="submit" class="submit-btn">
-                  Actualizar capturista
-                </button>
-                <button type="button" class="cancel-btn" @click="backToCapturistList">Cancelar</button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- Modal personalizado
         para el modal personalizado se require:
@@ -92,11 +93,14 @@ import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
 import Navbar from "../components/Navbar.vue";
 import { getOneCapturist, updateCapturist } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
   components: {
     Navbar,
     CustomConfirmationModal,
+    CredentialLoader,
+
   },
   name: "ManagerCapturist",
   data() {
@@ -122,6 +126,7 @@ export default {
     },
     async submitForm() {
       try {
+
         const response = await updateCapturist(this.form);
 
         if (response.message !== "Ocurrio un error inesperado.") {

@@ -1,72 +1,71 @@
 <template>
     <div class="full-screen">
-        <Navbar />
-        <div>
+        <CredentialLoader v-if="isLoading" />
+        <div v-else>
+            <Navbar />
+            <div>
 
-            <div class="content">
-                <div class="content-table info-container">
-                    <div v-if="isLoading" class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando...
-                    </div>
-                    <div v-else class="row-direction">
-                        <div>
-                            <img :src="institutionData.logo" alt="Logo de la institución" class="logo-image" />
+                <div class="content">
+                    <div class="content-table info-container">
+                        <div v-if="isLoading" class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando...
                         </div>
-                        <div class="row-direction p-info">
+                        <div v-else class="row-direction">
                             <div>
-                                <p>
-                                    <strong>Nombre:</strong>
-                                    {{ institutionData.name }}
-                                </p>
-                                <p>
-                                    <strong>Direccion:</strong>
-                                    {{ institutionData.address }}
+                                <img :src="institutionData.logo" alt="Logo de la institución" class="logo-image" />
+                            </div>
+                            <div class="row-direction p-info">
+                                <div>
+                                    <p>
+                                        <strong>Nombre:</strong>
+                                        {{ institutionData.name }}
+                                    </p>
+                                    <p>
+                                        <strong>Direccion:</strong>
+                                        {{ institutionData.address }}
 
-                                </p>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>
+                                        <strong>Email:</strong>
+                                        {{ institutionData.email_contact }}
+                                    </p>
+                                    <p>
+                                        <strong>Telefono:</strong>
+                                        {{ institutionData.phoneContact }}
+                                    </p>
+                                </div>
                             </div>
                             <div>
-                                <p>
-                                    <strong>Email:</strong>
-                                    {{ institutionData.email_contact }}
-                                </p>
-                                <p>
-                                    <strong>Telefono:</strong>
-                                    {{ institutionData.phoneContact }}
-                                </p>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="btn-actualizar" @click="goToUpdateInstitution()">
-                                <i class="fas fa-edit icon"></i>
-                                Actualizar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <p class="title">ADMINISTRADORES</p>
-                <div class="content-table">
-                    <div class="search-section">
-                        <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterAdmin()">
-                            <i class="fas fa-user-plus icon"></i>
-                        </div>
-                        <div class="search-container">
-                            <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
-                            <i class="fas fa-magnifying-glass icon"></i>
-                        </div>
-                        <div class="search-icon" style="border-radius: 0 10px 0 0">
-                            <div style="width: 50%" @click="sortByName">
-                                <i class="fas fa-arrow-down-a-z icon"></i>
-                            </div>
-                            <div style="width: 50%" @click="invertListOrder">
-                                <i class="fas fa-up-down icon"></i>
+                                <button class="btn-actualizar" @click="goToUpdateInstitution()">
+                                    <i class="fas fa-edit icon"></i>
+                                    Actualizar
+                                </button>
                             </div>
                         </div>
                     </div>
+                    <p class="title">ADMINISTRADORES</p>
+                    <div class="content-table">
+                        <div class="search-section">
+                            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterAdmin()">
+                                <i class="fas fa-user-plus icon"></i>
+                            </div>
+                            <div class="search-container">
+                                <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
+                                <i class="fas fa-magnifying-glass icon"></i>
+                            </div>
+                            <div class="search-icon" style="border-radius: 0 10px 0 0">
+                                <div style="width: 50%" @click="sortByName">
+                                    <i class="fas fa-arrow-down-a-z icon"></i>
+                                </div>
+                                <div style="width: 50%" @click="invertListOrder">
+                                    <i class="fas fa-up-down icon"></i>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div v-if="isLoading" class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando...
-                    </div>
-                    <div v-else>
+
 
                         <div>
                             <table class="table">
@@ -101,16 +100,19 @@
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
 import { getAdminsByInstitutionId, getInstitutionInfoByinstitutionId } from "~/services/ServicesSuperAdmin";
 import Navbar from "~/components/superadmins/Navbar.vue";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
     components: {
         Navbar,
+        CredentialLoader
     },
     name: "AdminsList",
     data() {
@@ -167,7 +169,7 @@ export default {
             this.$router.push({ path: "./UpdateInstitution", query: { institutionId } });
         },
     },
-    
+
     async mounted() {
         const instId = this.$route.query.institutionId;
         this.institutionId = instId;
