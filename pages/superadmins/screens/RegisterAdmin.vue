@@ -1,5 +1,7 @@
 <template>
   <div class="full-screen">
+    <CredentialLoader v-if="isLoading" />
+    <div v-else>
       <Navbar />
       <div>
           <div class="content">
@@ -35,7 +37,11 @@
                   </form>
               </div>
           </div>
-      </div>
+      </div>      
+    </div>
+
+
+
   </div>
 </template>
 
@@ -43,10 +49,13 @@
 import { registerAdmin } from '~/services/ServicesSuperAdmin'; 
 import Navbar from '~/components/superadmins/Navbar.vue';
 import Swal from "sweetalert2";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
   components: {
       Navbar,
+      CredentialLoader,
+
   },
   data() {
       return {
@@ -60,6 +69,7 @@ export default {
               email: '',
           },
           institutionId: null,
+          isLoading: false, 
       };
   },
   methods: {
@@ -92,7 +102,11 @@ export default {
               return;
           }
           try {
-              const data = await registerAdmin(this.form);
+            this.isLoading=true;
+
+            const data = await registerAdmin(this.form);
+            this.isLoading=false;
+
               Swal.fire({
                     icon: "success",
                     title: "Éxito",
@@ -101,14 +115,14 @@ export default {
                 });
                 this.goBack(this.institutionId);
           } catch (error) {
+            this.isLoading=false;
+
             Swal.fire({
                     icon: "error",
                     title: "Error",
                     text: "Ocurrió un error al registrar la institución",
                     confirmButtonText: "Aceptar",
                 });
-              this.errorMessage = "Ocurrio un error en la peticion.";
-              alert("fallo en el registro :(")
           }
       },
       

@@ -1,41 +1,46 @@
 <template>
     <div class="full-screen">
-        <Navbar />
-        <div>
-            <div class="content">
-                <p class="title">REGISTRO DE CAPTURISTA</p>
-                <div class="container-form">
-                    <form @submit.prevent="handleSubmit">
-                        <div class="form-row">
-                            <div class="form-column">
-                                <div class="form-group">
-                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
-                                    <input type="text" id="name" v-model="form.name"
-                                        :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
-                                    <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
+        <CredentialLoader v-if="isLoading" />
+        <div v-else>
+            <Navbar />
+            <div>
+                <div class="content">
+                    <p class="title">REGISTRO DE CAPTURISTA</p>
+                    <div class="container-form">
+                        <form @submit.prevent="handleSubmit">
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                                        <input type="text" id="name" v-model="form.name"
+                                            :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
+                                        <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                                        <input id="email" v-model="form.email"
+                                            :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
+                                        <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
-                                    <input id="email" v-model="form.email"
-                                        :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
-                                    <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
+                                <div class="image-column">
+                                    <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
                                 </div>
                             </div>
 
-                            <div class="image-column">
-                                <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
+                            <div class="button-group">
+                                <button type="submit" class="submit-btn">Registrar capturista</button>
+                                <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
                             </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="submit-btn">Registrar capturista</button>
-                            <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 </template>
 
@@ -43,22 +48,26 @@
 import { registerCapturist } from '~/services/ServiceAdmin';
 import Navbar from '../components/Navbar.vue';
 import Swal from "sweetalert2";
+import CredentialLoader from "../pages/auth/loader.vue";
+
 
 export default {
     components: {
         Navbar,
+        CredentialLoader
     },
     data() {
         return {
             form: {
                 name: '',
                 email: '',
-                fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+                fkInstitution: parseInt(localStorage.getItem("institutionId"))
             },
             errors: {
                 name: '',
                 email: '',
             },
+            isLoading
         };
     },
     methods: {
@@ -90,11 +99,13 @@ export default {
             if (!valid) {
                 return;
             }
-
+            isLoading=true;
             try {
+                this.form.fkInstitution =parseInt(localStorage.getItem("institutionId"))
                 const data = await registerCapturist(this.form);
                 console.log(data);
                 if (data === "Ocurrio un error en la peticion") {
+                    isLoading=false;
                     Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -107,7 +118,7 @@ export default {
                         email: '',
                         fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
                     }
-
+                    isLoading=false;
                     Swal.fire({
                         icon: "success",
                         title: "Éxito",
@@ -118,6 +129,7 @@ export default {
                     this.$router.push("./CapturistList");
                 }
             } catch (error) {
+                isLoading=false;
                 Swal.fire({
                     icon: "error",
                     title: "Error",

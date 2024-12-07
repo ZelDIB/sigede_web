@@ -1,119 +1,125 @@
 <template>
     <div class="full-screen">
-        <Navbar />
-        <div>
-            <div class="content">
-                <p class="title">ACTUALIZAR EMPRESA</p>
-                <div class="container-form">
-                    <form @submit.prevent="handleSubmit">
-                        <div class="form-row">
-                            <!-- Columna del formulario -->
-                            <div class="form-column">
-                                <div class="form-group">
-                                    <label for="name" :class="{ 'error-label': errors.name }">Nombre de la
-                                        institución*</label>
-                                    <input type="text" id="name" v-model="form.name"
-                                        :class="['form-control', { error: errors.name }]" />
-                                    <small v-if="errors.name" class="error-message">{{
-                                        errors.name
-                                    }}</small>
-                                </div>
+        <CredentialLoader v-if="isLoading" />
 
-                                <div class="form-group">
-                                    <label for="phone" :class="{ 'error-label': errors.phone }">Teléfono de
-                                        contacto*</label>
-                                    <input type="text" id="phone" v-model="form.phone"
-                                        :class="['form-control', { error: errors.phone }]" />
-                                    <small v-if="errors.phone" class="error-message">{{
-                                        errors.phone
-                                    }}</small>
-                                </div>
+        <div v-else> 
+            <Navbar />
+            <div>
+                <div class="content">
+                    <p class="title">ACTUALIZAR EMPRESA</p>
+                    <div class="container-form">
+                        <form @submit.prevent="handleSubmit">
+                            <div class="form-row">
+                                <!-- Columna del formulario -->
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="name" :class="{ 'error-label': errors.name }">Nombre de la
+                                            institución*</label>
+                                        <input type="text" id="name" v-model="form.name"
+                                            :class="['form-control', { error: errors.name }]" />
+                                        <small v-if="errors.name" class="error-message">{{
+                                            errors.name
+                                        }}</small>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="email" :class="{ 'error-label': errors.email }">Correo de
-                                        contacto*</label>
-                                    <input id="email" v-model="form.email"
-                                        :class="['form-control', { error: errors.email }]" />
-                                    <small v-if="errors.email" class="error-message">{{
-                                        errors.email
-                                    }}</small>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="phone" :class="{ 'error-label': errors.phone }">Teléfono de
+                                            contacto*</label>
+                                        <input type="text" id="phone" v-model="form.phone"
+                                            :class="['form-control', { error: errors.phone }]" />
+                                        <small v-if="errors.phone" class="error-message">{{
+                                            errors.phone
+                                        }}</small>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
-                                    <input type="address" id="address" v-model="form.address"
-                                        :class="['form-control', { error: errors.address }]" />
-                                    <small v-if="errors.address" class="error-message">{{
-                                        errors.address
-                                    }}</small>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="email" :class="{ 'error-label': errors.email }">Correo de
+                                            contacto*</label>
+                                        <input id="email" v-model="form.email"
+                                            :class="['form-control', { error: errors.email }]" />
+                                        <small v-if="errors.email" class="error-message">{{
+                                            errors.email
+                                        }}</small>
+                                    </div>
 
-                                
-                                <div class="form-group">
-                                    <div class="radio-group">
-                                    <label class="radio-container">
-                                        <div class="rb-text" style="background-color: #93d7b0">
-                                        Habilitado
+                                    <div class="form-group">
+                                        <label for="address" :class="{ 'error-label': errors.address }">Dirección*</label>
+                                        <input type="address" id="address" v-model="form.address"
+                                            :class="['form-control', { error: errors.address }]" />
+                                        <small v-if="errors.address" class="error-message">{{
+                                            errors.address
+                                        }}</small>
+                                    </div>
+
+                                    
+                                    <div class="form-group">
+                                        <div class="radio-group">
+                                        <label class="radio-container">
+                                            <div class="rb-text" style="background-color: #93d7b0">
+                                            Habilitado
+                                            </div>
+                                            <input
+                                            type="radio"
+                                            value="HABILITADO"
+                                            v-model="form.status"
+                                            />
+                                        </label>
+                                        <label class="radio-container">
+                                            <div class="rb-text" style="background-color: #d79393">
+                                            Inhabilitado
+                                            </div>
+                                            <input
+                                            type="radio"
+                                            value="INHABILITADO"
+                                            v-model="form.status"
+                                            />
+                                        </label>
                                         </div>
-                                        <input
-                                        type="radio"
-                                        value="HABILITADO"
-                                        v-model="form.status"
-                                        />
-                                    </label>
-                                    <label class="radio-container">
-                                        <div class="rb-text" style="background-color: #d79393">
-                                        Inhabilitado
+                                    </div>
+
+                                </div>
+
+                                <div class="image-column">
+                                    <div class="form-group dotted-border">
+                                        <label for="imageUpload">Subir imagen*</label>
+                                        <div class="custom-file-input-container ">
+                                            <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                                            <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
+                                            <input
+                                                type="file"
+                                                id="imageUpload"
+                                                @change="handleImageUpload"
+                                                accept="image/png, image/jpeg, image/jpg, image/gif"
+                                                class="custom-file-input"
+                                            />
                                         </div>
-                                        <input
-                                        type="radio"
-                                        value="INHABILITADO"
-                                        v-model="form.status"
-                                        />
-                                    </label>
+                                        <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
+
+                                        <div v-if="imagePreview" class="image-preview">
+                                            <p>Nueva imagen</p>
+                                            <img :src="imagePreview" alt="Preview" class="register-image" />
+                                        </div>
+                                        <div v-if="!imagePreview" class="image-preview">
+                                            <p>Imagen actual</p>
+                                            <img :src="oldImage" alt="Preview" class="register-image" />
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="image-column">
-                                <div class="form-group dotted-border">
-                                    <label for="imageUpload">Subir imagen*</label>
-                                    <div class="custom-file-input-container ">
-                                        <button type="button" class="custom-file-button">Seleccionar archivo</button>
-                                        <span class="file-name">{{ form.image ? form.image.name : "No se ha seleccionado ningún archivo" }}</span>
-                                        <input
-                                            type="file"
-                                            id="imageUpload"
-                                            @change="handleImageUpload"
-                                            accept="image/png, image/jpeg, image/jpg, image/gif"
-                                            class="custom-file-input"
-                                        />
-                                    </div>
-                                    <small v-if="errors.image" class="error-message">{{ errors.image }}</small>
-
-                                    <div v-if="imagePreview" class="image-preview">
-                                        <p>Nueva imagen</p>
-                                        <img :src="imagePreview" alt="Preview" class="register-image" />
-                                    </div>
-                                    <div v-if="!imagePreview" class="image-preview">
-                                        <p>Imagen actual</p>
-                                        <img :src="oldImage" alt="Preview" class="register-image" />
-                                    </div>
-                                </div>
+                            <div class="button-group">
+                                <button type="submit" class="submit-btn">
+                                    Registrar institución
+                                </button>
+                                <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
                             </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="submit-btn">
-                                Registrar institución
-                            </button>
-                            <button type="button" class="cancel-btn"  @click="goBack">Cancelar</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 </template>
 
@@ -122,11 +128,13 @@ import Navbar from "~/components/superadmins/Navbar.vue";
 import { getInstitutionInfoByinstitutionId,updateInstitution } from "~/services/ServicesSuperAdmin";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
 import Swal from "sweetalert2";
+import CredentialLoader from "../pages/auth/loader.vue";
 
 
 export default {
     components: {
         Navbar,
+        CredentialLoader,
     },
     data() {
         return {
@@ -140,6 +148,7 @@ export default {
                 address: "",
                 image: "",
             },
+            isLoading: true, 
         };
     },
     methods: {
@@ -214,7 +223,8 @@ export default {
                     "institutionStatus":this.form.status,
                 };
 
-              
+                this.isLoading = true;
+
                 if(this.form.image){
                     const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
                     sendData.logo=imageUrl
@@ -234,6 +244,7 @@ export default {
                         address: "",
                         image: null,
                     }  
+                    this.isLoading = false;
                     Swal.fire({
                     icon: "success",
                     title: "Éxito",
@@ -246,6 +257,8 @@ export default {
 
             } catch (e) {
                 this.errorMessage = "Ocurrio un error en la peticion.";
+                this.isLoading = false;
+
                 Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -258,7 +271,6 @@ export default {
     },
     async mounted(){
             const instId = this.$route.query.institutionId;
-
             if (instId) {
             try {
                 const response = await getInstitutionInfoByinstitutionId(instId);
