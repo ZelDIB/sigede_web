@@ -68,6 +68,7 @@
 <script>
 import Navbar from '../components/Navbar.vue';
 import { registerClientForm } from '~/services/ServiceAdmin';
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -89,7 +90,7 @@ export default {
     },
     methods: {
         goToCapturistList() {
-            this.$router.push({ name: './CapturistList' });
+            this.$router.push("./CapturistList");
         },
         async handleSubmit() {
             if (this.formFields.length < 1) {
@@ -108,17 +109,23 @@ export default {
             try {
                 var institutionId = parseInt(localStorage.getItem("institutionId"));
                 const response = await registerClientForm(this.formFields, institutionId);
-                console.log(response);
-                alert("Datos guardados");
+                Swal.fire({
+                    icon: "success",
+                    title: "Éxito",
+                    text: "Institución registrada exitosamente",
+                    confirmButtonText: "Aceptar",
+                });
                 this.goToCapturistList();
-
             } catch (e) {
-                alert("Error al registrar.");
-                this.goToCapturistList();
-                console.error(e);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al registrar la institución",
+                    confirmButtonText: "Aceptar",
+                });
+                //this.goToCapturistList();
             }
-            this.goToCapturistList();
-            console.log("Campos guardados:", this.formFields);
+            //this.goToCapturistList();
             this.resetForm();
         },
 

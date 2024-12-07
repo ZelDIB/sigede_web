@@ -180,10 +180,11 @@ export default {
                     this.admins = data;
                 }
                 const response = await getInstitutionInfoByinstitutionId(instId);
+
                 if (typeof response === "string") {
                     this.errorMessage = "Error al cargar la info de la institucion.";
                 } else {
-                    this.institutionData = response.data;
+                    this.institutionData = response;
                 }
             } catch (error) {
                 this.errorMessage = "Error al cargar los administradores.";

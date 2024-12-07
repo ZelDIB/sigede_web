@@ -102,7 +102,7 @@ export default {
       if (typeof response === "string") {
         this.errorMessage = "Error al cargar las instituciones.";
       } else {
-        this.institutions = response.data;
+        this.institutions = response;
       }
     } catch (error) {
       this.errorMessage = "Error al cargar las instituciones.";

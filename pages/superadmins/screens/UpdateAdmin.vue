@@ -89,7 +89,7 @@
 
 <script>
 import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
-import Navbar from "../components/Navbar.vue";
+import Navbar from "~/components/superadmins/Navbar.vue";
 import { getOneAdmin, updateAdmin } from "~/services/ServicesSuperAdmin";
 
 export default {
@@ -184,7 +184,7 @@ export default {
           this.backToOrganizationDetails();
         } else {
           this.isLoading = false;
-          this.form = response.data;
+          this.form = response;
         }
       } catch (e) {
         this.backToOrganizationDetails()

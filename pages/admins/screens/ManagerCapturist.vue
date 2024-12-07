@@ -91,6 +91,7 @@
 import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
 import Navbar from "../components/Navbar.vue";
 import { getOneCapturist, updateCapturist } from "~/services/ServiceAdmin";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -124,12 +125,24 @@ export default {
         const response = await updateCapturist(this.form);
 
         if (response.message !== "Ocurrio un error inesperado.") {
+
           this.backToCapturistList();
         }
         this.showModal = false;
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Institución registrada exitosamente",
+          confirmButtonText: "Aceptar",
+        });
       } catch (e) {
         this.backToCapturistList()
-        console.log(e);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al registrar la institución",
+          confirmButtonText: "Aceptar",
+        });
       }
     },
     handleSubmit() {
@@ -179,7 +192,6 @@ export default {
         }
       } catch (e) {
         this.backToCapturistList()
-        console.log(e);
       }
     } else {
       this.backToCapturistList()

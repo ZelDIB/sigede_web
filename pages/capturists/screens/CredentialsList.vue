@@ -6,7 +6,7 @@
         <p class="title">USUARIOS</p>
         <div class="content-table">
           <div class="search-section">
-            <div class="search-icon" style="border-radius: 10px 0 0 0">
+            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goRegister">
               <i class="fas fa-user-plus icon"></i>
             </div>
             <div class="search-container">
@@ -119,6 +119,9 @@ export default {
     },
   },
   methods: {
+    goRegister() {
+      this.$router.push("./RegisterCredencial");
+    },
     sortByName() {
       this.isAscending = !this.isAscending;
       this.lista.sort((a, b) => {

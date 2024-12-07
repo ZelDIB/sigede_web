@@ -75,6 +75,9 @@
 <script>
 import Navbar from "~/pages/admins/components/Navbar.vue";
 import { getFormByInstitutionId,registerCredential,getCapturistIdByEmail } from "~/services/ServicesCapturist";
+import Swal from "sweetalert2";
+import { ServiceCloudinary } from "~/services/ServiceCloudinary";
+
 export default {
     components: {
         Navbar,
@@ -202,25 +205,19 @@ export default {
                 return;
             }
             try {
+                const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
+
                 const newFields = this.form.fields.map(item => ({
                     tag: item.tag,
                     value: item.value
                 }));
-
                 var sendData={
                     userAccountId: this.form.userAccountId,
                     institutionId: this.form.institutionId,
                     fullname: this.form.fullname,
-                    userPhoto:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0VC3wERIDLNnNgZaygSoX5qglVwzL5NkWA&s",
+                    userPhoto: imageUrl,
                     fields:newFields
                 }
-                /*
-                userAccountId: null,
-                institutionId: null,
-                fullname: null,
-                */
-                // this.form.image=null;
-                // this.form.userPhoto ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0VC3wERIDLNnNgZaygSoX5qglVwzL5NkWA&s" ;//Aqui va la foto del usuario
                 const respose=await registerCredential(sendData);
                 console.log("-----------------------------------",sendData);
                 alert("Formulario enviado correctamente");
@@ -238,7 +235,6 @@ export default {
             var userEmail=localStorage.getItem("email");
             const userEmailData = await getCapturistIdByEmail(userEmail);
             this.form.userAccountId=userEmailData.data;
-
             this.form.institutionId = instId;
             const data = await getFormByInstitutionId(instId);
             if (typeof data === "string") {
