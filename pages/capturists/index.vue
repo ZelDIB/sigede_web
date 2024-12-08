@@ -1,13 +1,13 @@
 <template>
-  <div>
-    
-  </div>
-</template>
-
-<script lang="ts" setup>
-
-</script>
-
-<style>
-
-</style>
+    <div>
+      <!--Aqui se coloca el html-->
+    </div>
+  </template>
+  
+  <script lang="ts" setup>
+  
+  </script>
+  
+  <style>
+  
+  </style>
