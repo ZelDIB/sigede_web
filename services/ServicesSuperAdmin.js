@@ -3,7 +3,7 @@ import { useAuthStore } from "~/store/authStore";
 export const getAllInstitutions = async () => {
   const { $axios } = useNuxtApp();
   try {
-    const response = await $axios.get("api/institutions");
+    const response = await $axios.get("api/institutions/get-all");
     return response.data;
   } catch (e) {
     console.error(e);
@@ -40,7 +40,7 @@ export const getAdminsByInstitutionId = async (institutionId) => {
   const { $axios } = useNuxtApp();
   try {
     const response = await $axios.get(`api/users/admins/${institutionId}`);
-    return response.data;
+    return response;
   } catch (e) {
     console.error(e);
     return "Ocurrio un error en la peticion";
@@ -70,8 +70,11 @@ export const updateInstitution = async (data) => {
 };
 
 export const getOneAdmin=async(userAccountId,institutionId)=>{
+  const { $axios } = useNuxtApp();
+
     try {
-        const response = await axios.get(`${BASEURL}api/admin/get-admin/${userAccountId}/${institutionId}`);
+        const response = await $axios.get(`api/admin/get-admin/${userAccountId}/${institutionId}`);
+        console.log(response.data)
         return response.data;
     }catch(e){
         console.error(e);
@@ -79,8 +82,10 @@ export const getOneAdmin=async(userAccountId,institutionId)=>{
     }
 }
 export const updateAdmin=async(data)=>{
+  const { $axios } = useNuxtApp();
+
     try {
-        const response = await axios.put(`${BASEURL}api/admin/update-basic-data`,data);
+        const response = await $axios.put(`api/admin/update-basic-data`,data);
         return response.data;
     }catch(e){
         console.error(e);
@@ -93,13 +98,8 @@ export const updateAdmin=async(data)=>{
 export const registerAdmin = async (data) => {
   const { $axios } = useNuxtApp();
   const authStore = useAuthStore();
-  const fkInstitution = authStore.fkInstitution;
   try {
-    const response = await $axios.post("api/admin/register", {
-      name: data.name,
-      email: data.email,
-      fkInstitution: fkInstitution,
-    });
+    const response = await $axios.post("api/admin/register", data);
     return response;
   } catch (error) {
     console.log(error);
