@@ -12,7 +12,6 @@ import BASEURL from "~/utils/properties";
 }
     */
 export const getAllCredentialByInstitutionIdAndName = async (data, page) => {
-    console.log(data)
     try {
         const response = await axios.post(`${BASEURL}api/credentials/get-all-by-institution?page=${page}&size=10&sort=fullname,desc`, data);
         console.log(response.data)
@@ -37,7 +36,6 @@ export const getFormByInstitutionId=async (institutionId)=>{
 export const registerCredential=async(data)=>{
     try {
         const response = await axios.post(`${BASEURL}api/credentials/new-credential`,data);
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++",response)
         return response.data;
     }catch(e){
         console.error(e);

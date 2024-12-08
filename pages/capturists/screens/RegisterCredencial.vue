@@ -219,10 +219,12 @@ export default {
 
                 const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
 
-                const newFields = this.form.fields.map(item => ({
+                const newFields = this.form.fields.map(item => (
+                    {
                     tag: item.tag,
                     value: item.value
-                }));
+                }
+            ));
                 var sendData={
                     userAccountId: this.form.userAccountId,
                     institutionId: this.form.institutionId,
@@ -257,13 +259,15 @@ export default {
             this.isLoading=true;
 
             var instId = parseInt(localStorage.getItem("institutionId"));
+            
             var userEmail=localStorage.getItem("email");
+            const userEmailData = await getCapturistIdByEmail(userEmail);//obtienele id del capturista que retitra al usuario
 
-            const userEmailData = await getCapturistIdByEmail(userEmail);
             this.form.userAccountId=userEmailData.data;
             this.form.institutionId = instId;
 
             const data = await getFormByInstitutionId(instId);
+            console.log(data)
             if (typeof data === "string") {
                 this.errorMessage = "Error al cargar los capturistas.";
 
