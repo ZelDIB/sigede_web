@@ -2,14 +2,16 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
+      <Navbar />
       <div class="content">
         <p class="title">VISUALIZACION QR</p>
         <div class="container-form">
           <div class="form-row">
-          
             <div class="form-column">
               <div class="user-info">
-                <h2 class="subtitle is-4"><strong>Nombre:</strong> Carlos Juan</h2>
+                <h2 class="subtitle is-4">
+                  <strong>Nombre:</strong> Carlos Juan
+                </h2>
                 <p><strong>Puesto:</strong> Gerente</p>
                 <p><strong>Ubicación:</strong> Groove Street</p>
                 <p><strong>Fecha de nacimiento:</strong> 16-09-1996</p>
@@ -36,7 +38,7 @@
 </template>
 
 <script>
-import Navbar from "~/components/superadmins/Navbar.vue";
+import Navbar from "~/components/NavBar.vue";
 import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {

@@ -1,8 +1,13 @@
-import { decodeToken } from "../pages/utils/tokenUtils";
+import { decodeToken } from "../utils/tokenUtils";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   // Validar que el middleware solo se ejecute en el cliente
   if (process.client) {
+    const publicRoutes = ["/", "/auth/ResetPassword", "/auth/SendEmail", "/auth/VerificationCode"];
+
+    if (publicRoutes.includes(to.path)) {
+      return;
+    }
     // Obtener el valor del token de localStorage
     const token = localStorage.getItem("token");
 
@@ -16,16 +21,25 @@ export default defineNuxtRouteMiddleware((to, from) => {
       const decodedToken = decodeToken(token);
 
       // Definir los roles válidos
-      type Role = 'SUPERADMIN' | 'ADMIN' | 'CAPTURISTA';
+      type Role = "SUPERADMIN" | "ADMIN" | "CAPTURISTA";
 
       // Decodificar el token y obtener el rol
       const roles: Role = decodedToken.roles[0] as Role;
 
       // Definir las rutas principales de cada rol
       const roleRoutes: Record<Role, string[]> = {
-        SUPERADMIN: ['/superadmins/screens/OrganizationsList', '/superadmins/screens/SomeOtherRoute'],
-        ADMIN: ['/admins/screens/CapturistList', '/admins/screens/AnotherRoute'],
-        CAPTURISTA: ['/capturists/screens/CredentialsList', '/capturists/screens/OtherCapturistRoute'],
+        SUPERADMIN: [
+          "/superadmins/screens/OrganizationsList",
+          "/superadmins/screens/SomeOtherRoute",
+        ],
+        ADMIN: [
+          "/admins/screens/CapturistList",
+          "/admins/screens/AnotherRoute",
+        ],
+        CAPTURISTA: [
+          "/capturists/screens/CredentialsList",
+          "/capturists/screens/OtherCapturistRoute",
+        ],
       };
 
       // Obtener las rutas permitidas para el rol
@@ -37,14 +51,16 @@ export default defineNuxtRouteMiddleware((to, from) => {
       }
 
       // Validar si la ruta actual está dentro de las rutas permitidas para ese rol
-      const isAllowed = allowedRoutes.some(route => to.path.startsWith(route));
+      const isAllowed = allowedRoutes.some((route) =>
+        to.path.startsWith(route)
+      );
 
       if (isAllowed) {
         return; // Permitir navegación
       }
 
       // Si la ruta no es válida, redirigir a la primera ruta permitida del rol
-      return navigateTo(allowedRoutes[0]);
+      //return navigateTo(allowedRoutes[0]);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
       localStorage.removeItem("token");

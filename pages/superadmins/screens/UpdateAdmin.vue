@@ -91,7 +91,7 @@
 
 
 <script>
-import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
+import CustomConfirmationModal from "~/utils/CustomConfirmationModal.vue";
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { getOneAdmin, updateAdmin } from "~/services/ServicesSuperAdmin";
 

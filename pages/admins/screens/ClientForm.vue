@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue';
+import Navbar from '../../../components/admins/Navbar.vue';
 import { registerClientForm } from '~/services/ServiceAdmin';
 import Swal from "sweetalert2";
 import CredentialLoader from "../pages/auth/loader.vue";

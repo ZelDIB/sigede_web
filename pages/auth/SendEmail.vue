@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="screen-split">
     <div class="left-half">
       <div class="container">
@@ -32,6 +33,7 @@
 
 <script>
 import { sendVerificationCode } from "../services/ServicesAuth.js";
+import NavBar from "~/components/NavBar.vue";
 
 export default {
   data() {
@@ -44,23 +46,25 @@ export default {
     async handleRecoverPassword() {
       try {
         if (!this.email) {
-          this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
+          this.errorMessage =
+            "Por favor, ingresa un correo electrónico válido.";
           return;
         }
         const response = await sendVerificationCode({ userEmail: this.email });
 
-        console.log("Código de verificación enviado:", response);
-        this.errorMessage = ""; 
-        this.$router.push("/auth/VerificationCode"); 
+        if (response.status == 200) {
+          this.errorMessage = "";
+          localStorage.setItem("email", this.email);
+          this.$router.push("/auth/VerificationCode");
+        }
       } catch (error) {
-        console.error("Error al enviar el código de verificación:", error);
-        this.errorMessage = "Hubo un error al enviar el código. Intenta nuevamente.";
+        this.errorMessage =
+          "Hubo un error al enviar el código. Intenta nuevamente.";
       }
     },
   },
 };
 </script>
-
 
 <style scoped>
 .screen-split {
@@ -166,7 +170,7 @@ label {
 .status-message {
   margin-top: 15px;
   font-size: 14px;
-  color: #c1270c; 
+  color: #c1270c;
   font-weight: bold;
 }
 </style>

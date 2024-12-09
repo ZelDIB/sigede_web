@@ -75,7 +75,7 @@
 
 <script>
 import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
-import Navbar from "../components/Navbar.vue";
+import Navbar from "../../../components/admins/Navbar.vue";
 import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {

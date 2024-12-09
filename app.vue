@@ -1,17 +1,12 @@
 <template>
   <div>
-    <Navbar />
     <NuxtPage />
   </div>
 </template>
 
-<script setup>
-import Navbar from "./components/superadmins/Navbar.vue";
-</script>
-
 <style>
 body {
-  background-color: #E4E4E4;
+  background-color: #e4e4e4;
   margin: 0;
   height: 100vh;
 }

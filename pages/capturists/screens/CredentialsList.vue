@@ -8,7 +8,11 @@
           <p class="title">USUARIOS</p>
           <div class="content-table">
             <div class="search-section">
-              <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goRegister">
+              <div
+                class="search-icon"
+                style="border-radius: 10px 0 0 0"
+                @click="goRegister"
+              >
                 <i class="fas fa-user-plus icon"></i>
               </div>
               <div class="search-container">
@@ -78,7 +82,9 @@
                   </button>
                   <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
                   <button
-                    :disabled="currentPage === totalPages - 1 || totalPages === 0"
+                    :disabled="
+                      currentPage === totalPages - 1 || totalPages === 0
+                    "
                     @click="changePage(currentPage + 1)"
                   >
                     Siguiente
@@ -92,9 +98,9 @@
     </div>
   </div>
 </template>
-  
-  <script>
-import Navbar from "~/pages/admins/components/Navbar.vue";
+
+<script>
+import Navbar from "~/components/admins/Navbar.vue";
 import { getAllCredentialByInstitutionIdAndName } from "~/services/ServicesCapturist";
 import CredentialLoader from "../pages/auth/loader.vue";
 
@@ -102,7 +108,6 @@ export default {
   components: {
     Navbar,
     CredentialLoader,
-
   },
   name: "CredentialsList",
   data() {
@@ -113,7 +118,7 @@ export default {
       totalPages: 0,
       isAscending: true,
       isLoading: true,
-      isLoadingGeneral:false
+      isLoadingGeneral: false,
     };
   },
   watch: {
@@ -156,35 +161,33 @@ export default {
       return expDate > currentDate ? "Activo" : "Inactivo";
     },
     async fetchUsers() {
-      this.isLoading=true;
+      this.isLoading = true;
       try {
-        var instId=parseInt(localStorage.getItem("institutionId"))
-        
+        var instId = parseInt(localStorage.getItem("institutionId"));
+
         const sendData = {
           institutionId: instId,
           fullname: this.searchTerm,
+          page: this.currentPage,
+          size: 50,
         };
-        const data = await getAllCredentialByInstitutionIdAndName(
-          sendData,
-          this.currentPage
-        );
+        const data = await getAllCredentialByInstitutionIdAndName(sendData);
         this.lista = data.data.content;
         this.totalPages = data.data.totalPages;
-        this.isLoading=false;
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading=false;
+        this.isLoading = false;
         console.error("Error al cargar los usuarios:", error);
       }
     },
   },
   async mounted() {
-    this.isLoadingGeneral=true;
+    this.isLoadingGeneral = true;
     this.fetchUsers();
-    this.isLoadingGeneral=false;
+    this.isLoadingGeneral = false;
   },
 };
 </script>
-  
 
 <style scoped>
 html,
@@ -436,10 +439,10 @@ body {
   margin-right: 10px;
 }
 .loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-top: 15px;
 }
 </style>

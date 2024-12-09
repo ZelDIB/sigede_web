@@ -4,134 +4,157 @@
     <div v-else>
       <Navbar />
       <div>
-          <div class="content">
-              <p class="title">REGISTRO DE ADMINISTRADOR</p>
-              <div class="container-form">
-                  <form @submit.prevent="handleSubmit">
-                      <div class="form-row">
-                          <div class="form-column">
-                              <div class="form-group">
-                                  <label for="name" :class="{ 'error-label': errors.name }">Nombre del administrador*</label>
-                                  <input type="text" id="name" v-model="form.name"
-                                      :class="['form-control', { 'error': errors.name }]" placeholder="Nombre" />
-                                  <small v-if="errors.name" class="error-message">{{ errors.name }}</small>
-                              </div>
+        <div class="content">
+          <p class="title">REGISTRO DE ADMINISTRADOR</p>
+          <div class="container-form">
+            <form @submit.prevent="handleSubmit">
+              <div class="form-row">
+                <div class="form-column">
+                  <div class="form-group">
+                    <label for="name" :class="{ 'error-label': errors.name }"
+                      >Nombre del administrador*</label
+                    >
+                    <input
+                      type="text"
+                      id="name"
+                      v-model="form.name"
+                      :class="['form-control', { error: errors.name }]"
+                      placeholder="Nombre"
+                    />
+                    <small v-if="errors.name" class="error-message">{{
+                      errors.name
+                    }}</small>
+                  </div>
 
-                              <div class="form-group">
-                                  <label for="email" :class="{ 'error-label': errors.email }">Correo de contacto*</label>
-                                  <input id="email" v-model="form.email"
-                                      :class="['form-control', { 'error': errors.email }]" placeholder="Correo" />
-                                  <small v-if="errors.email" class="error-message">{{ errors.email }}</small>
-                              </div>
-                          </div>
+                  <div class="form-group">
+                    <label for="email" :class="{ 'error-label': errors.email }"
+                      >Correo de contacto*</label
+                    >
+                    <input
+                      id="email"
+                      v-model="form.email"
+                      :class="['form-control', { error: errors.email }]"
+                      placeholder="Correo"
+                    />
+                    <small v-if="errors.email" class="error-message">{{
+                      errors.email
+                    }}</small>
+                  </div>
+                </div>
 
-                          <div class="image-column">
-                              <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
-                          </div>
-                      </div>
-
-                      <div class="button-group">
-                          <button type="submit" class="submit-btn">Registrar administrador</button>
-                          <button type="button" class="cancel-btn" @click="goBack">Cancelar</button>
-                      </div>
-                  </form>
+                <div class="image-column">
+                  <img
+                    src="/customer_service.png"
+                    alt="Imagen de registro"
+                    class="register-image"
+                  />
+                </div>
               </div>
+
+              <div class="button-group">
+                <button type="submit" class="submit-btn">
+                  Registrar administrador
+                </button>
+                <button type="button" class="cancel-btn" @click="goBack">
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
-      </div>      
+        </div>
+      </div>
     </div>
-
-
-
   </div>
 </template>
 
 <script>
-import { registerAdmin } from '~/services/ServicesSuperAdmin'; 
-import Navbar from '~/components/superadmins/Navbar.vue';
+import { registerAdmin } from "~/services/ServicesSuperAdmin";
+import Navbar from "~/components/superadmins/Navbar.vue";
 import Swal from "sweetalert2";
 import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
   components: {
-      Navbar,
-      CredentialLoader,
-
+    Navbar,
+    CredentialLoader,
   },
   data() {
-      return {
-          form: {
-              name: '',
-              email: '',
-              fkInstitution: null
-          },
-          errors: {
-              name: '',
-              email: '',
-          },
-          institutionId: null,
-          isLoading: false, 
-      };
+    return {
+      form: {
+        name: "",
+        email: "",
+        fkInstitution: null,
+      },
+      errors: {
+        name: "",
+        email: "",
+      },
+      institutionId: null,
+      isLoading: false,
+    };
   },
   methods: {
-      goBack (){
-          const institutionId=this.institutionId;
-          this.$router.push({ path: "./OrganizationDetails", query: {institutionId} });
-      },
-      async handleSubmit() {
-          this.errors = {
-              name: '',
-              email: '',
-          };
+    goBack() {
+      const institutionId = this.institutionId;
+      this.$router.push({
+        path: "./OrganizationDetails",
+        query: { institutionId },
+      });
+    },
+    async handleSubmit() {
+      this.errors = {
+        name: "",
+        email: "",
+      };
 
-          let valid = true;
+      let valid = true;
 
-          if (!this.form.name) {
-              this.errors.name = 'El nombre es obligatorio';
-              valid = false;
-          }
+      if (!this.form.name) {
+        this.errors.name = "El nombre es obligatorio";
+        valid = false;
+      }
 
-          const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-          if (!this.form.email) {
-              this.errors.email = 'El correo es obligatorio';
-              valid = false;
-          } else if (!emailRegex.test(this.form.email)) {
-              this.errors.email = 'El correo electrónico no es válido';
-              valid = false;
-          }
-          if (!valid) {
-              return;
-          }
-          try {
-            this.isLoading=true;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!this.form.email) {
+        this.errors.email = "El correo es obligatorio";
+        valid = false;
+      } else if (!emailRegex.test(this.form.email)) {
+        this.errors.email = "El correo electrónico no es válido";
+        valid = false;
+      }
+      if (!valid) {
+        return;
+      }
+      try {
+        this.isLoading = true;
 
-            const data = await registerAdmin(this.form);
-            this.isLoading=false;
+        const data = await registerAdmin(this.form);
+        this.isLoading = false;
 
-              Swal.fire({
-                    icon: "success",
-                    title: "Éxito",
-                    text: "Institución registrada exitosamente",
-                    confirmButtonText: "Aceptar",
-                });
-                this.goBack(this.institutionId);
-          } catch (error) {
-            this.isLoading=false;
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Institución registrada exitosamente",
+          confirmButtonText: "Aceptar",
+        });
+        this.goBack(this.institutionId);
+      } catch (error) {
+        this.isLoading = false;
 
-            Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Ocurrió un error al registrar la institución",
-                    confirmButtonText: "Aceptar",
-                });
-          }
-      },
-      
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al registrar la institución",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    },
   },
   mounted() {
-      const instId = this.$route.query.institutionId;
-      this.institutionId=instId;
-      this.form.fkInstitution=instId;
-  }
+    const instId = this.$route.query.institutionId;
+    this.institutionId = instId;
+    this.form.fkInstitution = instId;
+  },
 };
 </script>
 
@@ -189,7 +212,7 @@ body {
 
 .form-column,
 .image-column {
-  flex: 1 1 100%; 
+  flex: 1 1 100%;
   padding: 20px;
 }
 
@@ -201,23 +224,23 @@ body {
 
 @media (min-width: 768px) {
   .form-column {
-      flex: 1 1 60%; 
-      order: 1; 
+    flex: 1 1 60%;
+    order: 1;
   }
 
   .image-column {
-      flex: 1 1 40%; 
-      order: 2; 
+    flex: 1 1 40%;
+    order: 2;
   }
 }
 
 @media (max-width: 767px) {
   .form-column {
-      order: 2; 
+    order: 2;
   }
 
   .image-column {
-      order: 1; 
+    order: 1;
   }
 }
 
