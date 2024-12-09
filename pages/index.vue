@@ -2,6 +2,7 @@
   <div>
     <CredentialLoader v-if="isLoading" />
     <div v-if="!isLoading">
+      <NavBar />
       <div class="screen-split">
         <div class="left-half">
           <div class="container">
@@ -15,21 +16,43 @@
           <div class="container2">
             <p class="title2">Iniciar sesión</p>
             <label for="email">Correo electrónico *</label>
-            <input v-model="email" type="email" id="email" class="input-field" placeholder="Correo electrónico" />
+            <input
+              v-model="email"
+              type="email"
+              id="email"
+              class="input-field"
+              placeholder="Correo electrónico"
+            />
 
             <label for="password">Contraseña *</label>
             <div class="password-container">
-              <input v-model="password" :type="showPassword ? 'text' : 'password'" id="password" class="input-field"
-                placeholder="Contraseña" />
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                class="input-field"
+                placeholder="Contraseña"
+              />
               <span class="eye-icon" @click="togglePasswordVisibility">
-                <i :class="showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'" style="color: #030303"></i>
+                <i
+                  :class="
+                    showPassword
+                      ? 'fa-regular fa-eye'
+                      : 'fa-regular fa-eye-slash'
+                  "
+                  style="color: #030303"
+                ></i>
               </span>
             </div>
 
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-            <button class="login-button" @click="handleLogin">Iniciar sesión</button>
-            <a href="/auth/SendEmail" class="forgot-password">Olvidé la contraseña</a>
+            <button class="login-button" @click="handleLogin">
+              Iniciar sesión
+            </button>
+            <a href="/auth/SendEmail" class="forgot-password"
+              >Olvidé la contraseña</a
+            >
           </div>
         </div>
       </div>
@@ -42,7 +65,8 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import { loginMethod } from "../services/ServicesAuth.js";
 import CredentialLoader from "../pages/auth/loader.vue";
 import Swal from "sweetalert2";
-import { decodeToken } from "./utils/tokenUtils";
+import { decodeToken } from "../utils/tokenUtils.js";
+import NavBar from "~/components/NavBar.vue";
 
 export default {
   components: {
@@ -76,36 +100,31 @@ export default {
         const token = response.token;
         localStorage.setItem("token", token);
 
-        // Usar la función de utilidad para decodificar el token
         const { roles } = decodeToken(token);
 
-        // Hacer un console.log de los roles para depuración
-
-        // Redirigir según el rol
         if (roles.includes("SUPERADMIN")) {
           this.$router.push("/superadmins/screens/OrganizationsList");
         } else if (roles.includes("ADMIN")) {
-      this.$router.push("/admins/screens/CapturistList");
-    } else if (roles.includes("CAPTURISTA")) {
-      this.$router.push("/capturists/screens/CredentialsList");
-    } else {
-      this.$router.push("/");
-    }
-  } catch (error) {
-    this.errorMessage = "Correo o contraseña incorrectos.";
-    console.error("Error al iniciar sesión:", error);
+          this.$router.push("/admins/screens/CapturistList");
+        } else if (roles.includes("CAPTURISTA")) {
+          this.$router.push("/capturists/screens/CredentialsList");
+        } else {
+          this.$router.push("/");
+        }
+      } catch (error) {
+        this.errorMessage = "Correo o contraseña incorrectos.";
+        console.error("Error al iniciar sesión:", error);
 
-    Swal.fire({
-      title: 'Error',
-      text: 'Correo o contraseña incorrectos.',
-      icon: 'error',
-      confirmButtonText: 'Aceptar'
-    });
-  } finally {
-    this.isLoading = false;
-  }
-}
-
+        Swal.fire({
+          title: "Error",
+          text: "Correo o contraseña incorrectos.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      } finally {
+        this.isLoading = false;
+      }
+    },
   },
 };
 </script>

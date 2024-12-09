@@ -262,7 +262,7 @@ const handleConfirm = () => {
   handleUpdateProfile();
   states.isEditing = false;
   states.isEdited = true;
-  states.showInput = false
+  states.showInput = false;
   showCustomAlert.value = false;
 };
 

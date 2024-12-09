@@ -1,16 +1,16 @@
 import axios from "axios";
 import BASEURL from "../utils/properties";
-import { useAuthStore } from "~/store/authStore";
 
 export const loginMethod = async (data) => {
   try {
     const response = await axios.post(`${BASEURL}login`, data);
 
-    const { institutionId, email, token } = response.data;
+    const { institutionId, email, token, userId } = response.data;
 
     localStorage.setItem("institutionId", institutionId);
     localStorage.setItem("email", email);
     localStorage.setItem("token", token);
+    localStorage.setItem("userId", userId);
     axios.defaults.headers.common["Authorization"] = `${token}`;
 
     return response.data;
@@ -58,10 +58,22 @@ export default {
   },
 };
 
+export const changePassword = async (data) => {
+  const { $axios } = useNuxtApp();
+  try {
+    const response = await $axios.put(
+      "api/recovery-password/change-password",
+      data
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getProfileInformation = async () => {
   const { $axios } = useNuxtApp();
-  const authStore = useAuthStore();
-  const userId = authStore.userId;
+  const userId = parseInt(localStorage.getItem("userId"));
   try {
     const response = await $axios.post("api/users/get-account", {
       userId: userId,
@@ -74,8 +86,7 @@ export const getProfileInformation = async () => {
 
 export const updateProfileInformation = async (data) => {
   const { $axios } = useNuxtApp();
-  const authStore = useAuthStore();
-  const userId = authStore.userId;
+  const userId = parseInt(localStorage.getItem("userId"));
   let payload;
   try {
     if (data.password) {
@@ -94,5 +105,15 @@ export const updateProfileInformation = async (data) => {
     return response;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getQrData = async (id) => {
+  const { $axios } = useNuxtApp();
+  try {
+    const response = await $axios.get(`api/credentials/get-qr-data/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 };

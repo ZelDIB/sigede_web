@@ -34,20 +34,20 @@
 
 <script>
 export default {
-  name: 'Navbar',
+  name: "Navbar",
   data() {
     return {
-      isActive: false
-    }
+      isActive: false,
+    };
   },
   methods: {
     toggleMenu() {
-      this.isActive = !this.isActive
-    }
-  }
-}
+      this.isActive = !this.isActive;
+    },
+  },
+};
 
-import '@fortawesome/fontawesome-free/css/all.css';
+import "@fortawesome/fontawesome-free/css/all.css";
 </script>
 
 <style scoped>

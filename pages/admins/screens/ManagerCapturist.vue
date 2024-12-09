@@ -89,8 +89,8 @@
 
 
 <script>
-import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
-import Navbar from "../components/Navbar.vue";
+import CustomConfirmationModal from "~/utils/CustomConfirmationModal.vue";
+import Navbar from "../../../components/admins/Navbar.vue";
 import { getOneCapturist, updateCapturist } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
 import CredentialLoader from "../pages/auth/loader.vue";

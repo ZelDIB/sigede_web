@@ -91,7 +91,7 @@
 
 
 <script>
-import CustomConfirmationModal from "~/pages/utils/CustomConfirmationModal.vue";
+import CustomConfirmationModal from "~/utils/CustomConfirmationModal.vue";
 import Navbar from "~/components/superadmins/Navbar.vue";
 import { getOneAdmin, updateAdmin } from "~/services/ServicesSuperAdmin";
 
@@ -134,7 +134,6 @@ export default {
         this.showModal = false;
       } catch (e) {
         this.backToOrganizationDetails()
-        console.log(e);
       }
     },
     handleSubmit() {
@@ -192,7 +191,6 @@ export default {
         }
       } catch (e) {
         this.backToOrganizationDetails()
-        console.log(e);
       }
     } else if (instId) {
       this.backToOrganizationDetails()

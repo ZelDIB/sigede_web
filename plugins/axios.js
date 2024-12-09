@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuthStore } from "~/store/authStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const axiosInstance = axios.create({
@@ -10,8 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   axiosInstance.interceptors.request.use(
     (config) => {
-      const autStore = useAuthStore();
-      const token = autStore.token;
+      const token = localStorage.getItem("token");
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
