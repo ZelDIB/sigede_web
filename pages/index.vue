@@ -100,12 +100,8 @@ export default {
         const token = response.token;
         localStorage.setItem("token", token);
 
-        // Usar la función de utilidad para decodificar el token
         const { roles } = decodeToken(token);
 
-        // Hacer un console.log de los roles para depuración
-
-        // Redirigir según el rol
         if (roles.includes("SUPERADMIN")) {
           this.$router.push("/superadmins/screens/OrganizationsList");
         } else if (roles.includes("ADMIN")) {

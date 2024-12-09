@@ -107,3 +107,13 @@ export const updateProfileInformation = async (data) => {
     console.error(error);
   }
 };
+
+export const getQrData = async (id) => {
+  const { $axios } = useNuxtApp();
+  try {
+    const response = await $axios.get(`api/credentials/get-qr-data/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

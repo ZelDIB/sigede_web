@@ -10,24 +10,29 @@
             <div class="form-column">
               <div class="user-info">
                 <h2 class="subtitle is-4">
-                  <strong>Nombre:</strong> Carlos Juan
+                  <strong>Nombre:</strong> {{ credential.fullname }}
                 </h2>
-                <p><strong>Puesto:</strong> Gerente</p>
-                <p><strong>Ubicación:</strong> Groove Street</p>
-                <p><strong>Fecha de nacimiento:</strong> 16-09-1996</p>
-                <p><strong>RFC:</strong> NCUJENWAUCIBN</p>
-                <p><strong>CURP:</strong> NCUJENWAUCIBN</p>
-                <p><strong>Número laboral:</strong> 6648HBCVJ</p>
+                <div v-for="(field, index) in credential.fields" :key="index">
+                  <p>
+                    <strong>{{ field.tag }}:</strong> {{ field.value }}
+                  </p>
+                </div>
               </div>
             </div>
 
             <div class="image-column">
               <figure class="image is-128x128 mx-auto">
-                <img class="is-rounded" :src="userImage" alt="Foto de perfil" />
+                <img
+                  class="is-rounded"
+                  :src="credential.userPhoto"
+                  alt="Foto de perfil"
+                />
               </figure>
               <div class="vigencia">
                 <p>Vigencia</p>
-                <span class="vigencia-date">15-09-2025</span>
+                <span class="vigencia-date">{{
+                  credential.expirationDate
+                }}</span>
               </div>
             </div>
           </div>
@@ -37,22 +42,30 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Navbar from "~/components/NavBar.vue";
 import CredentialLoader from "../pages/auth/loader.vue";
+import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
+import { getQrData } from "~/services/ServicesAuth";
 
-export default {
-  components: {
-    Navbar,
-    CredentialLoader,
-  },
-  data() {
-    return {
-      isLoading: false,
-      userImage: "https://via.placeholder.com/128",
-    };
-  },
-};
+const route = useRoute();
+const credential = ref(null);
+const isLoading = ref(true);
+
+onMounted(async () => {
+  const id = route.query.id;
+  if (id) {
+    const response = await getQrData(id);
+
+    if (response.status == 200) {
+      credential.value = response.data;
+      isLoading.value = false;
+    } else {
+      isLoading.value = false;
+    }
+  }
+});
 </script>
 
 <style scoped>

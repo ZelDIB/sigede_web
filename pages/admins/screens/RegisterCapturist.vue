@@ -117,7 +117,6 @@ export default {
         this.errors.email = "El correo electrónico no es válido";
         valid = false;
       }
-      console.log(this.errors);
       if (!valid) {
         return;
       }
@@ -127,7 +126,6 @@ export default {
           localStorage.getItem("institutionId")
         );
         const data = await registerCapturist(this.form);
-        console.log(data);
         if (data === "Ocurrio un error en la peticion") {
           this.isLoading = false;
           Swal.fire({

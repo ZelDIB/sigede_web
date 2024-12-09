@@ -3,10 +3,21 @@ import { decodeToken } from "../utils/tokenUtils";
 export default defineNuxtRouteMiddleware((to, from) => {
   // Validar que el middleware solo se ejecute en el cliente
   if (process.client) {
-    const publicRoutes = ["/", "/auth/ResetPassword", "/auth/SendEmail", "/auth/VerificationCode"];
+    const publicRoutes = [
+      "/",
+      "/auth/ResetPassword",
+      "/auth/SendEmail",
+      "/auth/VerificationCode",
+      "/public/screens/vista_QR**",
+    ];
 
-    if (publicRoutes.includes(to.path)) {
-      return;
+    const isPublic = publicRoutes.some((route) => {
+      const regex = new RegExp("^" + route.replace("**", ".*") + "$");
+      return regex.test(to.path);
+    });
+
+    if (isPublic) {
+      return; // Permitir navegación
     }
     // Obtener el valor del token de localStorage
     const token = localStorage.getItem("token");

@@ -296,7 +296,6 @@ export default {
           fields: newFields,
         };
         const respose = await registerCredential(sendData);
-        console.log(respose);
 
         this.isLoading = false;
         Swal.fire({
@@ -329,7 +328,6 @@ export default {
       this.form.institutionId = instId;
 
       const data = await getFormByInstitutionId(instId);
-      console.log(data);
       if (typeof data === "string") {
         this.errorMessage = "Error al cargar los capturistas.";
       } else {
