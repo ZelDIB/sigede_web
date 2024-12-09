@@ -23,9 +23,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
       // Definir las rutas principales de cada rol
       const roleRoutes: Record<Role, string[]> = {
-        SUPERADMIN: ['/superadmins/screens/OrganizationsList', '/superadmins/screens/SomeOtherRoute'],
-        ADMIN: ['/admins/screens/CapturistList', '/admins/screens/AnotherRoute'],
-        CAPTURISTA: ['/capturists/screens/CredentialsList', '/capturists/screens/OtherCapturistRoute'],
+        SUPERADMIN: ['/superadmins/screens/OrganizationsList', '/superadmins/screens'],
+        ADMIN: ['/admins/screens/CapturistList', '/admins/screens'],
+        CAPTURISTA: ['/capturists/screens/CredentialsList', '/capturists/screens'],
       };
 
       // Obtener las rutas permitidas para el rol
