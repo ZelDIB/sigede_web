@@ -1,54 +1,54 @@
 import { decodeToken } from "../pages/utils/tokenUtils";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  // Validar que el middleware solo se ejecute en el cliente
   if (process.client) {
-    // Obtener el valor del token de localStorage
     const token = localStorage.getItem("token");
 
-    // Validar que el token existe
     if (!token) {
       console.warn("No se encontró el token en localStorage");
-      return navigateTo("/");
+      if (to.path !== "/") {
+        return navigateTo("/");
+      }
+      return;  
     }
 
     try {
       const decodedToken = decodeToken(token);
+      if (!decodedToken || !decodedToken.roles || decodedToken.roles.length === 0) {
+        throw new Error("Token no válido o sin roles");
+      }
 
-      // Definir los roles válidos
       type Role = 'SUPERADMIN' | 'ADMIN' | 'CAPTURISTA';
 
-      // Decodificar el token y obtener el rol
       const roles: Role = decodedToken.roles[0] as Role;
 
-      // Definir las rutas principales de cada rol
       const roleRoutes: Record<Role, string[]> = {
         SUPERADMIN: ['/superadmins/screens/OrganizationsList', '/superadmins/screens'],
         ADMIN: ['/admins/screens/CapturistList', '/admins/screens'],
         CAPTURISTA: ['/capturists/screens/CredentialsList', '/capturists/screens'],
       };
 
-      // Obtener las rutas permitidas para el rol
       const allowedRoutes = roleRoutes[roles];
 
       if (!allowedRoutes) {
         console.warn("El rol no tiene rutas permitidas");
-        return navigateTo("/");
+        return navigateTo("/"); 
       }
 
-      // Validar si la ruta actual está dentro de las rutas permitidas para ese rol
       const isAllowed = allowedRoutes.some(route => to.path.startsWith(route));
 
-      if (isAllowed) {
-        return; // Permitir navegación
+      if (isAllowed || to.path === allowedRoutes[0]) {
+        return; 
       }
 
-      // Si la ruta no es válida, redirigir a la primera ruta permitida del rol
       return navigateTo(allowedRoutes[0]);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
       localStorage.removeItem("token");
-      return navigateTo("/");
+      if (to.path !== "/") {
+        return navigateTo("/"); 
+      }
+      return; 
     }
   }
 });
