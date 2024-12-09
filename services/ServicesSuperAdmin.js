@@ -40,6 +40,7 @@ export const getAdminsByInstitutionId = async (institutionId) => {
   const { $axios } = useNuxtApp();
   try {
     const response = await $axios.get(`api/users/admins/${institutionId}`);
+    console.log(response)
     return response;
   } catch (e) {
     console.error(e);

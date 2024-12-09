@@ -67,7 +67,7 @@ export default {
                 name: '',
                 email: '',
             },
-            isLoading
+            isLoading:false
         };
     },
     methods: {
@@ -99,13 +99,13 @@ export default {
             if (!valid) {
                 return;
             }
-            isLoading=true;
+            this.isLoading=true;
             try {
                 this.form.fkInstitution =parseInt(localStorage.getItem("institutionId"))
                 const data = await registerCapturist(this.form);
                 console.log(data);
                 if (data === "Ocurrio un error en la peticion") {
-                    isLoading=false;
+                    this.isLoading=false;
                     Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -118,7 +118,7 @@ export default {
                         email: '',
                         fkInstitution: 1//aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
                     }
-                    isLoading=false;
+                    this.isLoading=false;
                     Swal.fire({
                         icon: "success",
                         title: "Éxito",
@@ -129,7 +129,7 @@ export default {
                     this.$router.push("./CapturistList");
                 }
             } catch (error) {
-                isLoading=false;
+                this.isLoading=false;
                 Swal.fire({
                     icon: "error",
                     title: "Error",

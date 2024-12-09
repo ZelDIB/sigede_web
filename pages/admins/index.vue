@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     
   </div>
@@ -27,4 +27,24 @@ export default {
 }
 </script>
 
-<style></style> 
+<style></style>  -->
+
+<template>
+  <CapturistList/>
+</template>
+
+<script>
+import CapturistList from './screens/CapturistList.vue';
+
+
+
+export default {
+  components: {
+    CapturistList
+  }
+}
+</script>
+
+<style>
+
+</style>

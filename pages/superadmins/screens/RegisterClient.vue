@@ -126,6 +126,7 @@ export default {
                     "image/png",
                     "image/jpeg",
                     "image/jpg",
+                    "image/gif",
                 ];
                 if (!validImageTypes.includes(file.type)) {
                     this.errors.image =
@@ -187,6 +188,16 @@ export default {
             try {
                 const imageUrl = await ServiceCloudinary.uploadImage(this.form.image);
 
+                if(!imageUrl){
+                        Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Ocurrió un error al registrar la institución",
+                        confirmButtonText: "Aceptar",
+                    });
+                    return;
+                }
+
                 const institutionData = {
                     institutionName: this.form.name,
                     institutionEmail: this.form.email,
@@ -194,6 +205,7 @@ export default {
                     institutionAddress: this.form.address,
                     logo: imageUrl,
                 };
+
 
                 const response = await registerOrgatization(institutionData);
                 this.isLoading = false;

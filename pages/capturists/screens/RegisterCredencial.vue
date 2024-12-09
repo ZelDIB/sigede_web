@@ -22,6 +22,14 @@
                                             errors.fullname
                                             }}</small>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="expirationDate" :class="{ 'error-label': errors.expirationDate }">Fecha de expiracion*</label>
+                                        <input type="date" id="expirationDate" v-model="form.expirationDate"
+                                            :class="['form-control', { error: errors.expirationDate }]" />
+                                        <small v-if="errors.expirationDate" class="error-message">{{
+                                            errors.expirationDate
+                                            }}</small>
+                                    </div>
 
                                     <!-- Aqui van los campos del array de fields-->
                                     <div v-for="(field, index) in form.fields" :key="index" class="form-group">
@@ -99,11 +107,13 @@ export default {
                 fullname: null,
                 image: null,
                 fields: [],
+                expirationDate:null
             },
 
             imagePreview: null,
             errors: {
                 fullname: "",
+                expirationDate:""
             },
             isLoading:false
         };
@@ -149,6 +159,9 @@ export default {
                 valid = false;
             } else {
                 this.errors.image = "";
+            }
+            if(!this.form.expirationDate){
+                this.errors.expirationDate = "La fecha de expircaion es obligatoria";
             }
 
             this.form.fields.forEach((field) => {
@@ -225,13 +238,17 @@ export default {
                     value: item.value
                 }
             ));
+            const expirationDate = this.form.expirationDate;
+            const formattedExpirationDate = new Date(expirationDate).toISOString();
                 var sendData={
                     userAccountId: this.form.userAccountId,
                     institutionId: this.form.institutionId,
                     fullname: this.form.fullname,
                     userPhoto: imageUrl,
+                    expirationDate:formattedExpirationDate,
                     fields:newFields
                 }
+                console.log(sendData)
                 const respose=await registerCredential(sendData);
                 this.isLoading=false;
                 Swal.fire({
