@@ -44,7 +44,7 @@
 
 <script setup>
 import Navbar from "~/components/NavBar.vue";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/components/loader.vue";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { getQrData } from "~/services/ServicesAuth";
