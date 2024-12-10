@@ -24,4 +24,4 @@ RUN npm install --omit=dev
 
 EXPOSE 3000
 
-CMD [ "node", "server/index.mjs" ]
+CMD [ "node", ".output/server/index.mjs" ]
