@@ -7,7 +7,6 @@ export const getAllCredentialByInstitutionIdAndName = async (data) => {
       `${BASEURL}api/credentials/get-all-by-institution`,
       data
     );
-    console.log(response.data);
     return response.data;
   } catch (e) {
     console.error(e);

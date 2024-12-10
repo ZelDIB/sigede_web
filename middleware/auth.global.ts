@@ -9,6 +9,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
       "/auth/SendEmail",
       "/auth/VerificationCode",
       "/public/screens/vista_QR**",
+      "/auth/Profile" 
     ];
 
     const isPublic = publicRoutes.some((route) => {
@@ -42,14 +43,17 @@ export default defineNuxtRouteMiddleware((to, from) => {
         SUPERADMIN: [
           "/superadmins/screens/OrganizationsList",
           "/superadmins/screens/SomeOtherRoute",
+          "/auth/Profile"
         ],
         ADMIN: [
           "/admins/screens/CapturistList",
           "/admins/screens/AnotherRoute",
+          "/auth/Profile"
         ],
         CAPTURISTA: [
           "/capturists/screens/CredentialsList",
           "/capturists/screens/OtherCapturistRoute",
+          "/auth/Profile"
         ],
       };
 

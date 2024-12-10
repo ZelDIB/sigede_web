@@ -139,7 +139,7 @@ import {
 } from "~/services/ServicesCapturist";
 import Swal from "sweetalert2";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
