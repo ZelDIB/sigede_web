@@ -1,5 +1,8 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
+  build: {
+    transpile: ["vue-toastification"],
+  },
   devtools: { enabled: false },
   css: ["bulma/css/bulma.css"],
   plugins: ["~/plugins/toastification.js", "~/plugins/axios.js"],
