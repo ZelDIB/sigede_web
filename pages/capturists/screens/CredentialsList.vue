@@ -102,7 +102,7 @@
 <script>
 import Navbar from "~/components/admins/Navbar.vue";
 import { getAllCredentialByInstitutionIdAndName } from "~/services/ServicesCapturist";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {

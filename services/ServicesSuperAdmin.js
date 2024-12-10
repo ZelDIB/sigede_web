@@ -74,7 +74,6 @@ export const getOneAdmin = async (userAccountId, institutionId) => {
     const response = await $axios.get(
       `api/admin/get-admin/${userAccountId}/${institutionId}`
     );
-    console.log(response.data);
     return response.data;
   } catch (e) {
     console.error(e);
@@ -99,6 +98,6 @@ export const registerAdmin = async (data) => {
     const response = await $axios.post("api/admin/register", data);
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

@@ -107,7 +107,7 @@
 <script>
 import { getAdminsByInstitutionId, getInstitutionInfoByinstitutionId } from "~/services/ServicesSuperAdmin";
 import Navbar from "~/components/superadmins/Navbar.vue";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/components/loader.vue";
 
 export default {
     components: {

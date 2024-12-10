@@ -63,7 +63,7 @@
 <script>
 import "@fortawesome/fontawesome-free/css/all.css";
 import { loginMethod } from "../services/ServicesAuth.js";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "../components/loader.vue";
 import Swal from "sweetalert2";
 import { decodeToken } from "../utils/tokenUtils.js";
 import NavBar from "~/components/NavBar.vue";
@@ -113,8 +113,6 @@ export default {
         }
       } catch (error) {
         this.errorMessage = "Correo o contraseña incorrectos.";
-        console.error("Error al iniciar sesión:", error);
-
         Swal.fire({
           title: "Error",
           text: "Correo o contraseña incorrectos.",
@@ -128,6 +126,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .screen-split {
   display: flex;
