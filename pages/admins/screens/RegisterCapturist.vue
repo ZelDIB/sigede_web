@@ -129,7 +129,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Ocurrió un error al registrar la institución",
+            text: "Ocurrió un error al registrar capturista",
             confirmButtonText: "Aceptar",
           });
         } else {
@@ -142,7 +142,7 @@ export default {
           Swal.fire({
             icon: "success",
             title: "Éxito",
-            text: "Institución registrada exitosamente",
+            text: "Capturista registrado exitosamente",
             confirmButtonText: "Aceptar",
           });
 
@@ -153,7 +153,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar capturista",
           confirmButtonText: "Aceptar",
         });
       }

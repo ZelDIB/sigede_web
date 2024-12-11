@@ -2,6 +2,7 @@
   <div>
     <CredentialLoader v-if="isLoading" />
     <div v-if="!isLoading">
+      <NavBar />
       <div class="screen-split">
         <div class="left-half">
           <div class="container">
@@ -61,11 +62,10 @@
 
 <script>
 import "@fortawesome/fontawesome-free/css/all.css";
-import { loginMethod } from "../services/ServicesAuth.js";
-import CredentialLoader from "../components/loader.vue";
+import { loginMethod } from "~/services/ServicesAuth";
+import CredentialLoader from "~/components/loader.vue";
 import Swal from "sweetalert2";
-import { decodeToken } from "../utils/tokenUtils.js";
-import NavBar from "~/components/NavBar.vue";
+import { decodeToken } from "~/utils/tokenUtils";
 
 export default {
   components: {

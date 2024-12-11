@@ -132,7 +132,6 @@
 </template>
 
 <script>
-import NavBar from "~/components/NavBar.vue";
 import {
   getFormByInstitutionId,
   registerCredential,
@@ -144,7 +143,6 @@ import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    NavBar,
     CredentialLoader,
   },
   data() {
@@ -302,14 +300,14 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Credencial registrada exitosamente",
           confirmButtonText: "Aceptar",
         });
       } catch (e) {
         this.isLoading = false;
         Swal.fire({
           title: "Error",
-          text: "Correo o contraseña incorrectos.",
+          text: "Ocurrio un error al registrar credencial",
           icon: "error",
           confirmButtonText: "Aceptar",
         });

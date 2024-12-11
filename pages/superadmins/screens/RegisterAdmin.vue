@@ -132,7 +132,7 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Administrador registrado exitosamente",
           confirmButtonText: "Aceptar",
         });
         this.goBack(this.institutionId);
@@ -142,7 +142,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar administrador",
           confirmButtonText: "Aceptar",
         });
       }

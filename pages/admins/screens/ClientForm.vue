@@ -156,7 +156,7 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Formulario registrado exitosamente",
           confirmButtonText: "Aceptar",
         });
         this.goToCapturistList();
@@ -165,7 +165,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar formulario",
           confirmButtonText: "Aceptar",
         });
       }

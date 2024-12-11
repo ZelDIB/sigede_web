@@ -2,26 +2,25 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div class="content">
         <p class="title">VISUALIZACION QR</p>
         <div class="container-form">
           <div class="form-row">
-            <div class="form-column">
-              <div class="user-info">
-                <h2 class="subtitle is-4">
-                  <strong>Nombre:</strong> {{ credential.fullname }}
-                </h2>
+            <div class="form-column user-info">
+              <h2><strong>Nombre:</strong> {{ credential.fullname }}</h2>
+              <div v-if="credential.fields && credential.fields.length">
                 <div v-for="(field, index) in credential.fields" :key="index">
                   <p>
                     <strong>{{ field.tag }}:</strong> {{ field.value }}
                   </p>
                 </div>
               </div>
+              <p v-else class="empty-message">No hay datos disponibles.</p>
             </div>
 
             <div class="image-column">
-              <figure class="image is-128x128 mx-auto">
+              <figure class="image-container">
                 <img
                   class="is-rounded"
                   :src="credential.userPhoto"
@@ -43,7 +42,6 @@
 </template>
 
 <script setup>
-import Navbar from "~/components/NavBar.vue";
 import CredentialLoader from "~/components/loader.vue";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
@@ -74,7 +72,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   background-color: #e4e4e4;
-  height: 100%;
 }
 
 .content {
@@ -82,7 +79,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 20px;
 }
 
 .title {
@@ -90,64 +87,63 @@ onMounted(async () => {
   text-align: center;
   color: black;
   text-decoration: underline;
-  font-size: 35px;
-  letter-spacing: 0.15em;
-  font-weight: 300;
+  font-size: 28px;
+  font-weight: 400;
 }
 
 .container-form {
-  border-radius: 8px;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
   background-color: white;
-  padding: 3%;
-  box-sizing: border-box;
-  overflow-y: auto;
-  max-height: 90vh;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  text-align: center;
-  min-height: 100vh;
 }
 
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 .form-column {
-  flex: 1 1 60%;
-  padding: 20px;
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
 }
 
 .image-column {
-  flex: 1 1 40%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-  }
-
-  .form-column,
-  .image-column {
-    flex: 1 1 100%;
-    text-align: center;
-  }
+.image-container {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
 }
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info {
+  text-align: left;
+}
+
 .user-info p,
 .user-info h2 {
-  margin: 5px 0;
-  color: black;
+  margin: 8px 0;
+  color: #333333;
   text-align: left;
 }
 
@@ -157,12 +153,17 @@ onMounted(async () => {
 }
 
 .user-info strong {
-  color: black !important;
+  color: #000000 !important;
+}
+
+.empty-message {
+  color: #555555;
+  font-style: italic;
 }
 
 .vigencia {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .vigencia-date {
@@ -173,5 +174,30 @@ onMounted(async () => {
   font-weight: bold;
   padding: 5px 15px;
   border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .container-form {
+    padding: 15px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .image-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  .vigencia-date {
+    font-size: 14px;
+    padding: 5px;
+  }
 }
 </style>

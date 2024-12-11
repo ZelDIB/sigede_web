@@ -72,13 +72,9 @@
 </template>
 
 <script>
-import ServiceAuth from "../../services/ServicesAuth.js";
-import NavBar from "~/components/NavBar.vue";
+import ServiceAuth from "~/services/ServicesAuth";
 
 export default {
-  components: {
-    NavBar,
-  },
   data() {
     return {
       code: ["", "", "", "", "", ""],

@@ -127,7 +127,7 @@
 
 <script>
 import Swal from "sweetalert2";
-import { ServiceCloudinary } from "../../../services/ServiceCloudinary.js";
+import { ServiceCloudinary } from "~/services/ServiceCloudinary";
 import { registerOrgatization } from "~/services/ServicesSuperAdmin";
 import CredentialLoader from "~/components/loader.vue";
 
