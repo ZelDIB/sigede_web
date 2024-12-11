@@ -3,6 +3,7 @@
     <CredentialLoader v-if="isLoading" />
 
     <div v-else>
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">REGISTRAR IDENTIFICIÓN</p>
@@ -131,7 +132,7 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
+import NavBar from "~/components/NavBar.vue";
 import {
   getFormByInstitutionId,
   registerCredential,
@@ -143,7 +144,7 @@ import CredentialLoader from "../pages/auth/loader.vue";
 
 export default {
   components: {
-    Navbar,
+    NavBar,
     CredentialLoader,
   },
   data() {

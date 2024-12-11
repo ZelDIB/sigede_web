@@ -3,7 +3,7 @@
     <CredentialLoader v-if="isLoading" />
 
     <div v-else>
-      <Navbar />
+      <NavBar />
 
       <div>
         <div class="content">
@@ -78,12 +78,12 @@
 
 <script>
 import { getAllCapturitsByInstitutionId } from "~/services/ServiceAdmin";
-import Navbar from "../../../components/admins/Navbar.vue";
-import CredentialLoader from "../pages/auth/loader.vue";
+import NavBar from "~/components/NavBar.vue";
+import CredentialLoader from "~/pages/auth/loader.vue";
 
 export default {
   components: {
-    Navbar,
+    NavBar,
     CredentialLoader,
   },
   name: "CapturistList",

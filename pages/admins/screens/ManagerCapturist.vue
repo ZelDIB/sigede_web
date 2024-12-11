@@ -2,7 +2,7 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">GESTIÓN DE CAPTURISTA</p>
