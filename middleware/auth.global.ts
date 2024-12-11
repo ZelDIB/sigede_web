@@ -79,7 +79,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
       }
 
       // Si la ruta no es válida, redirigir a la primera ruta permitida del rol
-      return navigateTo(allowedRoutes[0]);
+      //return navigateTo(allowedRoutes[0]);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
       localStorage.removeItem("token");
