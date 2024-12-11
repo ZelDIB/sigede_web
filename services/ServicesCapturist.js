@@ -81,6 +81,7 @@ export const dowloadCredential = async (id) => {
     const response = await $axios.post("api/download-credential/", data, {
       responseType: "blob",
     });
+    console.log(response);
     return response;
   } catch (error) {
     console.error(error);
