@@ -12,6 +12,6 @@ export const navbarConfig = {
     {icon: "fas fa-user", route: "/auth/Profile" },
   ],
   DEFAULT: [
-    { name: "Home", icon: "fas fa-home", route: "/" }, // Rutas para un rol predeterminado
+    { name: "Home", icon: "fas fa-home", route: "/" },
   ],
 };

@@ -23,27 +23,27 @@ export default {
   name: "NavBar",
   data() {
     return {
-      role: "DEFAULT", // Valor inicial predeterminado
+      role: "DEFAULT",
     };
   },
   computed: {
     navItems() {
       if (!process.client) {
-        return navbarConfig.DEFAULT; // En el servidor, usa el rol predeterminado
+        return navbarConfig.DEFAULT;
       }
-      return navbarConfig[this.role] || navbarConfig.DEFAULT; // Si no hay rol, usa DEFAULT
+      return navbarConfig[this.role] || navbarConfig.DEFAULT;
     },
   },
   created() {
     if (process.client) {
       const storedRole = localStorage.getItem("role");
-      this.role = storedRole || "DEFAULT"; // Asigna el rol o DEFAULT
+      this.role = storedRole || "DEFAULT";
     }
   },
   methods: {
     navigate(route) {
       if (route) {
-        this.$router.push(route); // Redirige usando $router.push
+        this.$router.push(route);
       } else {
         console.error("Ruta no válida:", route);
       }
@@ -78,13 +78,13 @@ export default {
 .navbar-icons {
   display: flex;
   gap: 1.5rem;
-  margin-right: 1rem; /* Espacio adicional al borde derecho */
+  margin-right: 1rem;
 }
 
 .navbar-icon {
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  margin-right: 0.5rem; /* Espacio entre íconos y el borde si necesario */
+  margin-right: 0.5rem;
 }
 </style>
