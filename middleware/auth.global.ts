@@ -69,10 +69,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
       }
 
       // Validar si la ruta actual está dentro de las rutas permitidas para ese rol
-      const isAllowed = allowedRoutes.some((route) => {
-        const normalizedPath = to.path.split("?")[0];
-        return normalizedPath.startsWith(route);
-      });
+     const isAllowed = allowedRoutes.some(route => to.path.startsWith(route));
 
       if (isAllowed) {
         return; // Permitir navegación
