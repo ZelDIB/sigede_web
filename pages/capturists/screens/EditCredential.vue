@@ -56,7 +56,11 @@
               />
             </div>
             <div class="print-btn-style">
-              <button type="" class="button print-btn">
+              <button
+                type="button"
+                class="button print-btn"
+                @click="handleDownload"
+              >
                 Imprimir Credencial
               </button>
             </div>
@@ -84,6 +88,7 @@ import CredentialLoader from "~/components/loader.vue";
 import {
   getCredentialWithFields,
   updateCredential,
+  dowloadCredential,
 } from "~/services/ServicesCapturist";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
 
@@ -155,6 +160,22 @@ export default {
     },
     cancelEdit() {
       this.$router.push("/capturists/screens/CredentialsList");
+    },
+
+    async handleDownload() {
+      const response = await dowloadCredential(this.$route.query.id);
+
+      const contentDisposition = response.headers["content-disposition"];
+      const filename = contentDisposition
+        ? contentDisposition.split("filename=")[1]?.replace(/"/g, "")
+        : "credential.docx";
+      const blob = new Blob([response.data]);
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   },
   async mounted() {
