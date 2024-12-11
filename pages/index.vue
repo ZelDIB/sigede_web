@@ -2,7 +2,6 @@
   <div>
     <CredentialLoader v-if="isLoading" />
     <div v-if="!isLoading">
-      <NavBar />
       <div class="screen-split">
         <div class="left-half">
           <div class="container">

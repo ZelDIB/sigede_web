@@ -37,6 +37,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
       // Decodificar el token y obtener el rol
       const roles: Role = decodedToken.roles[0] as Role;
+      if (process.client) {
+        localStorage.setItem("role", decodedToken.roles[0]);
+      }
+
 
       // Definir las rutas principales de cada rol
       const roleRoutes: Record<Role, string[]> = {

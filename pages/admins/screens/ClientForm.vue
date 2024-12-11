@@ -2,7 +2,7 @@
   <div>
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="full-screen">
           <div class="content">
@@ -104,14 +104,12 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
 import { registerClientForm } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   name: "ClientForm",

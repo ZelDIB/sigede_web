@@ -2,7 +2,7 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">REGISTRO DE CAPTURISTA</p>
@@ -69,13 +69,11 @@
 
 <script>
 import { registerCapturist } from "~/services/ServiceAdmin";
-import Navbar from "~/components/admins/Navbar.vue";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   data() {

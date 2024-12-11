@@ -2,7 +2,7 @@
     <div class="full-screen">
         <CredentialLoader v-if="isLoading" />
         <div v-else>
-            <Navbar />
+            <NavBar />
             <div>
 
                 <div class="content">
@@ -106,12 +106,10 @@
 
 <script>
 import { getAdminsByInstitutionId, getInstitutionInfoByinstitutionId } from "~/services/ServicesSuperAdmin";
-import Navbar from "~/components/superadmins/Navbar.vue";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
     components: {
-        Navbar,
         CredentialLoader
     },
     name: "AdminsList",

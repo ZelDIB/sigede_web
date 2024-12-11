@@ -2,27 +2,18 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoadingGeneral" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">USUARIOS</p>
           <div class="content-table">
             <div class="search-section">
-              <div
-                class="search-icon"
-                style="border-radius: 10px 0 0 0"
-                @click="goRegister"
-              >
+              <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goRegister">
                 <i class="fas fa-user-plus icon"></i>
               </div>
               <div class="search-container">
-                <input
-                  type="text"
-                  v-model="searchTerm"
-                  class="search-input"
-                  placeholder="Buscar..."
-                  @keyup="filterList"
-                />
+                <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..."
+                  @keyup="filterList" />
                 <i class="fas fa-magnifying-glass icon" @click="filterList"></i>
               </div>
               <div class="search-icon" style="border-radius: 0 10px 0 0">
@@ -50,16 +41,12 @@
                   <tbody>
                     <tr v-for="(item, index) in lista" :key="index">
                       <td>
-                        <img
-                          :src="item.userPhoto"
-                          alt="userPhoto"
-                          class="imagen"
-                        />
+                        <img :src="item.userPhoto" alt="userPhoto" class="imagen" />
                       </td>
                       <td>{{ item.fullname }}</td>
                       <td>
                         <div class="status-container">
-                          <div class="edit-icon">
+                          <div class="edit-icon" @click="goToEdit(item.credentialId)">
                             <i class="fas fa-edit icon"></i>
                           </div>
                           <span :class="getStatusClass(item.expirationDate)">
@@ -67,6 +54,7 @@
                           </span>
                         </div>
                       </td>
+
                     </tr>
                   </tbody>
                 </table>
@@ -74,19 +62,12 @@
                   <i class="fas fa-times-circle"></i> Sin resultados
                 </div>
                 <div class="pagination">
-                  <button
-                    :disabled="currentPage === 0"
-                    @click="changePage(currentPage - 1)"
-                  >
+                  <button :disabled="currentPage === 0" @click="changePage(currentPage - 1)">
                     Anterior
                   </button>
                   <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-                  <button
-                    :disabled="
-                      currentPage === totalPages - 1 || totalPages === 0
-                    "
-                    @click="changePage(currentPage + 1)"
-                  >
+                  <button :disabled="currentPage === totalPages - 1 || totalPages === 0
+                    " @click="changePage(currentPage + 1)">
                     Siguiente
                   </button>
                 </div>
@@ -100,13 +81,11 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
 import { getAllCredentialByInstitutionIdAndName } from "~/services/ServicesCapturist";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   name: "CredentialsList",
@@ -133,6 +112,17 @@ export default {
   methods: {
     goRegister() {
       this.$router.push("./RegisterCredencial");
+    },
+    goToEdit(credentialId) {
+      console.log("Navigating to edit page with ID:", credentialId);
+      if (credentialId) {
+    this.$router.push({
+      path: "./EditCredential",
+      query: { id: credentialId },
+    });
+  } else {
+        console.error("ID is undefined!");
+      }
     },
     sortByName() {
       this.isAscending = !this.isAscending;
@@ -427,6 +417,7 @@ body {
     font-size: 0.8rem;
   }
 }
+
 .no-results {
   display: flex;
   justify-content: center;
@@ -438,6 +429,7 @@ body {
 .no-results i {
   margin-right: 10px;
 }
+
 .loading-spinner {
   display: flex;
   justify-content: center;
