@@ -69,3 +69,20 @@ export const updateCredential = async (id, data) => {
   }
 };
 
+export const dowloadCredential = async (id) => {
+  try {
+    const data = {
+      institutionId: parseInt(localStorage.getItem("institutionId")),
+      credentialId: id,
+    };
+
+    const { $axios } = useNuxtApp();
+
+    const response = await $axios.post("api/download-credential/", data, {
+      responseType: "blob",
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
