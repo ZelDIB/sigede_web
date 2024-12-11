@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen">
-    <Navbar />
+    <NavBar />
     <div class="content">
       <p class="title">PERFIL</p>
       <div class="form-container">
@@ -134,7 +134,6 @@
 </template>
 
 <script setup>
-import Navbar from "~/components/superadmins/Navbar.vue";
 import CustomAlert from "~/components/CustomAlert.vue";
 import {
   getProfileInformation,

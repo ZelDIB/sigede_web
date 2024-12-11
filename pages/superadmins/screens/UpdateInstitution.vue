@@ -3,7 +3,7 @@
         <CredentialLoader v-if="isLoading" />
 
         <div v-else> 
-            <Navbar />
+            <NavBar />
             <div>
                 <div class="content">
                     <p class="title">ACTUALIZAR EMPRESA</p>
@@ -124,11 +124,10 @@
 </template>
 
 <script>
-import Navbar from "~/components/superadmins/Navbar.vue";
 import { getInstitutionInfoByinstitutionId,updateInstitution } from "~/services/ServicesSuperAdmin";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
 import Swal from "sweetalert2";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/pages/auth/loader.vue";
 
 
 export default {

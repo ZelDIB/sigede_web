@@ -50,3 +50,23 @@ export const getCapturistIdByEmail = async (email) => {
     return "Ocurrio un error en la peticion";
   }
 };
+
+export const getCredentialWithFields = async (id) => {
+  try {
+    const response = await axios.get(`${BASEURL}api/credentials/${id}`);
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateCredential = async (id, data) => {
+  try {
+    await axios.put(`${BASEURL}api/credentials/${id}`, data);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+

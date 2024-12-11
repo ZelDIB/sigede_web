@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen">
-    <Navbar />
+    <NavBar />
 
     <div>
       <div class="content">
@@ -46,12 +46,12 @@
 </template>
 
 <script>
-import Navbar from "~/components/superadmins/Navbar.vue";
+import NavBar from "~/components/NavBar.vue";
 import { getAllInstitutions } from "~/services/ServicesSuperAdmin";
 
 export default {
   components: {
-    Navbar,
+    NavBar,
   },
   name: "OrganizationsList",
   data() {

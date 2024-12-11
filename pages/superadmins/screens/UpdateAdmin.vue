@@ -3,7 +3,7 @@
     <CredentialLoader v-if="isLoading" />
 
     <div v-else> 
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">ACTUALIZAR ADMINISTRADOR</p>
@@ -92,12 +92,10 @@
 
 <script>
 import CustomConfirmationModal from "~/utils/CustomConfirmationModal.vue";
-import Navbar from "~/components/superadmins/Navbar.vue";
 import { getOneAdmin, updateAdmin } from "~/services/ServicesSuperAdmin";
 
 export default {
   components: {
-    Navbar,
     CustomConfirmationModal,
   },
   name: "ManagerCapturist",
