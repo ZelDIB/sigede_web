@@ -12,18 +12,33 @@
                 <div class="form-row">
                   <div class="form-column">
                     <div class="form-group">
-                      <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
-                      <input type="text" id="name" v-model="form.name" :class="['form-control', { error: errors.name }]"
-                        placeholder="Nombre" />
+                      <label for="name" :class="{ 'error-label': errors.name }"
+                        >Nombre*</label
+                      >
+                      <input
+                        type="text"
+                        id="name"
+                        v-model="form.name"
+                        :class="['form-control', { error: errors.name }]"
+                        placeholder="Nombre"
+                      />
                       <small v-if="errors.name" class="error-message">{{
                         errors.name
                       }}</small>
                     </div>
 
                     <div class="form-group">
-                      <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
-                      <input id="email" v-model="form.email" :class="['form-control', { error: errors.email }]"
-                        placeholder="Correo" />
+                      <label
+                        for="email"
+                        :class="{ 'error-label': errors.email }"
+                        >Correo*</label
+                      >
+                      <input
+                        id="email"
+                        v-model="form.email"
+                        :class="['form-control', { error: errors.email }]"
+                        placeholder="Correo"
+                      />
                       <small v-if="errors.email" class="error-message">{{
                         errors.email
                       }}</small>
@@ -32,29 +47,54 @@
                     <div class="form-group">
                       <div class="radio-group">
                         <label class="radio-container">
-                          <div class="rb-text" style="background-color: #93d7b0">
+                          <div
+                            class="rb-text"
+                            style="background-color: #93d7b0"
+                          >
                             Activo
                           </div>
-                          <input type="radio" value="activo" v-model="form.status" />
+                          <input
+                            type="radio"
+                            value="activo"
+                            v-model="form.status"
+                          />
                         </label>
                         <label class="radio-container">
-                          <div class="rb-text" style="background-color: #ff8000">
+                          <div
+                            class="rb-text"
+                            style="background-color: #ff8000"
+                          >
                             Suspendido
                           </div>
-                          <input type="radio" value="suspendido" v-model="form.status" />
+                          <input
+                            type="radio"
+                            value="suspendido"
+                            v-model="form.status"
+                          />
                         </label>
                         <label class="radio-container">
-                          <div class="rb-text" style="background-color: #d79393">
+                          <div
+                            class="rb-text"
+                            style="background-color: #d79393"
+                          >
                             Inactivo
                           </div>
-                          <input type="radio" value="inactivo" v-model="form.status" />
+                          <input
+                            type="radio"
+                            value="inactivo"
+                            v-model="form.status"
+                          />
                         </label>
                       </div>
                     </div>
                   </div>
 
                   <div class="image-column">
-                    <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
+                    <img
+                      src="/customer_service.png"
+                      alt="Imagen de registro"
+                      class="register-image"
+                    />
                   </div>
                 </div>
 
@@ -62,7 +102,13 @@
                   <button type="submit" class="submit-btn">
                     Actualizar capturista
                   </button>
-                  <button type="button" class="cancel-btn" @click="backToCapturistList">Cancelar</button>
+                  <button
+                    type="button"
+                    class="cancel-btn"
+                    @click="backToCapturistList"
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </form>
             </div>
@@ -70,7 +116,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- Modal personalizado
         para el modal personalizado se require:
@@ -81,26 +126,27 @@
         confirm: el cual ejecuta la funcion que se conecta con el back 
         icon: el icono que se muestra en la pantalla, SOLO SE MANDA EL NOMBRE DEL ICONO ejemplo "triangle-exclamation"
          -->
-    <CustomConfirmationModal :isVisible="showModal" title="Advertencia"
-      message="¿Estas seguro de actualizar la informacion de este capturista?" @close="closeModal" @confirm="submitForm"
-      icon="triangle-exclamation" />
+    <CustomConfirmationModal
+      :isVisible="showModal"
+      title="Advertencia"
+      message="¿Estas seguro de actualizar la informacion de este capturista?"
+      @close="closeModal"
+      @confirm="submitForm"
+      icon="triangle-exclamation"
+    />
   </div>
 </template>
 
-
 <script>
 import CustomConfirmationModal from "~/utils/CustomConfirmationModal.vue";
-import Navbar from "../../../components/admins/Navbar.vue";
 import { getOneCapturist, updateCapturist } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
-import CredentialLoader from "../pages/auth/loader.vue";
+import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CustomConfirmationModal,
     CredentialLoader,
-
   },
   name: "ManagerCapturist",
   data() {
@@ -126,26 +172,24 @@ export default {
     },
     async submitForm() {
       try {
-
         const response = await updateCapturist(this.form);
 
         if (response.message !== "Ocurrio un error inesperado.") {
-
           this.backToCapturistList();
         }
         this.showModal = false;
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Capturista actualizado exitosamente",
           confirmButtonText: "Aceptar",
         });
       } catch (e) {
-        this.backToCapturistList()
+        this.backToCapturistList();
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al actualizar capturista",
           confirmButtonText: "Aceptar",
         });
       }
@@ -196,10 +240,10 @@ export default {
           this.form = response.data;
         }
       } catch (e) {
-        this.backToCapturistList()
+        this.backToCapturistList();
       }
     } else {
-      this.backToCapturistList()
+      this.backToCapturistList();
     }
   },
 };
@@ -229,7 +273,6 @@ body {
   max-height: calc(100vh - 60px);
 }
 
-
 .title {
   margin: 10px 0;
   text-align: center;
@@ -249,7 +292,6 @@ body {
   padding: 3%;
   box-sizing: border-box;
 }
-
 
 .form-row {
   display: flex;
@@ -411,7 +453,7 @@ label.error-label {
   }
 }
 
-@media(max-width: 424px) {
+@media (max-width: 424px) {
   .title {
     font-size: 30px;
   }

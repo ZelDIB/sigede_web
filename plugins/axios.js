@@ -1,8 +1,9 @@
 import axios from "axios";
 
 export default defineNuxtPlugin((nuxtApp) => {
+  
   const axiosInstance = axios.create({
-    baseURL: process.env.API_BASE_URL || "http://localhost:8080/",
+    baseURL: "http://98.83.97.145:8081/",
   });
 
   const { $toast } = useNuxtApp();

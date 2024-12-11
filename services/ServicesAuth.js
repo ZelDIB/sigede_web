@@ -1,5 +1,5 @@
 import axios from "axios";
-import BASEURL from "../utils/properties";
+import BASEURL from "~/utils/properties";
 
 export const loginMethod = async (data) => {
   try {
@@ -67,7 +67,7 @@ export const changePassword = async (data) => {
     );
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -80,7 +80,7 @@ export const getProfileInformation = async () => {
     });
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -114,6 +114,6 @@ export const getQrData = async (id) => {
     const response = await $axios.get(`api/credentials/get-qr-data/${id}`);
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

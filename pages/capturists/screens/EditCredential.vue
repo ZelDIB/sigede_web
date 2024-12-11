@@ -34,11 +34,20 @@
                   @change="handleImageUpload"
                   class="form-control"
                 />
-                <img v-if="imagePreview" :src="imagePreview" alt="Preview" class="image-preview" />
+                <img
+                  v-if="imagePreview"
+                  :src="imagePreview"
+                  alt="Preview"
+                  class="image-preview"
+                />
               </div>
             </div>
 
-            <div v-for="(field, index) in credential.fields" :key="index" class="form-group">
+            <div
+              v-for="(field, index) in credential.fields"
+              :key="index"
+              class="form-group"
+            >
               <label :for="'field-' + index">{{ field.tag }}</label>
               <input
                 :id="'field-' + index"
@@ -47,11 +56,19 @@
               />
             </div>
             <div class="print-btn-style">
-              <button type="" class="button print-btn">Imprimir Credencial</button>
+              <button type="" class="button print-btn">
+                Imprimir Credencial
+              </button>
             </div>
             <div class="button-group">
-              <button type="submit" class="button save-btn">Guardar Cambios</button>
-              <button type="button" class="button cancel-btn" @click="cancelEdit">
+              <button type="submit" class="button save-btn">
+                Guardar Cambios
+              </button>
+              <button
+                type="button"
+                class="button cancel-btn"
+                @click="cancelEdit"
+              >
                 Cancelar
               </button>
             </div>
@@ -63,18 +80,18 @@
 </template>
 
 <script>
-import CredentialLoader from "~/pages/auth/loader.vue";
-import { getCredentialWithFields, updateCredential } from "~/services/ServicesCapturist";
-import NavBar from "~/components/NavBar.vue";
+import CredentialLoader from "~/components/loader.vue";
+import {
+  getCredentialWithFields,
+  updateCredential,
+} from "~/services/ServicesCapturist";
 import { ServiceCloudinary } from "~/services/ServiceCloudinary";
 
-
 export default {
-  name: "EditCredential",
   components: {
-    NavBar,
     CredentialLoader,
   },
+  name: "EditCredential",
   data() {
     return {
       credential: null,
@@ -106,9 +123,13 @@ export default {
       try {
         this.isLoading = true;
 
+        const { $toast } = useNuxtApp();
+
         let uploadedImageUrl = this.credential.userPhoto;
         if (this.selectedFile) {
-          uploadedImageUrl = await ServiceCloudinary.uploadImage(this.selectedFile);
+          uploadedImageUrl = await ServiceCloudinary.uploadImage(
+            this.selectedFile
+          );
         }
 
         const updatedData = {
@@ -123,7 +144,7 @@ export default {
         };
 
         await updateCredential(this.$route.query.id, updatedData);
-        alert("¡Cambios guardados correctamente!");
+        $toast.success("¡Cambios guardados correctamente!");
         this.$router.push("/capturists/screens/CredentialsList");
       } catch (error) {
         console.error("Error al guardar los cambios:", error);
@@ -223,7 +244,7 @@ export default {
   border: none;
 }
 
-.print-btn-style{
+.print-btn-style {
   padding-top: 5%;
   padding-bottom: 5%;
 }

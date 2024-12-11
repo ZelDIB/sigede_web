@@ -43,7 +43,6 @@
 <script setup>
 import { ref } from "vue";
 import { changePassword } from "~/services/ServicesAuth";
-import NavBar from "~/components/NavBar.vue";
 
 const { $toast, $router } = useNuxtApp();
 

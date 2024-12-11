@@ -52,8 +52,6 @@ export const updateCapturist = async (data) => {
 
 export const registerClientForm = async (data, institutionId) => {
   try {
-    console.log(data);
-
     const response = await axios.post(
       `${BASEURL}api/user-info/create-forms?institutionId=${institutionId}`,
       JSON.stringify(data),
@@ -67,5 +65,30 @@ export const registerClientForm = async (data, institutionId) => {
   } catch (e) {
     console.error(e);
     return "Ocurrio un error en la peticion";
+  }
+};
+
+export const getInstitutionDocument = async () => {
+  try {
+    const { $axios } = useNuxtApp();
+    const institutionId = parseInt(localStorage.getItem("institutionId"));
+    const response = await $axios.get(`api/institutions/${institutionId}/docs`);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const uploadDocument = async (formData) => {
+  try {
+    const { $axios } = useNuxtApp();
+    const institutionId = parseInt(localStorage.getItem("institutionId"));
+    const response = await $axios.put(
+      `api/institutions/${institutionId}/patch/docs`,
+      formData
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
   }
 };

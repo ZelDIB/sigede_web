@@ -32,8 +32,7 @@
 </template>
 
 <script>
-import { sendVerificationCode } from "../services/ServicesAuth.js";
-import NavBar from "~/components/NavBar.vue";
+import { sendVerificationCode } from "~/services/ServicesAuth";
 
 export default {
   data() {

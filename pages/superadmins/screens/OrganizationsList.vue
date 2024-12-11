@@ -7,11 +7,20 @@
         <p class="title">ORGANIZACIONES</p>
         <div class="content-table">
           <div class="search-section">
-            <div class="search-icon" style="border-radius: 10px 0 0 0" @click="goToRegisterOrganization()">
+            <div
+              class="search-icon"
+              style="border-radius: 10px 0 0 0"
+              @click="goToRegisterOrganization()"
+            >
               <i class="fas fa-user-plus icon"></i>
             </div>
             <div class="search-container">
-              <input type="text" v-model="searchTerm" class="search-input" placeholder="Buscar..." />
+              <input
+                type="text"
+                v-model="searchTerm"
+                class="search-input"
+                placeholder="Buscar..."
+              />
               <i class="fas fa-magnifying-glass icon"></i>
             </div>
             <div class="search-icon" style="border-radius: 0 10px 0 0">
@@ -31,11 +40,20 @@
               <i class="fas fa-times-circle"></i> Sin resultados
             </div>
             <div class="grid-container">
-              <div v-for="(institution, index) in filteredInstitutions" :key="index" class="card"
-                @click="goInstitution(institution.institutionId)">
+              <div
+                v-for="(institution, index) in filteredInstitutions"
+                :key="index"
+                class="card"
+                @click="goInstitution(institution.institutionId)"
+              >
                 <p>
-                  {{ institution.name }}</p>
-                <img :src="institution.logo" alt="Logo de la institución" class="card-image" />
+                  {{ institution.name }}
+                </p>
+                <img
+                  :src="institution.logo"
+                  alt="Logo de la institución"
+                  class="card-image"
+                />
               </div>
             </div>
           </div>
@@ -46,13 +64,9 @@
 </template>
 
 <script>
-import NavBar from "~/components/NavBar.vue";
 import { getAllInstitutions } from "~/services/ServicesSuperAdmin";
 
 export default {
-  components: {
-    NavBar,
-  },
   name: "OrganizationsList",
   data() {
     return {
@@ -64,7 +78,8 @@ export default {
     };
   },
   computed: {
-    filteredInstitutions() {//filtra por nombre
+    filteredInstitutions() {
+      //filtra por nombre
       const filtered = this.institutions.filter((institution) =>
         institution.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
@@ -75,7 +90,8 @@ export default {
     goToRegisterOrganization() {
       this.$router.push("./RegisterClient");
     },
-    sortByName() {//ordena alfabeticamente
+    sortByName() {
+      //ordena alfabeticamente
       this.isAscending = !this.isAscending;
       this.institutions.sort((a, b) => {
         const nameA = a.name.toLowerCase();
@@ -88,11 +104,15 @@ export default {
         }
       });
     },
-    invertListOrder() {//invierte el orden de la lista
+    invertListOrder() {
+      //invierte el orden de la lista
       this.institutions.reverse();
     },
     goInstitution(institutionId) {
-      this.$router.push({ path: "./OrganizationDetails", query: { institutionId} });
+      this.$router.push({
+        path: "./OrganizationDetails",
+        query: { institutionId },
+      });
     },
   },
 
@@ -112,9 +132,6 @@ export default {
   },
 };
 </script>
-
-
-
 
 <style>
 html,
