@@ -76,9 +76,7 @@ export const dowloadCredential = async (id) => {
       credentialId: id,
     };
 
-    const { $axios } = useNuxtApp();
-
-    const response = await $axios.post("api/download-credential/", data, {
+    const response = await axios.post('${BASEURL}api/download-credential/', data, {
       responseType: "blob",
     });
     console.log(response);
