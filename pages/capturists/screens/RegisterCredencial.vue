@@ -3,6 +3,7 @@
     <CredentialLoader v-if="isLoading" />
 
     <div v-else>
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">REGISTRAR IDENTIFICIÓN</p>
@@ -131,7 +132,6 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
 import {
   getFormByInstitutionId,
   registerCredential,
@@ -143,7 +143,6 @@ import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   data() {
@@ -301,14 +300,14 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Credencial registrada exitosamente",
           confirmButtonText: "Aceptar",
         });
       } catch (e) {
         this.isLoading = false;
         Swal.fire({
           title: "Error",
-          text: "Correo o contraseña incorrectos.",
+          text: "Ocurrio un error al registrar credencial",
           icon: "error",
           confirmButtonText: "Aceptar",
         });

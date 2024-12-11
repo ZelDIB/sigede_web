@@ -2,7 +2,7 @@
   <div>
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="full-screen">
           <div class="content">
@@ -104,14 +104,12 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
 import { registerClientForm } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   name: "ClientForm",
@@ -158,7 +156,7 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Formulario registrado exitosamente",
           confirmButtonText: "Aceptar",
         });
         this.goToCapturistList();
@@ -167,7 +165,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar formulario",
           confirmButtonText: "Aceptar",
         });
       }

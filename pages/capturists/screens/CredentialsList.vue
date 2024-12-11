@@ -2,7 +2,7 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoadingGeneral" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">USUARIOS</p>
@@ -59,7 +59,10 @@
                       <td>{{ item.fullname }}</td>
                       <td>
                         <div class="status-container">
-                          <div class="edit-icon">
+                          <div
+                            class="edit-icon"
+                            @click="goToEdit(item.credentialId)"
+                          >
                             <i class="fas fa-edit icon"></i>
                           </div>
                           <span :class="getStatusClass(item.expirationDate)">
@@ -100,13 +103,11 @@
 </template>
 
 <script>
-import Navbar from "~/components/admins/Navbar.vue";
 import { getAllCredentialByInstitutionIdAndName } from "~/services/ServicesCapturist";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   name: "CredentialsList",
@@ -133,6 +134,16 @@ export default {
   methods: {
     goRegister() {
       this.$router.push("./RegisterCredencial");
+    },
+    goToEdit(credentialId) {
+      if (credentialId) {
+        this.$router.push({
+          path: "./EditCredential",
+          query: { id: credentialId },
+        });
+      } else {
+        console.error("ID is undefined!");
+      }
     },
     sortByName() {
       this.isAscending = !this.isAscending;
@@ -328,6 +339,7 @@ body {
   justify-content: center;
   align-items: center;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .edit-icon .icon {
@@ -427,6 +439,7 @@ body {
     font-size: 0.8rem;
   }
 }
+
 .no-results {
   display: flex;
   justify-content: center;
@@ -438,6 +451,7 @@ body {
 .no-results i {
   margin-right: 10px;
 }
+
 .loading-spinner {
   display: flex;
   justify-content: center;

@@ -1,4 +1,4 @@
-import { decodeToken } from "../utils/tokenUtils";
+import { decodeToken } from "~/utils/tokenUtils";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   // Validar que el middleware solo se ejecute en el cliente
@@ -9,7 +9,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
       "/auth/SendEmail",
       "/auth/VerificationCode",
       "/public/screens/vista_QR**",
-      "/auth/Profile" 
     ];
 
     const isPublic = publicRoutes.some((route) => {
@@ -37,23 +36,27 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
       // Decodificar el token y obtener el rol
       const roles: Role = decodedToken.roles[0] as Role;
+      if (process.client) {
+        localStorage.setItem("role", decodedToken.roles[0]);
+      }
 
       // Definir las rutas principales de cada rol
       const roleRoutes: Record<Role, string[]> = {
         SUPERADMIN: [
           "/superadmins/screens/OrganizationsList",
           "/superadmins/screens/SomeOtherRoute",
-          "/auth/Profile"
+          "/auth/Profile",
         ],
         ADMIN: [
           "/admins/screens/CapturistList",
           "/admins/screens/AnotherRoute",
-          "/auth/Profile"
+          "/auth/Profile",
         ],
         CAPTURISTA: [
           "/capturists/screens/CredentialsList",
           "/capturists/screens/OtherCapturistRoute",
-          "/auth/Profile"
+          "/capturists/screens/EditCredential",
+          "/auth/Profile",
         ],
       };
 
@@ -66,16 +69,17 @@ export default defineNuxtRouteMiddleware((to, from) => {
       }
 
       // Validar si la ruta actual está dentro de las rutas permitidas para ese rol
-      const isAllowed = allowedRoutes.some((route) =>
-        to.path.startsWith(route)
-      );
+      const isAllowed = allowedRoutes.some((route) => {
+        const normalizedPath = to.path.split("?")[0];
+        return normalizedPath.startsWith(route);
+      });
 
       if (isAllowed) {
         return; // Permitir navegación
       }
 
       // Si la ruta no es válida, redirigir a la primera ruta permitida del rol
-      //return navigateTo(allowedRoutes[0]);
+      return navigateTo(allowedRoutes[0]);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
       localStorage.removeItem("token");

@@ -2,7 +2,7 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">REGISTRO DE ADMINISTRADOR</p>
@@ -69,13 +69,11 @@
 
 <script>
 import { registerAdmin } from "~/services/ServicesSuperAdmin";
-import Navbar from "~/components/superadmins/Navbar.vue";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   data() {
@@ -134,7 +132,7 @@ export default {
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Institución registrada exitosamente",
+          text: "Administrador registrado exitosamente",
           confirmButtonText: "Aceptar",
         });
         this.goBack(this.institutionId);
@@ -144,7 +142,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar administrador",
           confirmButtonText: "Aceptar",
         });
       }

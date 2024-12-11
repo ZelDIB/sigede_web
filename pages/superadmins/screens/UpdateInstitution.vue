@@ -3,7 +3,7 @@
     <CredentialLoader v-if="isLoading" />
 
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">ACTUALIZAR EMPRESA</p>
@@ -160,7 +160,6 @@
 </template>
 
 <script>
-import Navbar from "~/components/superadmins/Navbar.vue";
 import {
   getInstitutionInfoByinstitutionId,
   updateInstitution,
@@ -171,7 +170,6 @@ import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   data() {
@@ -286,7 +284,7 @@ export default {
           Swal.fire({
             icon: "success",
             title: "Éxito",
-            text: "Institución registrada exitosamente",
+            text: "Institución actualizada exitosamente",
             confirmButtonText: "Aceptar",
           });
           this.goBack();
@@ -298,7 +296,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al actualizar la institución",
           confirmButtonText: "Aceptar",
         });
       }

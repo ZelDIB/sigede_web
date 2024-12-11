@@ -2,7 +2,7 @@
   <div class="full-screen">
     <CredentialLoader v-if="isLoading" />
     <div v-else>
-      <Navbar />
+      <NavBar />
       <div>
         <div class="content">
           <p class="title">REGISTRO DE CAPTURISTA</p>
@@ -69,13 +69,11 @@
 
 <script>
 import { registerCapturist } from "~/services/ServiceAdmin";
-import Navbar from "~/components/admins/Navbar.vue";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
 export default {
   components: {
-    Navbar,
     CredentialLoader,
   },
   data() {
@@ -131,7 +129,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Ocurrió un error al registrar la institución",
+            text: "Ocurrió un error al registrar capturista",
             confirmButtonText: "Aceptar",
           });
         } else {
@@ -144,7 +142,7 @@ export default {
           Swal.fire({
             icon: "success",
             title: "Éxito",
-            text: "Institución registrada exitosamente",
+            text: "Capturista registrado exitosamente",
             confirmButtonText: "Aceptar",
           });
 
@@ -155,7 +153,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar la institución",
+          text: "Ocurrió un error al registrar capturista",
           confirmButtonText: "Aceptar",
         });
       }

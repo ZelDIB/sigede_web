@@ -1,5 +1,5 @@
 import axios from "axios";
-import BASEURL from "../utils/properties";
+import BASEURL from "~/utils/properties";
 
 export const loginMethod = async (data) => {
   try {

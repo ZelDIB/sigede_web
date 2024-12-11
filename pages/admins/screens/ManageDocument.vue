@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen">
-    <Navbar />
+    <NavBar />
     <div class="content">
       <p class="title">SUBIR DOCUMENTO</p>
       <div class="form-container">
@@ -70,7 +70,6 @@
 </template>
 
 <script setup>
-import Navbar from "~/components/admins/Navbar.vue";
 import DocumentInstructions from "~/components/DocumentInstructions.vue";
 import { reactive, ref, onMounted } from "vue";
 import {

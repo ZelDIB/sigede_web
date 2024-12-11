@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen">
-    <Navbar />
+    <NavBar />
     <div class="content">
       <p class="title">PERFIL</p>
       <div class="form-container">
@@ -120,6 +120,11 @@
             </div>
           </div>
         </form>
+        <div class="btn-logout-container">
+          <button type="button" class="logout-btn" @click="handleLogout">
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </div>
     <CustomAlert
@@ -134,7 +139,6 @@
 </template>
 
 <script setup>
-import Navbar from "~/components/superadmins/Navbar.vue";
 import CustomAlert from "~/components/CustomAlert.vue";
 import {
   getProfileInformation,
@@ -142,7 +146,7 @@ import {
 } from "~/services/ServicesAuth";
 import { reactive, ref, onMounted } from "vue";
 
-const { $toast } = useNuxtApp();
+const { $toast, $router } = useNuxtApp();
 
 const states = reactive({
   showPassword: false,
@@ -283,6 +287,11 @@ const handleGetProfileInformation = async () => {
   form.name = response.data.name;
 };
 
+const handleLogout = () => {
+  localStorage.clear();
+  $router.push("/");
+};
+
 onMounted(() => {
   handleGetProfileInformation();
 });
@@ -374,12 +383,13 @@ onMounted(() => {
 .buttons {
   display: flex;
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 40px;
   gap: 60px;
 }
 
 .submit-btn,
-.cancel-btn {
+.cancel-btn,
+.logout-btn {
   padding: 8px 20px;
   font-size: 16px;
   color: white;
@@ -395,6 +405,10 @@ onMounted(() => {
 
 .cancel-btn {
   background-color: #87342c;
+}
+
+.logout-btn {
+  background-color: red;
 }
 
 .form-group {
@@ -443,5 +457,10 @@ label.error-label {
 .password-container {
   position: relative;
   width: 100%;
+}
+
+.btn-logout-container {
+  text-align: center;
+  margin-top: 20px;
 }
 </style>
