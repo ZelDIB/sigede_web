@@ -8,8 +8,9 @@
           :key="item.route"
           class="navbar-icon"
           @click="navigate(item.route)"
+          :title="item.name"
         >
-          <i :class="item.icon"></i> {{ item.name }}
+          <i :class="item.icon"></i>
         </div>
       </div>
     </div>
