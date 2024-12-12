@@ -21,7 +21,7 @@ export const navbarConfig = {
     {
       name: "Organizaciones",
       icon: "fa-solid fa-building",
-      route: "/superdadmins/screens/OrganizationsList",
+      route: "/superadmins/screens/OrganizationsList",
     },
     {
       name: "Perfil",
