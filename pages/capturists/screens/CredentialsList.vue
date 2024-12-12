@@ -5,7 +5,7 @@
       <NavBar />
       <div>
         <div class="content">
-          <p class="title">USUARIOS</p>
+          <p class="title">CREDENCIALES</p>
           <div class="content-table">
             <div class="search-section">
               <div

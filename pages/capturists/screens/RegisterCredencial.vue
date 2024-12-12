@@ -303,6 +303,7 @@ export default {
           text: "Credencial registrada exitosamente",
           confirmButtonText: "Aceptar",
         });
+        this.$router.push("./CredentialsList");
       } catch (e) {
         this.isLoading = false;
         Swal.fire({

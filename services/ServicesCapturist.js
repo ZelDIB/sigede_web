@@ -76,10 +76,13 @@ export const dowloadCredential = async (id) => {
       credentialId: id,
     };
 
-    const response = await axios.post(`${BASEURL}api/download-credential/`, data, {
-      responseType: "blob",
-    });
-    console.log(response);
+    const response = await axios.post(
+      `${BASEURL}api/download-credential/`,
+      data,
+      {
+        responseType: "blob",
+      }
+    );
     return response;
   } catch (error) {
     console.error(error);
