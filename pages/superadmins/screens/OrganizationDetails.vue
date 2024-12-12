@@ -104,7 +104,7 @@
                 </tbody>
               </table>
               <div v-if="filteredAdminis.length === 0" class="no-results">
-                <i class="fas fa-times-circle"></i> Sin resultados
+                <i class="fas fa-times-circle"></i> Sin administradores
               </div>
             </div>
           </div>
