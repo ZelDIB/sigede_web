@@ -52,11 +52,11 @@
                         <div class="status-container">
                           <div
                             class="edit-icon"
-                            @click="editCapturist(item.userAccountId)"
+                            @click="editCapturist(item)"
                           >
                             <i class="fas fa-edit icon"></i>
                           </div>
-                          <span :class="`status-${item.status.toLowerCase()}`">
+                          <span :class="`status-${item.status}`">
                             {{ item.status }}
                           </span>
                         </div>
@@ -125,10 +125,10 @@ export default {
     goToRegisterCapturist() {
       this.$router.push("./RegisterCapturist");
     },
-    editCapturist(userAccountId) {
+    editCapturist(data) {
       this.$router.push({
         path: "./ManagerCapturist",
-        query: { userAccountId },
+        query: { ...data },
       });
     },
   },
