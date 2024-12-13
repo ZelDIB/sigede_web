@@ -88,6 +88,10 @@
                     </button>
                   </div>
                 </div>
+                <div v-if="errorMessage" class="error-message">
+                  {{ errorMessage }}
+                </div>
+
                 <div class="btns-container">
                   <button type="submit" class="button is-save">Guardar</button>
                   <button type="button" class="button is-cancel">
@@ -123,6 +127,8 @@ export default {
       formFields: [],
       deletedFields: [],
       isLoading: false,
+      errorMessage: "",
+      originalFormFields: null,
     };
   },
   methods: {
@@ -131,18 +137,29 @@ export default {
     },
     async handleSubmit() {
       if (this.formFields.length < 1) {
-        alert("Debe de registrar al menos un dato.");
+        this.errorMessage = "Debe de registrar al menos un dato.";
+        return;
+      }
+
+      const tags = this.formFields.map((field) => field.tag.toLowerCase());
+      const hasDuplicates = tags.some(
+        (tag, index) => tags.indexOf(tag) !== index
+      );
+
+      if (hasDuplicates) {
+        this.errorMessage = "No puede registar campos duplicados.";
         return;
       }
       // Validar que todos los campos tengan tag y tipo seleccionado
       for (let field of this.formFields) {
         if (!field.tag || !field.type) {
-          alert(
-            "Por favor, complete todos los campos con una etiqueta y tipo."
-          );
+          this.errorMessage =
+            "Por favor, complete todos los campos con una etiqueta y tipo.";
           return;
         }
       }
+
+      this.errorMessage = "";
 
       const fieldsToUpdate = [];
       const fieldsToCreate = [];
@@ -222,15 +239,8 @@ export default {
     },
 
     resetForm() {
-      this.formFields = [
-        {
-          tag: "",
-          type: "text",
-          isRequired: false,
-          isInQr: false,
-          isInCard: false,
-        },
-      ];
+      this.formFields = [...this.originalFormFields];
+      this.deletedFields = [];
     },
   },
   async mounted() {
@@ -249,6 +259,8 @@ export default {
           isInCard: item.inCard,
         });
       });
+
+      this.originalFormFields = [...this.formFields];
     } else {
       this.formFields.push({
         tag: "",
@@ -257,6 +269,15 @@ export default {
         isInQr: false,
         isInCard: false,
       });
+      this.originalFormFields = [
+        {
+          tag: "",
+          type: "text",
+          isRequired: false,
+          isInQr: false,
+          isInCard: false,
+        },
+      ];
     }
   },
 };
@@ -472,6 +493,9 @@ input::placeholder {
 form-column {
   flex: 1 1 calc(16.66% - 10px);
   min-width: 150px;
+}
+.error-message{
+  color: #87342c;
 }
 
 .delete-column {
