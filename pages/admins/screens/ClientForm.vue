@@ -148,6 +148,7 @@ export default {
 
       if (hasDuplicates) {
         this.errorMessage = "No puede registar campos duplicados.";
+        return;
       }
       // Validar que todos los campos tengan tag y tipo seleccionado
       for (let field of this.formFields) {
@@ -492,6 +493,9 @@ input::placeholder {
 form-column {
   flex: 1 1 calc(16.66% - 10px);
   min-width: 150px;
+}
+.error-message{
+  color: #87342c;
 }
 
 .delete-column {
