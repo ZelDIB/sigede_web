@@ -23,7 +23,6 @@
 </template>
 
 <script setup>
-
 defineProps({
   title: {
     type: String,
