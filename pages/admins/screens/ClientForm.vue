@@ -104,7 +104,11 @@
 </template>
 
 <script>
-import { registerClientForm } from "~/services/ServiceAdmin";
+import {
+  registerClientForm,
+  getForm,
+  updateClientForm,
+} from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
 
@@ -115,15 +119,8 @@ export default {
   name: "ClientForm",
   data() {
     return {
-      formFields: [
-        {
-          tag: "",
-          type: "text",
-          isRequired: false,
-          isInQr: false,
-          isInCard: false,
-        },
-      ],
+      formFields: [],
+      deletedFields: [],
       isLoading: false,
     };
   },
@@ -145,18 +142,50 @@ export default {
           return;
         }
       }
+
+      const fieldsToUpdate = [];
+      const fieldsToCreate = [];
+
+      this.formFields.forEach((field) => {
+        if (field.fieldId) {
+          fieldsToUpdate.push({
+            fieldId: field.fieldId,
+            tag: field.tag,
+            type: field.type,
+            isInQr: field.isInQr,
+            isInCard: field.isInCard,
+            isRequired: field.isRequired,
+          });
+        } else {
+          fieldsToCreate.push({
+            tag: field.tag,
+            type: field.type,
+            isInQr: field.isInQr,
+            isInCard: field.isInCard,
+            isRequired: field.isRequired,
+          });
+        }
+      });
+
       try {
         this.isLoading = true;
-        var institutionId = parseInt(localStorage.getItem("institutionId"));
-        const response = await registerClientForm(
-          this.formFields,
-          institutionId
-        );
+
+        if (fieldsToCreate.length > 0) {
+          const institutionId = parseInt(localStorage.getItem("institutionId"));
+          await registerClientForm(fieldsToCreate, institutionId);
+        }
+
+        if (fieldsToUpdate.length > 0) {
+          await updateClientForm(fieldsToUpdate);
+        }
+
+        if (this.deletedFields.length > 0) {
+        }
         this.isLoading = false;
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Formulario registrado exitosamente",
+          text: "Formulario procesado exitosamente",
           confirmButtonText: "Aceptar",
         });
         this.goToCapturistList();
@@ -165,7 +194,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Ocurrió un error al registrar formulario",
+          text: "Ocurrió un error al procesar formulario",
           confirmButtonText: "Aceptar",
         });
       }
@@ -183,6 +212,10 @@ export default {
     },
 
     removeField(index) {
+      const field = this.formFields[index];
+      if (field.fieldId) {
+        this.deletedFields.push(field.fieldId);
+      }
       this.formFields.splice(index, 1);
     },
 
@@ -197,6 +230,32 @@ export default {
         },
       ];
     },
+  },
+  async mounted() {
+    const response = await getForm();
+
+    if (response.data !== "No hay formulario.") {
+      const data = response.data;
+
+      data.userInfo.forEach((item, index) => {
+        this.formFields.push({
+          fieldId: data.fields[index].institutionCapturistFieldId,
+          tag: item.tag,
+          type: item.type,
+          isRequired: data.fields[index].required,
+          isInQr: item.inQr,
+          isInCard: item.inCard,
+        });
+      });
+    } else {
+      this.formFields.push({
+        tag: "",
+        type: "text",
+        isRequired: false,
+        isInQr: false,
+        isInCard: false,
+      });
+    }
   },
 };
 </script>

@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  
   const axiosInstance = axios.create({
     baseURL: "http://98.83.97.145:8081/",
   });
