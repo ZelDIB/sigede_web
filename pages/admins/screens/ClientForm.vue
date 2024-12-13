@@ -108,6 +108,7 @@ import {
   registerClientForm,
   getForm,
   updateClientForm,
+  deleteClientForm,
 } from "~/services/ServiceAdmin";
 import Swal from "sweetalert2";
 import CredentialLoader from "~/components/loader.vue";
@@ -180,6 +181,7 @@ export default {
         }
 
         if (this.deletedFields.length > 0) {
+          await deleteClientForm(this.deletedFields);
         }
         this.isLoading = false;
         Swal.fire({
