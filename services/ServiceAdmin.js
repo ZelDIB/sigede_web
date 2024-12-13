@@ -88,6 +88,18 @@ export const updateClientForm = async (data) => {
   }
 };
 
+export const deleteClientForm = async (fields) => {
+  try {
+    const data = {
+      institutionId: parseInt(localStorage.getItem("institutionId")),
+      fields: fields,
+    };
+    await axios.post(`${BASEURL}api/user-info/delete-form-fields`, data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getInstitutionDocument = async () => {
   try {
     const { $axios } = useNuxtApp();
