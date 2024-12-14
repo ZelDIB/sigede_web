@@ -1,29 +1,28 @@
-const STATIC_CACHE_NAME = 'static-cache-v1.1.7';
-const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.7';
+
+const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.8';
+const STATIC_CACHE_NAME = 'static-cache-v1.1.8';
 const urlsToCache = [
-  '/',
-  '/_nuxt/admins/screens/CapturistList',
-  '/_nuxt/admins/screens/RegisterCapturist',
-  '/_nuxt/admins/screens/ClientForm',
-  '/_nuxt/admins/screens/ManageDocument',
-  '/_nuxt/admins/screens/ManagerCapturist',
-  '/_nuxt/admins/screens/RegisterCapturist',
+  '/admins/screens/CapturistList',
+  '/admins/screens/RegisterCapturist',
+  '/admins/screens/ClientForm',
 ];
 
-// Evento de instalación: Guardamos las rutas estáticas
 self.addEventListener('install', function (event) {
   console.log('SW Registrado e instalando...');
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME).then(async cache => {
-      try {
-        await cache.addAll(urlsToCache);
-        console.log('Rutas estáticas almacenadas correctamente.');
-      } catch (err) {
-        console.error('Error al agregar rutas al caché estático:', err);
+      for (const url of urlsToCache) {
+        try {
+          await cache.add(url);
+          console.log(`Ruta almacenada correctamente: ${url}`);
+        } catch (err) {
+          console.error(`Error al almacenar la ruta ${url}:`, err);
+        }
       }
     })
   );
 });
+
 
 // Evento de activación: Limpieza de cachés antiguas
 self.addEventListener('activate', event => {
