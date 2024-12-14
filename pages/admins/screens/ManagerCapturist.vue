@@ -228,23 +228,13 @@ export default {
     },
   },
   async mounted() {
-    const userAccountId = this.$route.query.userAccountId;
-    if (userAccountId) {
-      try {
-        var institutionId = parseInt(localStorage.getItem("institutionId"));
-        const response = await getOneCapturist(userAccountId, institutionId);
-        if (response === "Ocurrio un error en la peticion") {
-          this.backToCapturistList();
-        } else {
-          this.isLoading = false;
-          this.form = response.data;
-        }
-      } catch (e) {
-        this.backToCapturistList();
-      }
-    } else {
-      this.backToCapturistList();
-    }
+    const queryData = this.$route.query; // Obtén todos los datos de la query
+    console.log(queryData); // Muestra todos los datos en la consola
+
+    const userAccountId = queryData.userAccountId;
+    
+    this.form=queryData;
+    this.isLoading = false;
   },
 };
 </script>

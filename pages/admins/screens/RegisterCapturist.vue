@@ -11,31 +11,18 @@
               <div class="form-row">
                 <div class="form-column">
                   <div class="form-group">
-                    <label for="name" :class="{ 'error-label': errors.name }"
-                      >Nombre*</label
-                    >
-                    <input
-                      type="text"
-                      id="name"
-                      v-model="form.name"
-                      :class="['form-control', { error: errors.name }]"
-                      placeholder="Nombre"
-                    />
+                    <label for="name" :class="{ 'error-label': errors.name }">Nombre*</label>
+                    <input type="text" id="name" v-model="form.name" :class="['form-control', { error: errors.name }]"
+                      placeholder="Nombre" />
                     <small v-if="errors.name" class="error-message">{{
                       errors.name
                     }}</small>
                   </div>
 
                   <div class="form-group">
-                    <label for="email" :class="{ 'error-label': errors.email }"
-                      >Correo*</label
-                    >
-                    <input
-                      id="email"
-                      v-model="form.email"
-                      :class="['form-control', { error: errors.email }]"
-                      placeholder="Correo"
-                    />
+                    <label for="email" :class="{ 'error-label': errors.email }">Correo*</label>
+                    <input id="email" v-model="form.email" :class="['form-control', { error: errors.email }]"
+                      placeholder="Correo" />
                     <small v-if="errors.email" class="error-message">{{
                       errors.email
                     }}</small>
@@ -43,11 +30,7 @@
                 </div>
 
                 <div class="image-column">
-                  <img
-                    src="/customer_service.png"
-                    alt="Imagen de registro"
-                    class="register-image"
-                  />
+                  <img src="/customer_service.png" alt="Imagen de registro" class="register-image" />
                 </div>
               </div>
 
@@ -118,25 +101,26 @@ export default {
       if (!valid) {
         return;
       }
+
       this.isLoading = true;
       try {
-        this.form.fkInstitution = parseInt(
-          localStorage.getItem("institutionId")
-        );
-        const data = await registerCapturist(this.form);
-        if (data === "Ocurrio un error en la peticion") {
+        this.form.fkInstitution = parseInt(localStorage.getItem("institutionId"));
+        const response = await registerCapturist(this.form);
+
+        if (response.message === "offline") {
           this.isLoading = false;
           Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Ocurrió un error al registrar capturista",
+            icon: "info",
+            title: "Modo Offline",
+            text: "El capturista se ha guardado localmente. Será sincronizado automáticamente cuando haya conexión.",
             confirmButtonText: "Aceptar",
           });
+          this.$router.push("./CapturistList");
         } else {
           this.form = {
             name: "",
             email: "",
-            fkInstitution: 1, //aqui va el id de la institución que se debe de pbtener cuando el usuario inicia sesion
+            fkInstitution: 1, // Ajustar según tus necesidades
           };
           this.isLoading = false;
           Swal.fire({
@@ -145,7 +129,6 @@ export default {
             text: "Capturista registrado exitosamente",
             confirmButtonText: "Aceptar",
           });
-
           this.$router.push("./CapturistList");
         }
       } catch (error) {
@@ -157,7 +140,7 @@ export default {
           confirmButtonText: "Aceptar",
         });
       }
-    },
+    }
   },
 };
 </script>
