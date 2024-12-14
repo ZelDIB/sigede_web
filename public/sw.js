@@ -1,13 +1,17 @@
-DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.4';
+const STATIC_CACHE_NAME = 'static-cache-v1.1.5';
+const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.5';
+const urlsToCache = [
+  '/',
+  '/admins/screens/CapturistList',
+  '/admins/screens/RegisterCapturist',
+  // Agrega aquí las rutas dinámicas que quieras cachear inicialmente
+];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', function(event) {
+  console.log('SW Registrado');
   event.waitUntil(
-    caches.open('static-cache-v1').then(cache => {
-      return cache.addAll([
-        '/',
-        '/admins/screens/CapturistList',        
-        // Agrega tus rutas estáticas generadas
-      ]);
+    caches.open(STATIC_CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache); // Almacena estas rutas al instalar
     })
   );
 });
