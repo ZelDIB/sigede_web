@@ -1,22 +1,8 @@
-const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.4';
-const STATIC_CACHE_NAME = 'static-cache-v1.1.4';
-
-const DYNAMIC_FILES = [
-  '/admins/screens/CapturistList',
-  '/admins/screens/ManageDocument',
-  '/admins/screens/ClientForm',
-  '/admins/screens/ManagerCapturist',
-  '/admins/screens/RegisterCapturist'
-];
+DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.4';
 
 self.addEventListener('install', function(event) {
   console.log('SW Registrado');
   // No se realiza ninguna acción en el evento de instalación para el caché dinámico.
-  event.waitUntil(
-    caches.open(STATIC_CACHE_NAME).then(cache => {
-      return cache.addAll(STATIC_FILES); // Agrega los archivos estáticos al caché.
-    })
-  );
 });
 
 self.addEventListener('activate', event => {
@@ -24,7 +10,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(cacheName => {
-          return cacheName !== DYNAMIC_CACHE_NAME && cacheName !== STATIC_CACHE_NAME;
+          return cacheName !== DYNAMIC_CACHE_NAME;
         }).map(cacheName => caches.delete(cacheName))
       );
     })
@@ -41,7 +27,6 @@ self.addEventListener('fetch', function(event) {
       })
     );
   } else {
-    // Si no es una solicitud de API, manejamos las vistas.
     event.respondWith(
       fetch(event.request)
         .then(response => {
