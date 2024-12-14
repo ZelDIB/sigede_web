@@ -4,56 +4,72 @@ const urlsToCache = [
   '/',
   '/admins/screens/CapturistList',
   '/admins/screens/RegisterCapturist',
-  // Agrega aquí las rutas dinámicas que quieras cachear inicialmente
+  // Otras rutas estáticas si las necesitas
 ];
 
-self.addEventListener('install', function(event) {
-  console.log('SW Registrado');
+// Evento de instalación: Guardamos las rutas estáticas
+self.addEventListener('install', function (event) {
+  console.log('SW Registrado e instalando...');
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache); // Almacena estas rutas al instalar
+      return cache.addAll(urlsToCache).catch(err => {
+        console.error('Error al almacenar en caché estático:', err);
+      });
     })
   );
 });
 
-
+// Evento de activación: Limpieza de cachés antiguas
 self.addEventListener('activate', event => {
+  console.log('SW Activado');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(cacheName => {
-          return cacheName !== DYNAMIC_CACHE_NAME;
-        }).map(cacheName => caches.delete(cacheName))
+        cacheNames
+          .filter(cacheName => cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME)
+          .map(cacheName => caches.delete(cacheName))
       );
     })
   );
 });
 
-self.addEventListener('fetch', function(event) {
+// Evento fetch: Manejo de rutas dinámicas y fallback
+self.addEventListener('fetch', function (event) {
   if (event.request.url.includes('/api/')) {
-    // Si la solicitud es para "/api/", no la almacenamos en caché.
+    // Exclusión de rutas de API
     event.respondWith(
       fetch(event.request).catch(() => {
-        // En caso de error en la red, devuelve un error adecuado o una respuesta vacía.
         return new Response('No se pudo obtener datos de la API', { status: 503 });
       })
     );
   } else {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          // Si obtenemos una respuesta exitosa, almacenamos en el caché dinámico.
-          return caches.open(DYNAMIC_CACHE_NAME).then(cache => {
-            cache.put(event.request, response.clone()); // Almacena la respuesta en caché.
-            return response;
+      caches.match(event.request).then(cachedResponse => {
+        // Devuelve del caché si existe
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        // Si no está en caché, intenta la red y almacena en el caché dinámico
+        return fetch(event.request)
+          .then(response => {
+            // Verifica si la respuesta es válida antes de almacenarla
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            return caches.open(DYNAMIC_CACHE_NAME).then(cache => {
+              cache.put(event.request, response.clone());
+              return response;
+            });
+          })
+          .catch(() => {
+            // Fallback a `index.html` para rutas no encontradas (SPA)
+            if (event.request.mode === 'navigate') {
+              return caches.match('/index.html');
+            }
           });
-        })
-        .catch(() => {
-          // Si falla la red, buscamos en el caché dinámico.
-          return caches.match(event.request).then(response => {
-            return response || caches.match('/index.html'); // Fallback a index.html si está disponible.
-          });
-        })
+      })
     );
   }
 });
