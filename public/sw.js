@@ -1,7 +1,6 @@
 const STATIC_CACHE_NAME = 'static-cache-v1.1.5';
 const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.5';
 const urlsToCache = [
-  '/',
   '/admins/screens/CapturistList',
   '/admins/screens/RegisterCapturist',
   '/admins/screens/ClientForm',
