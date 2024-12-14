@@ -92,11 +92,12 @@ export default {
       isAscending: true,
       isLoading: true,
       errorMessage: "",
+      hasReloaded: false, // Nuevo estado para controlar la recarga
     };
   },
   computed: {
     filteredCapturist() {
-      //filtra por nombre
+      // Filtra por nombre
       const filtered = this.capturist.filter((capturist) =>
         capturist.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
@@ -105,7 +106,7 @@ export default {
   },
   methods: {
     sortByName() {
-      //ordena alfabeticamente
+      // Ordena alfabeticamente
       this.isAscending = !this.isAscending;
       this.capturist.sort((a, b) => {
         const nameA = a.name.toLowerCase();
@@ -119,7 +120,7 @@ export default {
       });
     },
     invertListOrder() {
-      //invierte el orden de la lista
+      // Invierte el orden de la lista
       this.capturist.reverse();
     },
     goToRegisterCapturist() {
@@ -131,10 +132,21 @@ export default {
         query: { ...data },
       });
     },
+    reloadPageOnce() {
+      // Recarga la página una sola vez
+      if (!this.hasReloaded) {
+        this.hasReloaded = true;
+        window.location.reload();
+      }
+    },
   },
   async mounted() {
+    // Detecta si es la primera carga
+    if (!this.hasReloaded) {
+      this.reloadPageOnce();
+    }
     try {
-      var institutionId = parseInt(localStorage.getItem("institutionId"));
+      const institutionId = parseInt(localStorage.getItem("institutionId"));
       const data = await getAllCapturitsByInstitutionId(institutionId);
       if (typeof data === "string") {
         this.errorMessage = "Error al cargar los capturistas.";
@@ -149,7 +161,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 html,
 body {
