@@ -1,8 +1,6 @@
 <template>
   <div class="full-screen">
-    <CredentialLoader v-if="isLoading" />
-
-    <div v-else>
+    <div>
       <NavBar />
 
       <div>
