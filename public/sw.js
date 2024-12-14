@@ -4,6 +4,10 @@ const urlsToCache = [
   '/',
   '/admins/screens/CapturistList',
   '/admins/screens/RegisterCapturist',
+  '/admins/screens/ClientForm',
+  '/admins/screens/ManageDocument',
+  '/admins/screens/ManagerCapturist',
+  '/admins/screens/RegisterCapturist',
   // Otras rutas estáticas si las necesitas
 ];
 
