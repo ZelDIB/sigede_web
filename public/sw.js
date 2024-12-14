@@ -1,9 +1,17 @@
 DYNAMIC_CACHE_NAME = 'dynamic-cache-v1.1.4';
 
-self.addEventListener('install', function(event) {
-  console.log('SW Registrado');
-  // No se realiza ninguna acción en el evento de instalación para el caché dinámico.
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open('static-cache-v1').then(cache => {
+      return cache.addAll([
+        '/',
+        '/admins/screens/CapturistList',        
+        // Agrega tus rutas estáticas generadas
+      ]);
+    })
+  );
 });
+
 
 self.addEventListener('activate', event => {
   event.waitUntil(
