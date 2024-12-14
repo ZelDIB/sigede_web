@@ -92,7 +92,6 @@ export default {
       isAscending: true,
       isLoading: true,
       errorMessage: "",
-      hasReloaded: false, // Nuevo estado para controlar la recarga
     };
   },
   computed: {
@@ -132,19 +131,8 @@ export default {
         query: { ...data },
       });
     },
-    reloadPageOnce() {
-      // Recarga la página una sola vez
-      if (!this.hasReloaded) {
-        this.hasReloaded = true;
-        window.location.reload();
-      }
-    },
   },
   async mounted() {
-    // Detecta si es la primera carga
-    if (!this.hasReloaded) {
-      this.reloadPageOnce();
-    }
     try {
       const institutionId = parseInt(localStorage.getItem("institutionId"));
       const data = await getAllCapturitsByInstitutionId(institutionId);
