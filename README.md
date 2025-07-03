@@ -1,75 +1,23 @@
-# Nuxt Minimal Starter
+# SIGEDE – Sistema de Gestión de Credenciales
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+SIGEDE es una aplicación web desarrollada con **Nuxt 3** que permite a organizaciones como instituciones educativas o empresas gestionar la creación y personalización de credenciales para su personal.
 
-## Setup
+## 🚀 Características principales
 
-Make sure to install dependencies:
+- ✅ Panel para administradores de cada organización
+- 🧾 Creación de formularios personalizados para capturar datos de empleados
+- 🎨 Editor de plantillas de credenciales con diseño visual
+- 👥 Gestión de capturistas encargados de llenar formularios
+- 🖨️ Generación automática de credenciales listas para imprimir
 
-```bash
-# npm
-npm install
+> Este repositorio contiene únicamente la **parte frontend (Nuxt 3)** del sistema.  
+> La API/backend se encuentra en otro repositorio.
 
-# pnpm
-pnpm install
+---
 
-# yarn
-yarn install
+## 🛠️ Tecnologías utilizadas
 
-# bun
-bun install
-```
+- [Nuxt 3](https://nuxt.com/)
+- [Vue 3](https://vuejs.org/)
+- BulmaCSS
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
