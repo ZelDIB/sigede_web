@@ -40,3 +40,4 @@ npm install
 npm run dev
 
 Para que algunas funcionalidades funcionen correctamente (como guardar datos o generar credenciales), se requiere conectar con el backend correspondiente.
+👉 Repositorio del backend: [SIGEDE API](https://github.com/ZelDIB/sigede_backend.git)
