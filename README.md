@@ -39,3 +39,4 @@ npm install
 # Inicia el servidor de desarrollo
 npm run dev
 
+Para que algunas funcionalidades funcionen correctamente (como guardar datos o generar credenciales), se requiere conectar con el backend correspondiente.
