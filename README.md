@@ -21,3 +21,21 @@ SIGEDE es una aplicación web desarrollada con **Nuxt 3** que permite a organiza
 - [Vue 3](https://vuejs.org/)
 - BulmaCSS
 
+
+---
+
+## 📦 Instalación y ejecución local
+
+```bash
+# Clona el repositorio
+git clone https://github.com/ZelDIB/sigede-web.git
+
+# Entra al directorio
+cd sigede-web
+
+# Instala dependencias
+npm install
+
+# Inicia el servidor de desarrollo
+npm run dev
+
