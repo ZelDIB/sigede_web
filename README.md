@@ -33,18 +33,6 @@ Fue construida como un proyecto universitario aplicado, con enfoque tanto en des
 
 ---
 
-## 📂 Estructura del proyecto
-
-sigede_web/
-├── docker-compose.yml
-├── Dockerfile
-├── pages/
-├── components/
-└── ...
-
-
----
-
 ## 📦 Instalación local (modo desarrollador)
 
 ```bash
